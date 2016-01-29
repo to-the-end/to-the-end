@@ -59,7 +59,19 @@ module.exports = {
   setupObstacles() {
     this.obstacleGroup = this.add.group();
 
-    this.obstacleGroup.add(this.makePhysicsSprite(50, 100, 'obstacle'));
+    this.input.onUp.add(this.handleMouseUp, this);
+  },
+
+  handleMouseUp(pointer) {
+    this.addObstacle(pointer.clientX, pointer.clientY);
+  },
+
+  addObstacle(x, y) {
+    const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
+
+    this.obstacleGroup.add(obstacle);
+
+    obstacle.anchor.set(0.5);
   },
 
   makePhysicsSprite(x, y, asset) {
