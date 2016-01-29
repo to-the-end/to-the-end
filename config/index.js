@@ -1,8 +1,10 @@
+/* eslint-env browser */
+
 'use strict';
 
 module.exports = {
   game: {
-    width:  1920,
-    height: 1080,
+    width:  window.innerWidth,
+    height: window.innerHeight,
   },
 };
