@@ -5,10 +5,11 @@
 module.exports = {
   preload() {
     // Preload map
-    this.game.load.tilemap('map', 'assets/tilemaps/example.csv', null, Phaser.Tilemap.CSV);
-    this.game.load.image('tiles', 'assets/tilemaps/tiles/example.png');
+    this.load.tilemap('map', 'assets/tilemaps/example.csv', null, Phaser.Tilemap.CSV);
+    this.load.image('tiles', 'assets/tilemaps/tiles/example.png');
     // Preload character
-    this.game.load.spritesheet('player', 'assets/character/spaceman.png', 16, 16);
+	this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+    this.load.spritesheet('player', 'assets/character/spaceman.png', 16, 16);
   },
 
   create() {
