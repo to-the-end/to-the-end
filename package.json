@@ -1,0 +1,28 @@
+{
+  "name": "ggj16",
+  "productName": "GGJ 16",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "clean": "rm -rf ./build",
+    "clean:linux": "rm -rf ./build/linux",
+    "clean:darwin": "rm -rf ./build/darwin",
+    "clean:win32": "rm -rf ./build/win32",
+    "build": "npm run build:linux && npm run build:darwin && npm run build:win32",
+    "build:darwin": "npm run clean:darwin && electron-packager . \"$npm_package_productName\" --out=build/darwin --platform=darwin --arch=x64 --version=0.36.6 --ignore=$(cat .electronignore | sed -e 's-^/-\\^/-g' | tr -s '\\n' | tr '\\n' '|' | sed -e 's/|$//g' -e 's/\\./\\\\\\./g' -e 's/\\*/\\.\\*/g') --prune --asar",
+    "build:linux": "npm run clean:linux && electron-packager . \"$npm_package_productName\" --out=build/linux --platform=linux  --arch=x64 --version=0.36.6 --ignore=$(cat .electronignore | sed -e 's-^/-\\^/-g' | tr -s '\\n' | tr '\\n' '|' | sed -e 's/|$//g' -e 's/\\./\\\\\\./g' -e 's/\\*/\\.\\*/g') --prune --asar",
+    "build:win32": "npm run clean:win32 && electron-packager . \"$npm_package_productName\" --out=build/win32 --platform=win32 --arch=x64 --version=0.36.6 --ignore=$(cat .electronignore | sed -e 's-^/-\\^/-g' | tr -s '\\n' | tr '\\n' '|' | sed -e 's/|$//g' -e 's/\\./\\\\\\./g' -e 's/\\*/\\.\\*/g') --prune --asar",
+    "dist": "npm run dist:linux && npm run dist:darwin && npm run dist:win32",
+    "dist:darwin": "npm run build:darwin && mkdir -p \"dist/darwin-$npm_package_version\" && tar -czf \"dist/darwin-$npm_package_version/$npm_package_productName-darwin-x64-$npm_package_version.tar.gz\" -C build/darwin/ \"$npm_package_productName-darwin-x64\"",
+    "dist:linux": "npm run build:linux && mkdir -p \"dist/linux-$npm_package_version\" && tar -czf \"dist/linux-$npm_package_version/$npm_package_productName-linux-x64-$npm_package_version.tar.gz\" -C build/linux/ \"$npm_package_productName-linux-x64\"",
+    "dist:win32": "npm run build:win32 && mkdir -p \"dist/win32-$npm_package_version\" && pushd build/win32 && zip -q -r \"../../dist/win32-$npm_package_version/$npm_package_productName-win32-x64-$npm_package_version.zip\" \"$npm_package_productName-win32-x64\" && popd"
+  },
+  "devDependencies": {
+    "electron-packager": "^5.2.1",
+    "electron-prebuilt": "^0.36.6"
+  },
+  "dependencies": {
+    "phaser": "^2.4.4"
+  }
+}

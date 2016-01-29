@@ -1,0 +1,10 @@
+/build
+/dist
+*.sublime-*
+.editorconfig
+.electronignore
+.eslintignore
+.eslintrc
+.gitignore
+README.md
+packager.json
