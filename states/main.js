@@ -2,4 +2,20 @@
 
 'use strict';
 
-module.exports = {};
+module.exports = {
+  init() {
+
+  },
+
+  create() {
+
+  },
+
+  update() {
+
+  },
+
+  render() {
+
+  },
+};
