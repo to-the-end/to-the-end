@@ -1,7 +1,7 @@
 /* eslint-env browser */
 'use strict';
 
-let Player = require('../model/Player');
+const Player = require('../model/Player');
 
 module.exports = {
   init() {
@@ -13,30 +13,18 @@ module.exports = {
   },
 
   create() {
-    // Add map
-    let map = this.game.add.tilemap('map', 16, 16);
-    map.addTilesetImage('tiles');
-    //  This isn't totally accurate, but it'll do for now
-    map.setCollisionBetween(54, 83);
-    // Create layer
-    this.layer = map.createLayer(0);
-    this.layer.resizeWorld();
-    // Add character
-    this.player = new Player(this, 0, 0);
+    this.cursors = this.input.keyboard.createCursorKeys();
 
-    // Follow character
-    this.camera.follow(this.player);
-    // Create cursor keys
-    this.cursors = this.game.input.keyboard.createCursorKeys();
-
+    this.setupMap();
     this.setupObstacles();
+    this.setupPlayer();
   },
 
   update() {
     this.player.resetVelocity();
 
-    this.game.physics.arcade.collide(this.player, this.layer);
-    this.game.physics.arcade.collide(this.player, this.obstacleGroup);
+    this.physics.arcade.collide(this.player, this.layer);
+    this.physics.arcade.collide(this.player, this.obstacleGroup);
 
     if (this.cursors.left.isDown) {
       this.player.walkLeft();
@@ -53,6 +41,22 @@ module.exports = {
 
   render() {
 
+  },
+
+  setupPlayer() {
+    this.player = new Player(this, 0, 0);
+
+    this.camera.follow(this.player);
+  },
+
+  setupMap() {
+    const map = this.add.tilemap('map', 16, 16);
+
+    map.addTilesetImage('tiles');
+    map.setCollisionBetween(54, 83);
+
+    this.layer = map.createLayer(0);
+    this.layer.resizeWorld();
   },
 
   setupObstacles() {
