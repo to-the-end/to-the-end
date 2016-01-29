@@ -7,7 +7,7 @@ module.exports = {
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
   },
 
-  init() {
+  create() {
     this.state.start('main');
   },
 };
