@@ -34,10 +34,9 @@ module.exports = {
 
   update() {
     this.player.resetVelocity();
+
     this.game.physics.arcade.collide(this.player, this.layer);
     this.game.physics.arcade.collide(this.player, this.obstacleGroup);
-
-    this.player.body.velocity.set(0);
 
     if (this.cursors.left.isDown) {
       this.player.walkLeft();
