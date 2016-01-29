@@ -6,7 +6,9 @@ let mainWindow;
 
 const createWindow = function createWindow() {
   mainWindow = new electron.BrowserWindow({
-    title:      'GGJ 16',
+    title:  'GGJ 16',
+    width:  1600,
+    height: 900,
     // fullscreen: true,
     // frame:      false,
   });
