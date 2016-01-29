@@ -8,6 +8,6 @@ module.exports = {
   },
 
   init() {
-    this.state.load('main');
+    this.state.start('main');
   },
 };
