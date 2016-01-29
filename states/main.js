@@ -1,6 +1,7 @@
 /* eslint-env browser */
-
 'use strict';
+
+let Player = require('../model/Player');
 
 let cursors;
 let player;
@@ -15,29 +16,29 @@ module.exports = {
   },
 
   create() {
-    player = this.add.sprite(0, 0, 'dude');
-    this.physics.arcade.enable(player);
+    player = new Player(this, 0, 0);
   },
 
   update() {
-    player.body.velocity.x = 0;
-    player.body.velocity.y = 0;
+    player.resetVelocity();
 
     if (cursors.left.isDown)
     {
-        player.body.velocity.x = -150;
+        player.walkLeft();
     }
     else if (cursors.right.isDown)
     {
-        player.body.velocity.x = 150;
+        player.walkRight();
     }
     else if (cursors.up.isDown)
     {
-        player.body.velocity.y = -150;
+        player.walkUp();
     }
     else if (cursors.down.isDown)
     {
-        player.body.velocity.y = 150;
+        player.walkDown();
+    } else {
+        player.stop();
     }
   },
 
