@@ -7,11 +7,12 @@ let mainWindow;
 const createWindow = function createWindow() {
   mainWindow = new electron.BrowserWindow({
     title:      'GGJ 16',
-    fullscreen: true,
-    frame:      false,
+    // fullscreen: true,
+    // frame:      false,
   });
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);
+  mainWindow.openDevTools();
 
   mainWindow.on('closed', function onClosed() {
     mainWindow = null;
