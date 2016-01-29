@@ -23,18 +23,21 @@ module.exports = {
     this.layer.resizeWorld();
     // Add character
     this.player = new Player(this, 0, 0);
-    
+
     // Follow character
     this.camera.follow(this.player);
     // Create cursor keys
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
-    this.createObject(50, 50, 'obstacle');
+    this.setupObstacles();
   },
 
   update() {
     this.player.resetVelocity();
     this.game.physics.arcade.collide(this.player, this.layer);
+    this.game.physics.arcade.collide(this.player, this.obstacleGroup);
+
+    this.player.body.velocity.set(0);
 
     if (this.cursors.left.isDown) {
       this.player.walkLeft();
@@ -53,7 +56,17 @@ module.exports = {
 
   },
 
-  createObject(x, y, asset) {
-    this.add.sprite(x, y, asset);
+  setupObstacles() {
+    this.obstacleGroup = this.add.group();
+
+    this.obstacleGroup.add(this.makePhysicsSprite(50, 100, 'obstacle'));
+  },
+
+  makePhysicsSprite(x, y, asset) {
+    const sprite = this.make.sprite(x, y, asset);
+
+    this.physics.enable(sprite, Phaser.Physics.ARCADE);
+
+    return sprite;
   },
 };
