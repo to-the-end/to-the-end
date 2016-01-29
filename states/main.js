@@ -72,6 +72,8 @@ module.exports = {
     this.obstacleGroup.add(obstacle);
 
     obstacle.anchor.set(0.5);
+
+    obstacle.body.moves = false;
   },
 
   makePhysicsSprite(x, y, asset) {
