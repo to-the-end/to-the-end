@@ -2,4 +2,8 @@
 
 'use strict';
 
-module.exports = {};
+module.exports = {
+  init() {
+    this.state.load('main');
+  },
+};
