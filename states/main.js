@@ -28,6 +28,8 @@ module.exports = {
     this.camera.follow(this.player);
     // Create cursor keys
     this.cursors = this.game.input.keyboard.createCursorKeys();
+
+    this.createObject(50, 50, 'obstacle');
   },
 
   update() {
@@ -49,5 +51,9 @@ module.exports = {
 
   render() {
 
+  },
+
+  createObject(x, y, asset) {
+    this.add.sprite(x, y, asset);
   },
 };
