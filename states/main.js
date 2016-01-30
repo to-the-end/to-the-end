@@ -25,13 +25,13 @@ module.exports = {
     });
 
     this.setupMap();
-    this.setupSwitches();
     this.setupObstacles();
     this.setupPlayer();
 
     // test
-    var phaserJSON = this.cache.getJSON('level1');
-    console.log(phaserJSON);
+    this.switchJson = this.cache.getJSON('level1');
+    console.log("Number of switches to add: ", this.switchJson.nSwitches);
+    this.setupSwitches();
   },
 
   update() {
@@ -91,12 +91,13 @@ module.exports = {
       return tile.index > 0;
     });
 
-    const tile = this.rnd.pick(tiles);
-
-    let switch1 = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);
-
     this.switchGroup = this.add.group();
-    this.switchGroup.add(switch1);
+    
+    for (var i = 0; i < this.switchJson.nSwitches; i++) {
+      var tile = this.rnd.pick(tiles);
+      let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);  
+      this.switchGroup.add(newSwitch);
+    }
   },
 
   setupObstacles() {

@@ -11,7 +11,7 @@ class Switch extends Phaser.Sprite {
     this.animations.add('on', [11, 23, 35], 10, false);
     this.animations.add('off', [35, 23, 11], 10, false);
     this.isOn = false;
-    game.add.existing(this);
+    game.add.existing(this);  // adds object to the game world
   }
 
   on() {
