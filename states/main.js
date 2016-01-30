@@ -21,7 +21,7 @@ module.exports = {
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
     };
 
-    this.keys.spacebar.onDown.add((e) => {
+    this.keys.spacebar.onDown.add(() => {
       this.turnOnNearbySwitches();
     });
 
@@ -31,7 +31,6 @@ module.exports = {
 
     // test
     this.switchJson = this.cache.getJSON('level1');
-    console.log("Number of switches to add: ", this.switchJson.nSwitches);
     this.setupSwitches();
   },
 
