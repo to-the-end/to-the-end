@@ -27,12 +27,14 @@ module.exports = {
       this.turnOnNearbySwitches();
     });
 
+    this.score = 0;
+
     this.setupMap();
     this.setupObstacles();
     this.setupPlayer();
-
-    // test
     this.switchJson = this.cache.getJSON('level1');
+    this.order = this.switchJson.order;
+    console.log("Switch order: ", this.order);
     this.setupSwitches();
     this.addTimerText();
     this.addTimer((timer) => {
@@ -44,6 +46,7 @@ module.exports = {
       }
     });
     this.startTimer();
+    this.hint(5);
   },
 
   turnOnNearbySwitches() {
@@ -55,9 +58,25 @@ module.exports = {
       const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
 
       if (distance < threshold) {
-        s.flick();
+        let switchId = s.flick();
+        this.score = s.flick() === this.order[this.score] ? this.score + 1 : 0;
       }
     });
+  },
+
+  hint(i) {       
+    setTimeout(() => {
+      this.order.forEach((id) => {
+        this.switchGroup.forEach((s) => {
+          if (id === s.getId()) {
+            s.on();
+            s.off();
+          }
+        });
+      });
+
+      if (--i) this.hint(i);      //  decrement i and call myLoop again if i > 0
+    }, 1000)
   },
 
   update() {
@@ -93,6 +112,11 @@ module.exports = {
       this.player.normalizeVelocity();
     } else {
       this.player.stop();
+    }
+
+    if (this.score == this.order.length) {
+      console.log("You have completed this level");
+      this.add.text(16, 16, 'You have won!', { fontSize: '32px', fill: '#000' });
     }
   },
 
