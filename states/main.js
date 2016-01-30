@@ -26,13 +26,13 @@ module.exports = {
     });
 
     this.setupMap();
-    this.setupSwitches();
     this.setupObstacles();
     this.setupPlayer();
 
     // test
-    var phaserJSON = this.cache.getJSON('level1');
-    console.log(phaserJSON);
+    this.switchJson = this.cache.getJSON('level1');
+    console.log("Number of switches to add: ", this.switchJson.nSwitches);
+    this.setupSwitches();
   },
 
   turnOnNearbySwitches() {
@@ -56,9 +56,20 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.obstacleGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
+    var movecnt = 0;
+    if (this.keys.cursors.up.isDown) {
+      this.player.walkUp();
+      movecnt++;
+    } 
+    if (this.keys.cursors.down.isDown) {
+      this.player.walkDown();
+      movecnt++;
+    }
     if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
-    } else if (this.keys.cursors.right.isDown) {
+      movecnt++;
+    } 
+    if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
     } else if (this.keys.cursors.up.isDown) {
       this.player.walkUp();
@@ -106,12 +117,13 @@ module.exports = {
       return tile.index > 0;
     });
 
-    const tile = this.rnd.pick(tiles);
-
-    let switch1 = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);
-
     this.switchGroup = this.add.group();
-    this.switchGroup.add(switch1);
+    
+    for (var i = 0; i < this.switchJson.nSwitches; i++) {
+      var tile = this.rnd.pick(tiles);
+      let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);  
+      this.switchGroup.add(newSwitch);
+    }
   },
 
   setupObstacles() {
