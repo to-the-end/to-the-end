@@ -36,17 +36,28 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.obstacleGroup);
 
+    var movecnt = 0;
+    if (this.keys.cursors.up.isDown) {
+      this.player.walkUp();
+      movecnt++;
+    } 
+    if (this.keys.cursors.down.isDown) {
+      this.player.walkDown();
+      movecnt++;
+    }
     if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
-    } else if (this.keys.cursors.right.isDown) {
+      movecnt++;
+    } 
+    if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
-    } else if (this.keys.cursors.up.isDown) {
-      this.player.walkUp();
-    } else if (this.keys.cursors.down.isDown) {
-      this.player.walkDown();
-    } else if (this.keys.spacebar.isDown) {
+      movecnt++;
+    }
+    if (this.keys.spacebar.isDown) {
       
-    } else {
+    }
+    
+    if (movecnt==0){
       this.player.stop();
     }
   },
