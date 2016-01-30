@@ -2,9 +2,10 @@
 
 'use strict';
 
+const config = require('../config');
+
 const Player = require('../model/Player');
 const Switch = require('../model/Switch');
-const Config = require('../config/index');
 
 module.exports = {
   init() {
@@ -18,8 +19,8 @@ module.exports = {
   create() {
     this.isPlayerNextToSwitch = false;
     this.keys = {
-      cursors: this.input.keyboard.createCursorKeys(),
-      spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+      cursors:  this.input.keyboard.createCursorKeys(),
+      spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
     };
 
     this.keys.spacebar.onDown.add(() => {
@@ -161,7 +162,7 @@ module.exports = {
 
     obstacle.body.moves = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * Config.obstacles.timer, function () {
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function () {
       this.removeObstacle(obstacle.id)
     }, this);
 
