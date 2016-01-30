@@ -66,7 +66,7 @@ class Player extends Phaser.Sprite {
   }
 
   normalizeVelocity() {
-    this.body.velocity.normalize().multiply(150, 150);
+    this.body.velocity.normalize().multiply(250, 250);
   }
 
   stop() {

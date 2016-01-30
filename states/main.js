@@ -197,8 +197,7 @@ module.exports = {
   },
 
   setupPlayer() {
-    this.player = new Player(this.game, this.keys.cursors, 30, 0);
-    this.player.scale.setTo(.5, .5);
+    this.player = new Player(this.game, this.keys.cursors, this.world.centerX, this.world.centerY);
 
     this.camera.follow(this.player);
   },
