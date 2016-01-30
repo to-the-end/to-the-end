@@ -28,15 +28,25 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.obstacleGroup);
 
+    var cr=0;
+    if (this.cursors.up.isDown) {
+      this.player.walkUp();
+      cr++;
+    } 
+    if (this.cursors.down.isDown) {
+      this.player.walkDown();
+      cr++;
+    } 
     if (this.cursors.left.isDown) {
       this.player.walkLeft();
-    } else if (this.cursors.right.isDown) {
+      cr++;
+    } 
+    if (this.cursors.right.isDown) {
       this.player.walkRight();
-    } else if (this.cursors.up.isDown) {
-      this.player.walkUp();
-    } else if (this.cursors.down.isDown) {
-      this.player.walkDown();
-    } else {
+      cr++;
+    } 
+
+    if (cr==0){
       this.player.stop();
     }
   },
@@ -44,7 +54,7 @@ module.exports = {
   render() {
 
   },
- 
+
   setupPlayer() {
     this.player = new Player(this.game, 0, 0);
 
@@ -117,6 +127,7 @@ module.exports = {
   addObstacle(x, y) {
     const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
     obstacle.id = Math.round(+new Date()/1000);
+
     obstacle.body.moves = false;
 
     this.game.time.events.add(Phaser.Timer.SECOND * 2, function () {
