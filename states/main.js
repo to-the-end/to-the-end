@@ -97,7 +97,17 @@ module.exports = {
 
     const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
+    // FIXME: This should be a check against existing switches,
+    //        not places they could go.
     if (tile.index > 0) {
+      return;
+    }
+
+    const collides = this.collidesWithMap(
+      tile.worldX, tile.worldY, tile.width, tile.height
+    );
+
+    if (collides) {
       return;
     }
 
@@ -140,25 +150,25 @@ module.exports = {
     while (!available) {
       x = this.rnd.integerInRange(areaX, areaX + areaWidth - width);
       y = this.rnd.integerInRange(areaY, areaY + areaHeight - height);
-      if (!this.doCollideWithMap(x, y, width, height)) {
+      if (!this.collidesWithMap(x, y, width, height)) {
         available = true;
       }
     }
     return { x, y };
   },
-  
+
   // Accepts values in world coordinates
-  doCollideWithMap(x, y, width, height) {
+  collidesWithMap(x, y, width, height) {
     let tiles = this.collisionLayer.getTiles(x, y, width, height);
     tiles = tiles.map(tile => tile.index);
-    
+
     let collide = false;
     for (let i = 0; i < tiles.length; i++) {
-      if (tile[i] > 0) {
+      if (tiles[i] > 0) {
         collide = true;
       }
     }
 
     return collide;
-  }
+  },
 };
