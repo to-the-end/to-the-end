@@ -35,6 +35,7 @@ module.exports = {
     this.order = this.switchJson.order;
     console.log("Switch order: ", this.order);
     this.setupSwitches();
+    this.hint(5);
   },
 
   turnOnNearbySwitches() {
@@ -47,9 +48,24 @@ module.exports = {
 
       if (distance < threshold) {
         let switchId = s.flick();
-        this.score = s.flick() == this.order[this.score] ? this.score + 1 : 0;
+        this.score = s.flick() === this.order[this.score] ? this.score + 1 : 0;
       }
     });
+  },
+
+  hint(i) {       
+    setTimeout(() => {
+      this.order.forEach((id) => {
+        this.switchGroup.forEach((s) => {
+          if (id === s.getId()) {
+            s.on();
+            s.off();
+          }
+        });
+      });
+
+      if (--i) this.hint(i);      //  decrement i and call myLoop again if i > 0
+    }, 1000)
   },
 
   update() {
