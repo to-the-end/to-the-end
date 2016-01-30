@@ -6,7 +6,6 @@ class Player extends Phaser.Sprite {
     super(game, x, y, 'dude');
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
-    this.body.setSize(10, 14, 2, 1);
     this.animations.add('left', [0, 1, 2, 3], 10, true);
     this.animations.add('right', [5, 6, 7, 8], 10, true);
   }
