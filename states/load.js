@@ -30,7 +30,7 @@ module.exports = {
 
     this.load.image('obstacle', 'assets/obstacle.png');
 
-	this.loadLevel('level1');
+    this.loadLevel('level1');
 
     this.load.onFileComplete.add(function handleProgress(progress) {
       progressDisplay.setText(`${progress}%`);
