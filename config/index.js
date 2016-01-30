@@ -7,4 +7,7 @@ module.exports = {
     width:  window.innerWidth,
     height: window.innerHeight,
   },
+  obstacles: {
+    timer: 4
+  }
 };
