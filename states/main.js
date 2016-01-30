@@ -112,18 +112,19 @@ module.exports = {
   setupSwitches() {
     this.switchGroup = this.add.group();
 
+    let switchId = 1;
+
     this.switchesLayer
       .getTiles(0, 0, this.world.width, this.world.height)
       .filter((tile) => { return tile.index > 0; })
       .forEach((tile) => {
-        let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);  
+        let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height, switchId++);
         this.switchGroup.add(newSwitch);
       });
   },
 
   setupObstacles() {
     this.obstacleGroup = this.add.group();
-
     this.input.onUp.add(this.addObstacleFromPointer, this);
   },
 
