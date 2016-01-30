@@ -23,10 +23,6 @@ module.exports = {
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
     };
 
-    this.keys.spacebar.onDown.add(() => {
-      this.turnOnNearbySwitches();
-    });
-
     this.score = 0;
 
     this.setupMap();
@@ -46,7 +42,15 @@ module.exports = {
       }
     });
     this.startTimer();
-    this.hint(5);
+    this.showSolution();
+  },
+
+  enableSpaceBarListener() {
+    this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
+  },
+
+  disableSpaceBarListener() {
+    this.keys.spacebar.onDown.remove(this.turnOnNearbySwitches, this);
   },
 
   turnOnNearbySwitches() {
@@ -60,23 +64,41 @@ module.exports = {
       if (distance < threshold) {
         let switchId = s.flick();
         this.score = s.flick() === this.order[this.score] ? this.score + 1 : 0;
+
+        if (this.score === 0) {
+          this.showSolution();
+        }
       }
     });
   },
 
-  hint(i) {       
-    setTimeout(() => {
-      this.order.forEach((id) => {
-        this.switchGroup.forEach((s) => {
-          if (id === s.getId()) {
-            s.on();
-            s.off();
-          }
-        });
-      });
+  showSolution() {
+    this.disableSpaceBarListener();
 
-      if (--i) this.hint(i);      //  decrement i and call myLoop again if i > 0
-    }, 1000)
+    let initialTimeout = 1000;
+    let incrementalTimeout = 1000;
+
+    setTimeout(() => {
+      this.order.forEach((id, index) => {
+        setTimeout(() => {
+          this.pullSwitch(id);
+
+          // if last iteration enable spacebar again
+          if (this.order.length === index + 1) {
+            this.enableSpaceBarListener();
+          }
+        }, incrementalTimeout * index);
+      });
+    }, initialTimeout);
+  },
+
+  pullSwitch(id) {
+    this.switchGroup.forEach((s) => {
+      if (id === s.getId()) {
+        s.on();
+        s.off();
+      }
+    });
   },
 
   update() {
@@ -115,7 +137,6 @@ module.exports = {
     }
 
     if (this.score == this.order.length) {
-      console.log("You have completed this level");
       this.add.text(16, 16, 'You have won!', { fontSize: '32px', fill: '#000' });
     }
   },
