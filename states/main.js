@@ -87,10 +87,10 @@ module.exports = {
   setupObstacles() {
     this.obstacleGroup = this.add.group();
 
-    this.input.onUp.add(this.handleMouseUp, this);
+    this.input.onUp.add(this.addObstacleFromPointer, this);
   },
 
-  handleMouseUp(pointer) {
+  addObstacleFromPointer(pointer) {
     this.addObstacle(pointer.clientX, pointer.clientY);
   },
 
