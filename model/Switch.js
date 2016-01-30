@@ -7,28 +7,29 @@ class Switch extends Phaser.Sprite {
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
     this.body.setSize(32, 32, 0, 0);
-    this.animations.add('up', [0, 1, 2, 3], 10, false);
-    this.animations.add('down', [5, 6, 7, 8], 10, false);
-    this.on = false;
+    this.animations.add('on', [11, 23, 35], 10, false);
+    this.animations.add('off', [35, 23, 11], 10, false);
+    this.isOn = false;
+    game.add.existing(this);
   }
 
-  up() {
-    this.on = true;
-    this.animations.play('up');
+  on() {
+    this.isOn = true;
+    this.animations.play('on');
   }
 
-  down() {
-    this.on = false;
-    this.animations.play('down');
+  off() {
+    this.isOn = false;
+    this.animations.play('off');
   }
 
   flick() {
     this.on = !this.on;
 
-    if (this.on) {
-      this.animations.play('up');
+    if (this.isOn) {
+      this.animations.play('on');
     } else {
-      this.animations.play('down');
+      this.animations.play('off');
     }
   }
 }

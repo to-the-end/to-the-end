@@ -3,6 +3,7 @@
 'use strict';
 
 const Player = require('../model/Player');
+const Switch = require('../model/Switch');
 
 module.exports = {
   init() {
@@ -14,7 +15,10 @@ module.exports = {
   },
 
   create() {
-    this.cursors = this.input.keyboard.createCursorKeys();
+    this.keys = {
+      cursors: this.input.keyboard.createCursorKeys(),
+      spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    };
 
     this.setupMap();
     this.setupSwitches();
@@ -32,14 +36,16 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.obstacleGroup);
 
-    if (this.cursors.left.isDown) {
+    if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
-    } else if (this.cursors.right.isDown) {
+    } else if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
-    } else if (this.cursors.up.isDown) {
+    } else if (this.keys.cursors.up.isDown) {
       this.player.walkUp();
-    } else if (this.cursors.down.isDown) {
+    } else if (this.keys.cursors.down.isDown) {
       this.player.walkDown();
+    } else if (this.keys.spacebar.isDown) {
+      
     } else {
       this.player.stop();
     }
@@ -51,10 +57,7 @@ module.exports = {
 
   setupPlayer() {
     this.player = new Player(this.game, 30, 0);
-
     this.player.scale.setTo(.5, .5);
-
-    this.add.existing(this.player);
 
     this.camera.follow(this.player);
   },
@@ -87,7 +90,7 @@ module.exports = {
 
     const tile = this.rnd.pick(tiles);
 
-    this.add.sprite(tile.x * tile.width, tile.y * tile.height, 'switch');
+    let lever = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);
   },
 
   setupObstacles() {
