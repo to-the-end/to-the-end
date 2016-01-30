@@ -95,7 +95,11 @@ module.exports = {
 
     this.collisionLayer.getTileXY(pointer.clientX, pointer.clientY, tilePoint);
 
-    const tile = this.map.getTile(tilePoint.x, tilePoint.y);
+    const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+
+    if (tile.index > 0) {
+      return;
+    }
 
     this.addObstacle(tile.worldX, tile.worldY);
   },
