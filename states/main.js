@@ -110,19 +110,15 @@ module.exports = {
   },
 
   setupSwitches() {
-    let tiles = this.switchesLayer.getTiles(0, 0, this.world.width, this.world.height);
-
-    tiles = tiles.filter(function isSwitchTile(tile) {
-      return tile.index > 0;
-    });
-
     this.switchGroup = this.add.group();
-    
-    for (var i = 0; i < this.switchJson.switches.length; i++) {
-      var tile = this.rnd.pick(tiles);
-      let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);  
-      this.switchGroup.add(newSwitch);
-    }
+
+    this.switchesLayer
+      .getTiles(0, 0, this.world.width, this.world.height)
+      .filter((tile) => { return tile.index > 0; })
+      .forEach((tile) => {
+        let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);  
+        this.switchGroup.add(newSwitch);
+      });
   },
 
   setupObstacles() {
