@@ -15,13 +15,14 @@ module.exports = {
   },
 
   create() {
+    this.isPlayerNextToSwitch = false;
     this.keys = {
       cursors: this.input.keyboard.createCursorKeys(),
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
     };
 
-    this.keys.spacebar.onDown.add((e) => {
-      
+    this.keys.spacebar.onDown.add(() => {
+      this.turnOnNearbySwitches();
     });
 
     this.setupMap();
@@ -30,8 +31,21 @@ module.exports = {
 
     // test
     this.switchJson = this.cache.getJSON('level1');
-    console.log("Number of switches to add: ", this.switchJson.switches.length);
     this.setupSwitches();
+  },
+
+  turnOnNearbySwitches() {
+    const threshold = 40;
+    const playerX = this.player.x;
+    const playerY = this.player.y;
+
+    this.switchGroup.forEach((s) => {
+      const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
+
+      if (distance < threshold) {
+        s.flick();
+      }
+    });
   },
 
   update() {
@@ -41,20 +55,9 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.obstacleGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
-    var movecnt = 0;
-    if (this.keys.cursors.up.isDown) {
-      this.player.walkUp();
-      movecnt++;
-    } 
-    if (this.keys.cursors.down.isDown) {
-      this.player.walkDown();
-      movecnt++;
-    }
     if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
-      movecnt++;
-    } 
-    if (this.keys.cursors.right.isDown) {
+    } else if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
     } else if (this.keys.cursors.up.isDown) {
       this.player.walkUp();
