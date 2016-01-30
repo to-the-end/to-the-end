@@ -23,16 +23,14 @@ module.exports = {
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
     };
 
-    this.keys.spacebar.onDown.add(() => {
-      this.turnOnNearbySwitches();
-    });
+    this.score = 0;
 
     this.setupMap();
     this.setupObstacles();
     this.setupPlayer();
-
-    // test
     this.switchJson = this.cache.getJSON('level1');
+    this.order = this.switchJson.order;
+    console.log("Switch order: ", this.order);
     this.setupSwitches();
     this.addTimerText();
     this.addTimer((timer) => {
@@ -44,6 +42,15 @@ module.exports = {
       }
     });
     this.startTimer();
+    this.showSolution();
+  },
+
+  enableSpaceBarListener() {
+    this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
+  },
+
+  disableSpaceBarListener() {
+    this.keys.spacebar.onDown.remove(this.turnOnNearbySwitches, this);
   },
 
   turnOnNearbySwitches() {
@@ -55,7 +62,42 @@ module.exports = {
       const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
 
       if (distance < threshold) {
-        s.flick();
+        let switchId = s.flick();
+        this.score = s.flick() === this.order[this.score] ? this.score + 1 : 0;
+
+        if (this.score === 0) {
+          this.showSolution();
+        }
+      }
+    });
+  },
+
+  showSolution() {
+    this.disableSpaceBarListener();
+
+    let initialTimeout = 1000;
+    let incrementalTimeout = 1000;
+
+    // FIX ME: won't work for ingame pause, use Phaser timer instead
+    setTimeout(() => {
+      this.order.forEach((id, index) => {
+        setTimeout(() => {
+          this.pullSwitch(id);
+
+          // if last iteration enable spacebar again
+          if (this.order.length === index + 1) {
+            this.enableSpaceBarListener();
+          }
+        }, incrementalTimeout * index);
+      });
+    }, initialTimeout);
+  },
+
+  pullSwitch(id) {
+    this.switchGroup.forEach((s) => {
+      if (id === s.getId()) {
+        s.on();
+        s.off();
       }
     });
   },
@@ -93,6 +135,10 @@ module.exports = {
       this.player.normalizeVelocity();
     } else {
       this.player.stop();
+    }
+
+    if (this.score == this.order.length) {
+      this.add.text(16, 16, 'You have won!', { fontSize: '32px', fill: '#000' });
     }
   },
 
@@ -169,24 +215,21 @@ module.exports = {
   },
 
   setupSwitches() {
-    let tiles = this.switchesLayer.getTiles(0, 0, this.world.width, this.world.height);
-
-    tiles = tiles.filter(function isSwitchTile(tile) {
-      return tile.index > 0;
-    });
-
     this.switchGroup = this.add.group();
 
-    for (var i = 0; i < this.switchJson.switches.length; i++) {
-      var tile = this.rnd.pick(tiles);
-      let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);
-      this.switchGroup.add(newSwitch);
-    }
+    let switchId = 1;
+
+    this.switchesLayer
+      .getTiles(0, 0, this.world.width, this.world.height)
+      .filter((tile) => { return tile.index > 0; })
+      .forEach((tile) => {
+        let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height, switchId++);
+        this.switchGroup.add(newSwitch);
+      });
   },
 
   setupObstacles() {
     this.obstacleGroup = this.add.group();
-
     this.input.onUp.add(this.addObstacleFromPointer, this);
   },
 
