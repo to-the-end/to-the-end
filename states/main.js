@@ -30,7 +30,7 @@ module.exports = {
 
     // test
     this.switchJson = this.cache.getJSON('level1');
-    console.log("Number of switches to add: ", this.switchJson.nSwitches);
+    console.log("Number of switches to add: ", this.switchJson.switches.length);
     this.setupSwitches();
   },
 
@@ -104,7 +104,7 @@ module.exports = {
 
     this.switchGroup = this.add.group();
     
-    for (var i = 0; i < this.switchJson.nSwitches; i++) {
+    for (var i = 0; i < this.switchJson.switches.length; i++) {
       var tile = this.rnd.pick(tiles);
       let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);  
       this.switchGroup.add(newSwitch);

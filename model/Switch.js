@@ -2,8 +2,9 @@
 
 class Switch extends Phaser.Sprite {
 
-  constructor(game, x, y) {
+  constructor(game, x, y, id = 0) {
     super(game, x, y, 'switch');
+    this.Id = id;
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
     this.body.setSize(32, 32, 0, 0);
@@ -12,6 +13,10 @@ class Switch extends Phaser.Sprite {
     this.animations.add('off', [35, 23, 11], 10, false);
     this.isOn = false;
     game.add.existing(this);  // adds object to the game world
+  }
+
+  getId() {
+    return this.Id;
   }
 
   on() {
