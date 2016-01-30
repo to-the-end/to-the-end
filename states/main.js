@@ -4,6 +4,7 @@
 
 const Player = require('../model/Player');
 const Switch = require('../model/Switch');
+const Config = require('../config/index');
 
 module.exports = {
   init() {
@@ -55,15 +56,25 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.obstacleGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
-    if (this.keys.cursors.left.isDown) {
-      this.player.walkLeft();
-    } else if (this.keys.cursors.right.isDown) {
-      this.player.walkRight();
-    } else if (this.keys.cursors.up.isDown) {
+    var cr=0;
+    if (this.cursors.up.isDown) {
       this.player.walkUp();
-    } else if (this.keys.cursors.down.isDown) {
+      cr++;
+    } 
+    if (this.cursors.down.isDown) {
       this.player.walkDown();
-    } else {
+      cr++;
+    } 
+    if (this.cursors.left.isDown) {
+      this.player.walkLeft();
+      cr++;
+    } 
+    if (this.cursors.right.isDown) {
+      this.player.walkRight();
+      cr++;
+    } 
+
+    if (cr==0){
       this.player.stop();
     }
   },
@@ -80,20 +91,20 @@ module.exports = {
   },
 
   setupMap() {
-    const map = this.add.tilemap('map');
+    this.map = this.add.tilemap('map');
 
-    map.addTilesetImage('main', 'main-tiles');
-    map.addTilesetImage('collision', 'collision-tiles');
-    map.addTilesetImage('switches', 'switches-tiles');
-    map.setCollisionByExclusion([], true, 'collision');
+    this.map.addTilesetImage('main', 'main-tiles');
+    this.map.addTilesetImage('collision', 'collision-tiles');
+    this.map.addTilesetImage('switches', 'switches-tiles');
+    this.map.setCollisionByExclusion([], true, 'collision');
 
-    this.collisionLayer = map.createLayer('collision');
+    this.collisionLayer = this.map.createLayer('collision');
     this.collisionLayer.alpha = 0;
 
-    this.switchesLayer = map.createLayer('switches');
+    this.switchesLayer = this.map.createLayer('switches');
     this.switchesLayer.alpha = 0;
 
-    const layer = map.createLayer('terrain');
+    const layer = this.map.createLayer('terrain');
 
     layer.resizeWorld();
   },
@@ -117,21 +128,52 @@ module.exports = {
   setupObstacles() {
     this.obstacleGroup = this.add.group();
 
-    this.input.onUp.add(this.handleMouseUp, this);
+    this.input.onUp.add(this.addObstacleFromPointer, this);
   },
 
-  handleMouseUp(pointer) {
-    this.addObstacle(pointer.clientX, pointer.clientY);
+  addObstacleFromPointer(pointer) {
+    const tilePoint = new Phaser.Point();
+
+    this.collisionLayer.getTileXY(pointer.clientX, pointer.clientY, tilePoint);
+
+    const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+
+    // FIXME: This should be a check against existing switches,
+    //        not places they could go.
+    if (tile.index > 0) {
+      return;
+    }
+
+    const collides = this.collidesWithMap(
+      tile.worldX, tile.worldY, tile.width, tile.height
+    );
+
+    if (collides) {
+      return;
+    }
+
+    this.addObstacle(tile.worldX, tile.worldY);
   },
 
   addObstacle(x, y) {
     const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
-
-    this.obstacleGroup.add(obstacle);
-
-    obstacle.anchor.set(0.5);
+    obstacle.id = Math.round(+new Date()/1000);
 
     obstacle.body.moves = false;
+
+    this.game.time.events.add(Phaser.Timer.SECOND * Config.obstacles.timer, function () {
+      this.removeObstacle(obstacle.id)
+    }, this);
+
+    this.obstacleGroup.add(obstacle);
+  },
+
+  removeObstacle(id) {
+    this.obstacleGroup.forEach((item) => {
+      if (item.id === id) {
+        item.destroy();
+      }
+    });
   },
 
   makePhysicsSprite(x, y, asset) {
@@ -140,5 +182,35 @@ module.exports = {
     this.physics.enable(sprite, Phaser.Physics.ARCADE);
 
     return sprite;
+  },
+
+  // Accepts values in world coordinates
+  getAvailableSpot(width, height, areaX, areaY, areaWidth, areaHeight) {
+    let x;
+    let y;
+    let available = false;
+    while (!available) {
+      x = this.rnd.integerInRange(areaX, areaX + areaWidth - width);
+      y = this.rnd.integerInRange(areaY, areaY + areaHeight - height);
+      if (!this.collidesWithMap(x, y, width, height)) {
+        available = true;
+      }
+    }
+    return { x, y };
+  },
+
+  // Accepts values in world coordinates
+  collidesWithMap(x, y, width, height) {
+    let tiles = this.collisionLayer.getTiles(x, y, width, height);
+    tiles = tiles.map(tile => tile.index);
+
+    let collide = false;
+    for (let i = 0; i < tiles.length; i++) {
+      if (tiles[i] > 0) {
+        collide = true;
+      }
+    }
+
+    return collide;
   },
 };
