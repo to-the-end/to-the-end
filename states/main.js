@@ -134,7 +134,7 @@ module.exports = {
   addObstacleFromPointer(pointer) {
     const tilePoint = new Phaser.Point();
 
-    this.collisionLayer.getTileXY(pointer.clientX, pointer.clientY, tilePoint);
+    this.collisionLayer.getTileXY(pointer.worldX, pointer.worldY, tilePoint);
 
     const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
