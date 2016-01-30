@@ -26,12 +26,14 @@ module.exports = {
       this.turnOnNearbySwitches();
     });
 
+    this.score = 0;
+
     this.setupMap();
     this.setupObstacles();
     this.setupPlayer();
-
-    // test
     this.switchJson = this.cache.getJSON('level1');
+    this.order = this.switchJson.order;
+    console.log("Switch order: ", this.order);
     this.setupSwitches();
   },
 
@@ -44,7 +46,8 @@ module.exports = {
       const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
 
       if (distance < threshold) {
-        s.flick();
+        let switchId = s.flick();
+        this.score = s.flick() == this.order[this.score] ? this.score + 1 : 0;
       }
     });
   },
@@ -76,6 +79,11 @@ module.exports = {
 
     if (cr==0){
       this.player.stop();
+    }
+
+    if (this.score == this.order.length) {
+      console.log("You have completed this level");
+      this.add.text(16, 16, 'You have won!', { fontSize: '32px', fill: '#000' });
     }
   },
 
