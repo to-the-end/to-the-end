@@ -15,6 +15,9 @@ module.exports = {
     // Preload character
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 
+    // Preload character
+    this.load.spritesheet('switch', 'assets/lever.png', 32, 32);
+
     this.load.image('obstacle', 'assets/obstacle.png');
 
     this.loadLevel('level1');
