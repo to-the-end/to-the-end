@@ -54,20 +54,20 @@ module.exports = {
   },
 
   setupMap() {
-    const map = this.add.tilemap('map');
+    this.map = this.add.tilemap('map');
 
-    map.addTilesetImage('main', 'main-tiles');
-    map.addTilesetImage('collision', 'collision-tiles');
-    map.addTilesetImage('switches', 'switches-tiles');
-    map.setCollisionByExclusion([], true, 'collision');
+    this.map.addTilesetImage('main', 'main-tiles');
+    this.map.addTilesetImage('collision', 'collision-tiles');
+    this.map.addTilesetImage('switches', 'switches-tiles');
+    this.map.setCollisionByExclusion([], true, 'collision');
 
-    this.collisionLayer = map.createLayer('collision');
+    this.collisionLayer = this.map.createLayer('collision');
     this.collisionLayer.alpha = 0;
 
-    this.switchesLayer = map.createLayer('switches');
+    this.switchesLayer = this.map.createLayer('switches');
     this.switchesLayer.alpha = 0;
 
-    const layer = map.createLayer('terrain');
+    const layer = this.map.createLayer('terrain');
 
     layer.resizeWorld();
   },
@@ -91,17 +91,21 @@ module.exports = {
   },
 
   addObstacleFromPointer(pointer) {
-    this.addObstacle(pointer.clientX, pointer.clientY);
+    const tilePoint = new Phaser.Point();
+
+    this.collisionLayer.getTileXY(pointer.clientX, pointer.clientY, tilePoint);
+
+    const tile = this.map.getTile(tilePoint.x, tilePoint.y);
+
+    this.addObstacle(tile.worldX, tile.worldY);
   },
 
   addObstacle(x, y) {
     const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
 
-    this.obstacleGroup.add(obstacle);
-
-    obstacle.anchor.set(0.5);
-
     obstacle.body.moves = false;
+
+    this.obstacleGroup.add(obstacle);
   },
 
   makePhysicsSprite(x, y, asset) {
