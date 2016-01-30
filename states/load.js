@@ -8,21 +8,33 @@ module.exports = {
   },
 
   create() {
-    // Preload map
-    this.load.tilemap('map', 'assets/tilemaps/example.csv', null, Phaser.Tilemap.CSV);
-    this.load.image('tiles', 'assets/tilemaps/tiles/example.png');
-    // lever
-    this.load.image('lever', 'assets/lever.png')
+    const style = {
+      font:     'monospace',
+      fontSize: 36,
 
-    // Preload character
+      fill:   '#fff',
+      stroke: '#000',
+
+      strokeThickness: 3,
+    };
+
+    const progressDisplay = this.add.text(0, 0, '', style);
+
+    this.load.tilemap('map', 'assets/tilemaps/main.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.image('main-tiles', 'assets/tilemaps/tiles/main.png');
+    this.load.image('collision-tiles', 'assets/tilemaps/tiles/collision.png');
+    this.load.image('switches-tiles', 'assets/tilemaps/tiles/switches.png');
+
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-
-    // Preload character
     this.load.spritesheet('switch', 'assets/lever.png', 32, 32);
 
     this.load.image('obstacle', 'assets/obstacle.png');
 
-    this.loadLevel('level1');
+	this.loadLevel('level1');
+
+    this.load.onFileComplete.add(function handleProgress(progress) {
+      progressDisplay.setText(`${progress}%`);
+    }, this);
 
     this.load.onLoadComplete.add(function startMain() {
       this.state.start('main');

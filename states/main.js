@@ -1,4 +1,5 @@
 /* eslint-env browser */
+
 'use strict';
 
 const Player = require('../model/Player');
@@ -16,6 +17,7 @@ module.exports = {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     this.setupMap();
+    this.setupSwitches();
     this.setupObstacles();
     this.setupPlayer();
 
@@ -27,7 +29,7 @@ module.exports = {
   update() {
     this.player.resetVelocity();
 
-    this.physics.arcade.collide(this.player, this.layer);
+    this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.obstacleGroup);
 
     if (this.cursors.left.isDown) {
@@ -58,13 +60,34 @@ module.exports = {
   },
 
   setupMap() {
-    const map = this.add.tilemap('map', 16, 16);
+    const map = this.add.tilemap('map');
 
-    map.addTilesetImage('tiles');
-    map.setCollisionBetween(54, 83);
+    map.addTilesetImage('main', 'main-tiles');
+    map.addTilesetImage('collision', 'collision-tiles');
+    map.addTilesetImage('switches', 'switches-tiles');
+    map.setCollisionByExclusion([], true, 'collision');
 
-    this.layer = map.createLayer(0);
-    this.layer.resizeWorld();
+    this.collisionLayer = map.createLayer('collision');
+    this.collisionLayer.alpha = 0;
+
+    this.switchesLayer = map.createLayer('switches');
+    this.switchesLayer.alpha = 0;
+
+    const layer = map.createLayer('terrain');
+
+    layer.resizeWorld();
+  },
+
+  setupSwitches() {
+    let tiles = this.switchesLayer.getTiles(0, 0, this.world.width, this.world.height);
+
+    tiles = tiles.filter(function isSwitchTile(tile) {
+      return tile.index > 0;
+    });
+
+    const tile = this.rnd.pick(tiles);
+
+    this.add.sprite(tile.x * tile.width, tile.y * tile.height, 'switch');
   },
 
   setupObstacles() {
