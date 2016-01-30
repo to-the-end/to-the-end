@@ -18,6 +18,10 @@ module.exports = {
     this.setupMap();
     this.setupObstacles();
     this.setupPlayer();
+
+    // test
+    var phaserJSON = this.cache.getJSON('level1');
+    console.log(phaserJSON);
   },
 
   update() {
