@@ -20,6 +20,10 @@ module.exports = {
 
     const progressDisplay = this.add.text(0, 0, '', style);
 
+    // Audio
+    this.load.audio('leftFootstep', 'assets/audio/sfx/footsteps/left.wav');
+    this.load.audio('rightFootstep', 'assets/audio/sfx/footsteps/right.wav');
+
     this.load.tilemap('map', 'assets/tilemaps/main.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('terrain-tiles', 'assets/tilemaps/tiles/terrain.png');
     this.load.image('collision-tiles', 'assets/tilemaps/tiles/collision.png');

@@ -30,7 +30,6 @@ module.exports = {
     this.setupPlayer();
     this.switchJson = this.cache.getJSON('level1');
     this.order = this.switchJson.order;
-    console.log("Switch order: ", this.order);
     this.setupSwitches();
     this.addTimerText();
     this.addTimer((timer) => {
@@ -189,7 +188,7 @@ module.exports = {
   },
 
   setupPlayer() {
-    this.player = new Player(this.game, 30, 0);
+    this.player = new Player(this.game, this.keys.cursors, 30, 0);
     this.player.scale.setTo(.5, .5);
 
     this.camera.follow(this.player);
