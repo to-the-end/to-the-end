@@ -17,6 +17,7 @@ module.exports = {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     this.setupMap();
+    this.setupSwitches();
     this.setupObstacles();
     this.setupPlayer();
   },
@@ -69,6 +70,18 @@ module.exports = {
     const layer = map.createLayer('terrain');
 
     layer.resizeWorld();
+  },
+
+  setupSwitches() {
+    let tiles = this.switchesLayer.getTiles(0, 0, this.world.width, this.world.height);
+
+    tiles = tiles.filter(function isSwitchTile(tile) {
+      return tile.index > 0;
+    });
+
+    const tile = this.rnd.pick(tiles);
+
+    this.add.sprite(tile.x * tile.width, tile.y * tile.height, 'switch');
   },
 
   setupObstacles() {

@@ -27,6 +27,8 @@ module.exports = {
 
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 
+    this.load.image('switch', 'assets/switch.png');
+
     this.load.image('obstacle', 'assets/obstacle.png');
 
     this.load.onFileComplete.add(function handleProgress(progress) {
