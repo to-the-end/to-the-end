@@ -1,4 +1,5 @@
 /* eslint-env browser */
+
 'use strict';
 
 const Player = require('../model/Player');
@@ -23,7 +24,7 @@ module.exports = {
   update() {
     this.player.resetVelocity();
 
-    this.physics.arcade.collide(this.player, this.layer);
+    this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.obstacleGroup);
 
     if (this.cursors.left.isDown) {
@@ -52,13 +53,18 @@ module.exports = {
   },
 
   setupMap() {
-    const map = this.add.tilemap('map', 16, 16);
+    const map = this.add.tilemap('map');
 
-    map.addTilesetImage('tiles');
-    map.setCollisionBetween(54, 83);
+    map.addTilesetImage('main', 'main-tiles');
+    map.addTilesetImage('collision', 'collision-tiles');
+    map.setCollisionByExclusion([], true, 'collision');
 
-    this.layer = map.createLayer(0);
-    this.layer.resizeWorld();
+    this.collisionLayer = map.createLayer('collision');
+    this.collisionLayer.alpha = 0;
+
+    const layer = map.createLayer('terrain');
+
+    layer.resizeWorld();
   },
 
   setupObstacles() {
