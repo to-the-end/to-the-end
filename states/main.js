@@ -36,6 +36,11 @@ module.exports = {
     this.addTimerText();
     this.addTimer((timer) => {
       this.updateTimerText(timer);
+      // FIXME: instead of switchJson we need to change to this.currentLevelJson
+      if (timer >= this.switchJson.timer) {
+        this.stopTimer();
+        // TODO: insert loosing condition here
+      }
     });
     this.startTimer();
   },
