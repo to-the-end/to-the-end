@@ -3,6 +3,7 @@
 'use strict';
 
 const Player = require('../model/Player');
+const Config = require('../config/index');
 
 module.exports = {
   init() {
@@ -109,7 +110,7 @@ module.exports = {
     obstacle.id = Math.round(+new Date()/1000);
     obstacle.body.moves = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+    this.game.time.events.add(Phaser.Timer.SECOND * Config.obstacles.timer, function () {
       this.removeObstacle(obstacle.id)
     }, this);
 
