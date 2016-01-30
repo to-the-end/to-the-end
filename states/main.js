@@ -2,9 +2,10 @@
 
 'use strict';
 
+const config = require('../config');
+
 const Player = require('../model/Player');
 const Switch = require('../model/Switch');
-const Config = require('../config/index');
 
 module.exports = {
   init() {
@@ -18,8 +19,8 @@ module.exports = {
   create() {
     this.isPlayerNextToSwitch = false;
     this.keys = {
-      cursors: this.input.keyboard.createCursorKeys(),
-      spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+      cursors:  this.input.keyboard.createCursorKeys(),
+      spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
     };
 
     this.keys.spacebar.onDown.add(() => {
@@ -33,6 +34,16 @@ module.exports = {
     // test
     this.switchJson = this.cache.getJSON('level1');
     this.setupSwitches();
+    this.addTimerText();
+    this.addTimer((timer) => {
+      this.updateTimerText(timer);
+      // FIXME: instead of switchJson we need to change to this.currentLevelJson
+      if (timer >= this.switchJson.timer) {
+        this.stopTimer();
+        // TODO: insert loosing condition here
+      }
+    });
+    this.startTimer();
   },
 
   turnOnNearbySwitches() {
@@ -56,31 +67,79 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.obstacleGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
-    var cr = 0;
+    let hasMoved = false;
+
     if (this.keys.cursors.up.isDown) {
       this.player.walkUp();
-      cr++;
-    } 
+      hasMoved = true;
+    }
+
     if (this.keys.cursors.down.isDown) {
       this.player.walkDown();
-      cr++;
-    } 
+      hasMoved = true;
+    }
+
     if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
-      cr++;
-    } 
+      hasMoved = true;
+    }
+
     if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
-      cr++;
-    } 
+      hasMoved = true;
+    }
 
-    if (cr==0){
+    if (hasMoved) {
+      this.player.normalizeVelocity();
+    } else {
       this.player.stop();
     }
   },
 
   render() {
 
+  },
+
+  addTimer(callback) {
+    this.timer = this.time.create(false).loop(Phaser.Timer.SECOND * 1, function () {
+      callback(this.timer.count);
+      this.timer.count += 1;
+    }, this);
+    this.timer.count = 0;
+    console.log(this.timer);
+  },
+
+  startTimer() {
+    this.timer.timer.start();
+  },
+
+  stopTimer() {
+    this.timer.timer.stop();
+  },
+
+  removeTimer() {
+    this.time.events.remove(this.timer);
+  },
+
+  addTimerText() {
+    const style = {
+      font: 'monospace',
+      fontSize: 16,
+      fill: '#fff',
+      stroke: '#000',
+      strokeThickness: 3
+    };
+    this.timerText = this.add.text(0, 0, 'Time left: 0', style);
+    this.timerText.fixedToCamera = true;
+  },
+
+  removeTimerText() {
+    this.timerText.destroy();
+    this.timerText = null;
+  },
+
+  updateTimerText(time) {
+    this.timerText.setText('Time left: ' + time);
   },
 
   setupPlayer() {
@@ -93,7 +152,7 @@ module.exports = {
   setupMap() {
     this.map = this.add.tilemap('map');
 
-    this.map.addTilesetImage('main', 'main-tiles');
+    this.map.addTilesetImage('terrain', 'terrain-tiles');
     this.map.addTilesetImage('collision', 'collision-tiles');
     this.map.addTilesetImage('switches', 'switches-tiles');
     this.map.setCollisionByExclusion([], true, 'collision');
@@ -131,7 +190,7 @@ module.exports = {
   addObstacleFromPointer(pointer) {
     const tilePoint = new Phaser.Point();
 
-    this.collisionLayer.getTileXY(pointer.clientX, pointer.clientY, tilePoint);
+    this.collisionLayer.getTileXY(pointer.worldX, pointer.worldY, tilePoint);
 
     const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
@@ -158,7 +217,7 @@ module.exports = {
 
     obstacle.body.moves = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * Config.obstacles.timer, function () {
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function () {
       this.removeObstacle(obstacle.id)
     }, this);
 
