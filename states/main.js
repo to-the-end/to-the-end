@@ -101,6 +101,14 @@ module.exports = {
       return;
     }
 
+    const collides = this.collidesWithMap(
+      tile.worldX, tile.worldY, tile.width, tile.height
+    );
+
+    if (collides) {
+      return;
+    }
+
     this.addObstacle(tile.worldX, tile.worldY);
   },
 
