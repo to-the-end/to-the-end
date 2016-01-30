@@ -44,7 +44,9 @@ module.exports = {
   },
 
   setupPlayer() {
-    this.player = new Player(this, 0, 0);
+    this.player = new Player(this.game, 0, 0);
+
+    this.add.existing(this.player);
 
     this.camera.follow(this.player);
   },
