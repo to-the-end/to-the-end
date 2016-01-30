@@ -26,10 +26,11 @@ module.exports = {
     this.load.image('switches-tiles', 'assets/tilemaps/tiles/switches.png');
 
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-
-    this.load.image('switch', 'assets/switch.png');
+    this.load.spritesheet('switch', 'assets/lever.png', 32, 32);
 
     this.load.image('obstacle', 'assets/obstacle.png');
+
+    this.loadLevel('level1');
 
     this.load.onFileComplete.add(function handleProgress(progress) {
       progressDisplay.setText(`${progress}%`);
@@ -41,4 +42,8 @@ module.exports = {
 
     this.load.start();
   },
+
+  loadLevel(level) {
+    this.load.json(level, `assets/levels/${level}.json`);
+  }
 };

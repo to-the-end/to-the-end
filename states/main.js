@@ -3,6 +3,7 @@
 'use strict';
 
 const Player = require('../model/Player');
+const Switch = require('../model/Switch');
 const Config = require('../config/index');
 
 module.exports = {
@@ -15,12 +16,37 @@ module.exports = {
   },
 
   create() {
-    this.cursors = this.input.keyboard.createCursorKeys();
+    this.isPlayerNextToSwitch = false;
+    this.keys = {
+      cursors: this.input.keyboard.createCursorKeys(),
+      spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    };
+
+    this.keys.spacebar.onDown.add(() => {
+      this.turnOnNearbySwitches();
+    });
 
     this.setupMap();
-    this.setupSwitches();
     this.setupObstacles();
     this.setupPlayer();
+
+    // test
+    this.switchJson = this.cache.getJSON('level1');
+    this.setupSwitches();
+  },
+
+  turnOnNearbySwitches() {
+    const threshold = 40;
+    const playerX = this.player.x;
+    const playerY = this.player.y;
+
+    this.switchGroup.forEach((s) => {
+      const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
+
+      if (distance < threshold) {
+        s.flick();
+      }
+    });
   },
 
   update() {
@@ -28,21 +54,22 @@ module.exports = {
 
     this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.obstacleGroup);
+    this.physics.arcade.collide(this.player, this.switchGroup);
 
-    var cr=0;
-    if (this.cursors.up.isDown) {
+    var cr = 0;
+    if (this.keys.cursors.up.isDown) {
       this.player.walkUp();
       cr++;
     } 
-    if (this.cursors.down.isDown) {
+    if (this.keys.cursors.down.isDown) {
       this.player.walkDown();
       cr++;
     } 
-    if (this.cursors.left.isDown) {
+    if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
       cr++;
     } 
-    if (this.cursors.right.isDown) {
+    if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
       cr++;
     } 
@@ -57,9 +84,8 @@ module.exports = {
   },
 
   setupPlayer() {
-    this.player = new Player(this.game, 0, 0);
-
-    this.add.existing(this.player);
+    this.player = new Player(this.game, 30, 0);
+    this.player.scale.setTo(.5, .5);
 
     this.camera.follow(this.player);
   },
@@ -90,9 +116,13 @@ module.exports = {
       return tile.index > 0;
     });
 
-    const tile = this.rnd.pick(tiles);
-
-    this.add.sprite(tile.x * tile.width, tile.y * tile.height, 'switch');
+    this.switchGroup = this.add.group();
+    
+    for (var i = 0; i < this.switchJson.switches.length; i++) {
+      var tile = this.rnd.pick(tiles);
+      let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);  
+      this.switchGroup.add(newSwitch);
+    }
   },
 
   setupObstacles() {
