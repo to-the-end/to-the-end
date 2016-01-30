@@ -44,7 +44,9 @@ module.exports = {
   },
 
   setupPlayer() {
-    this.player = new Player(this.game, 0, 0);
+    this.player = new Player(this.game, 30, 0);
+
+    this.player.scale.setTo(.5, .5);
 
     this.add.existing(this.player);
 

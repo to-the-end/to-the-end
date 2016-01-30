@@ -17,10 +17,16 @@ module.exports = {
 
     this.load.image('obstacle', 'assets/obstacle.png');
 
+    loadLevel('level1');
+
     this.load.onLoadComplete.add(function startMain() {
       this.state.start('main');
     }, this);
 
     this.load.start();
   },
+
+  loadLevel(level) {
+    this.load.json(level, `assets/levels/${level}.json`);
+  }
 };
