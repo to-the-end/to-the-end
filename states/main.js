@@ -44,7 +44,7 @@ module.exports = {
   render() {
 
   },
-
+ 
   setupPlayer() {
     this.player = new Player(this.game, 0, 0);
 
@@ -106,10 +106,22 @@ module.exports = {
 
   addObstacle(x, y) {
     const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
-
+    obstacle.id = Math.round(+new Date()/1000);
     obstacle.body.moves = false;
 
+    this.game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+      this.removeObstacle(obstacle.id)
+    }, this);
+
     this.obstacleGroup.add(obstacle);
+  },
+
+  removeObstacle(id) {
+    this.obstacleGroup.forEach((item) => {
+      if (item.id === id) {
+        item.destroy();
+      }
+    });
   },
 
   makePhysicsSprite(x, y, asset) {
