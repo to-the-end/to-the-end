@@ -6,6 +6,7 @@ const config = require('../config');
 
 const Player = require('../model/Player');
 const Switch = require('../model/Switch');
+const Chain = require('../model/Chain');
 
 module.exports = {
   init() {
@@ -191,6 +192,8 @@ module.exports = {
   setupPlayer() {
     this.player = new Player(this.game, 30, 0);
     this.player.scale.setTo(.5, .5);
+
+    this.chain = new Chain(this.game, 50, 50);
 
     this.camera.follow(this.player);
   },
