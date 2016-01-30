@@ -78,6 +78,7 @@ module.exports = {
     let initialTimeout = 1000;
     let incrementalTimeout = 1000;
 
+    // FIX ME: won't work for ingame pause, use Phaser timer instead
     setTimeout(() => {
       this.order.forEach((id, index) => {
         setTimeout(() => {
