@@ -28,6 +28,13 @@ module.exports = {
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
     this.load.spritesheet('switch', 'assets/lever.png', 32, 32);
 
+    // Background music
+    this.load.audio('intro', 'assets/audio/soundtrack/title-or-intro.wav');
+
+    // Sfx 
+    this.load.audio('switch', 'assets/audio/sfx/switches/switch1.wav');
+    this.load.audio('puzzleCompleteMinor', 'assets/audio/sfx/puzzlecomplete/minor.wav');
+
     this.load.image('obstacle', 'assets/obstacle.png');
 
     this.loadLevel('level1');
