@@ -97,6 +97,8 @@ module.exports = {
 
     const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
+    // FIXME: This should be a check against existing switches,
+    //        not places they could go.
     if (tile.index > 0) {
       return;
     }
@@ -156,5 +158,5 @@ module.exports = {
     }
 
     return collide;
-  }
+  },
 };
