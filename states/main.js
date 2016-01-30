@@ -15,13 +15,14 @@ module.exports = {
   },
 
   create() {
+    this.isPlayerNextToSwitch = false;
     this.keys = {
       cursors: this.input.keyboard.createCursorKeys(),
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
     };
 
     this.keys.spacebar.onDown.add((e) => {
-      
+      this.turnOnNearbySwitches();
     });
 
     this.setupMap();
@@ -32,6 +33,20 @@ module.exports = {
     // test
     var phaserJSON = this.cache.getJSON('level1');
     console.log(phaserJSON);
+  },
+
+  turnOnNearbySwitches() {
+    const threshold = 40;
+    const playerX = this.player.x;
+    const playerY = this.player.y;
+
+    this.switchGroup.forEach((s) => {
+      const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
+
+      if (distance < threshold) {
+        s.flick();
+      }
+    });
   },
 
   update() {

@@ -25,12 +25,10 @@ class Switch extends Phaser.Sprite {
   }
 
   flick() {
-    this.on = !this.on;
-
     if (this.isOn) {
-      this.animations.play('on');
+      this.off();
     } else {
-      this.animations.play('off');
+      this.on();
     }
   }
 }
