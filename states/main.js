@@ -43,6 +43,10 @@ module.exports = {
     });
     this.startTimer();
     this.showSolution();
+    this.levelMusic =  this.add.audio('intro', 1, true);
+    this.levelMusic.play();
+    this.puzzleCompleteSound = this.add.audio('puzzleCompleteMinor');
+    this.puzzleComplete = false;
   },
 
   enableSpaceBarListener() {
@@ -138,6 +142,11 @@ module.exports = {
     }
 
     if (this.score == this.order.length) {
+      if (!this.puzzleComplete){
+        this.puzzleComplete = true;
+        this.puzzleCompleteSound.play();
+      }
+
       this.add.text(16, 16, 'You have won!', { fontSize: '32px', fill: '#000' });
     }
   },
