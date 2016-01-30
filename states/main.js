@@ -134,15 +134,15 @@ module.exports = {
     }
     return { x, y };
   },
-  
+
   // Accepts values in world coordinates
   doCollideWithMap(x, y, width, height) {
     let tiles = this.collisionLayer.getTiles(x, y, width, height);
     tiles = tiles.map(tile => tile.index);
-    
+
     let collide = false;
     for (let i = 0; i < tiles.length; i++) {
-      if (tile[i] > 0) {
+      if (tiles[i] > 0) {
         collide = true;
       }
     }
