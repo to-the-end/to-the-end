@@ -23,6 +23,7 @@ module.exports = {
     this.load.tilemap('map', 'assets/tilemaps/main.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('main-tiles', 'assets/tilemaps/tiles/main.png');
     this.load.image('collision-tiles', 'assets/tilemaps/tiles/collision.png');
+    this.load.image('switches-tiles', 'assets/tilemaps/tiles/switches.png');
 
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 

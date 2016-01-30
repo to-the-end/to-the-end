@@ -57,10 +57,14 @@ module.exports = {
 
     map.addTilesetImage('main', 'main-tiles');
     map.addTilesetImage('collision', 'collision-tiles');
+    map.addTilesetImage('switches', 'switches-tiles');
     map.setCollisionByExclusion([], true, 'collision');
 
     this.collisionLayer = map.createLayer('collision');
     this.collisionLayer.alpha = 0;
+
+    this.switchesLayer = map.createLayer('switches');
+    this.switchesLayer.alpha = 0;
 
     const layer = map.createLayer('terrain');
 
