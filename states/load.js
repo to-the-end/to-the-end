@@ -17,7 +17,7 @@ module.exports = {
 
     this.load.image('obstacle', 'assets/obstacle.png');
 
-    loadLevel('level1');
+    this.loadLevel('level1');
 
     this.load.onLoadComplete.add(function startMain() {
       this.state.start('main');
