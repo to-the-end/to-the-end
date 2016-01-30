@@ -56,20 +56,9 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.obstacleGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
-    var movecnt = 0;
-    if (this.keys.cursors.up.isDown) {
-      this.player.walkUp();
-      movecnt++;
-    } 
-    if (this.keys.cursors.down.isDown) {
-      this.player.walkDown();
-      movecnt++;
-    }
     if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
-      movecnt++;
-    } 
-    if (this.keys.cursors.right.isDown) {
+    } else if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
     } else if (this.keys.cursors.up.isDown) {
       this.player.walkUp();
