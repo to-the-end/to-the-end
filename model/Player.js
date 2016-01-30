@@ -18,21 +18,25 @@ class Player extends Phaser.Sprite {
   }
 
   walkLeft() {
-    this.body.velocity.x = -150;
+    this.body.velocity.x = -1;
     this.animations.play('left');
   }
 
   walkRight() {
-    this.body.velocity.x = 150;
+    this.body.velocity.x = 1;
     this.animations.play('right');
   }
 
   walkUp() {
-    this.body.velocity.y = -150;
+    this.body.velocity.y = -1;
   }
 
   walkDown() {
-    this.body.velocity.y = 150;
+    this.body.velocity.y = 1;
+  }
+
+  normalizeVelocity() {
+    this.body.velocity.normalize().multiply(150, 150);
   }
 
   stop() {
