@@ -34,6 +34,16 @@ module.exports = {
     // test
     this.switchJson = this.cache.getJSON('level1');
     this.setupSwitches();
+    this.addTimerText();
+    this.addTimer((timer) => {
+      this.updateTimerText(timer);
+      // FIXME: instead of switchJson we need to change to this.currentLevelJson
+      if (timer >= this.switchJson.timer) {
+        this.stopTimer();
+        // TODO: insert loosing condition here
+      }
+    });
+    this.startTimer();
   },
 
   turnOnNearbySwitches() {
@@ -82,6 +92,48 @@ module.exports = {
 
   render() {
 
+  },
+
+  addTimer(callback) {
+    this.timer = this.time.create(false).loop(Phaser.Timer.SECOND * 1, function () {
+      callback(this.timer.count);
+      this.timer.count += 1;
+    }, this);
+    this.timer.count = 0;
+    console.log(this.timer);
+  },
+
+  startTimer() {
+    this.timer.timer.start();
+  },
+
+  stopTimer() {
+    this.timer.timer.stop();
+  },
+
+  removeTimer() {
+    this.time.events.remove(this.timer);
+  },
+
+  addTimerText() {
+    const style = {
+      font: 'monospace',
+      fontSize: 16,
+      fill: '#fff',
+      stroke: '#000',
+      strokeThickness: 3
+    };
+    this.timerText = this.add.text(0, 0, 'Time left: 0', style);
+    this.timerText.fixedToCamera = true;
+  },
+
+  removeTimerText() {
+    this.timerText.destroy();
+    this.timerText = null;
+  },
+
+  updateTimerText(time) {
+    this.timerText.setText('Time left: ' + time);
   },
 
   setupPlayer() {
