@@ -20,6 +20,10 @@ module.exports = {
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
     };
 
+    this.keys.spacebar.onDown.add((e) => {
+      
+    });
+
     this.setupMap();
     this.setupSwitches();
     this.setupObstacles();
@@ -35,6 +39,7 @@ module.exports = {
 
     this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.obstacleGroup);
+    this.physics.arcade.collide(this.player, this.switchGroup);
 
     if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
@@ -44,8 +49,6 @@ module.exports = {
       this.player.walkUp();
     } else if (this.keys.cursors.down.isDown) {
       this.player.walkDown();
-    } else if (this.keys.spacebar.isDown) {
-      
     } else {
       this.player.stop();
     }
@@ -90,7 +93,10 @@ module.exports = {
 
     const tile = this.rnd.pick(tiles);
 
-    let lever = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);
+    let switch1 = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);
+
+    this.switchGroup = this.add.group();
+    this.switchGroup.add(switch1);
   },
 
   setupObstacles() {
