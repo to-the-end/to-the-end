@@ -111,4 +111,34 @@ module.exports = {
 
     return sprite;
   },
+
+  // Accepts values in world coordinates
+  getAvailableSpot(width, height, areaX, areaY, areaWidth, areaHeight) {
+    let x;
+    let y;
+    let available = false;
+    while (!available) {
+      x = this.rnd.integerInRange(areaX, areaX + areaWidth - width);
+      y = this.rnd.integerInRange(areaY, areaY + areaHeight - height);
+      if (!this.doCollideWithMap(x, y, width, height)) {
+        available = true;
+      }
+    }
+    return { x, y };
+  },
+  
+  // Accepts values in world coordinates
+  doCollideWithMap(x, y, width, height) {
+    let tiles = this.collisionLayer.getTiles(x, y, width, height);
+    tiles = tiles.map(tile => tile.index);
+    
+    let collide = false;
+    for (let i = 0; i < tiles.length; i++) {
+      if (tile[i] > 0) {
+        collide = true;
+      }
+    }
+
+    return collide;
+  }
 };
