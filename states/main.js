@@ -60,19 +60,19 @@ module.exports = {
     if (this.keys.cursors.up.isDown) {
       this.player.walkUp();
       cr++;
-    } 
+    }
     if (this.keys.cursors.down.isDown) {
       this.player.walkDown();
       cr++;
-    } 
+    }
     if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
       cr++;
-    } 
+    }
     if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
       cr++;
-    } 
+    }
 
     if (cr==0){
       this.player.stop();
@@ -93,7 +93,7 @@ module.exports = {
   setupMap() {
     this.map = this.add.tilemap('map');
 
-    this.map.addTilesetImage('main', 'main-tiles');
+    this.map.addTilesetImage('terrain', 'terrain-tiles');
     this.map.addTilesetImage('collision', 'collision-tiles');
     this.map.addTilesetImage('switches', 'switches-tiles');
     this.map.setCollisionByExclusion([], true, 'collision');
@@ -117,10 +117,10 @@ module.exports = {
     });
 
     this.switchGroup = this.add.group();
-    
+
     for (var i = 0; i < this.switchJson.switches.length; i++) {
       var tile = this.rnd.pick(tiles);
-      let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);  
+      let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height);
       this.switchGroup.add(newSwitch);
     }
   },
