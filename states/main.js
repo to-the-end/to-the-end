@@ -143,12 +143,10 @@ module.exports = {
   },
 
   pullSwitch(id) {
-    this.switchGroup.forEach((s) => {
-      if (id === s.getId()) {
-        s.on();
-        s.off();
-      }
-    });
+    const _switch = this.getSwitch(id);
+
+    _switch.on();
+    _switch.off();
   },
 
   update() {
@@ -206,34 +204,24 @@ module.exports = {
     } else {
       this.player.stop();
     }
-    if (this.isRopeActive){
-        var vx = this.player.body.velocity.x;
-        var vy = this.player.body.velocity.y;
 
-        const tilePoint = new Phaser.Point();
-        this.collisionLayer.getTileXY(this.game.input.mousePointer.worldX, this.game.input.mousePointer.worldY, tilePoint);
-        const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
-//         console.log(tile.worldX);
-//         console.log(tile.worldY);
+    if (this.isRopeActive) {
+      const vx = this.player.body.velocity.x;
+      const vy = this.player.body.velocity.y;
 
-         console.log(this.player.body.center);
-        var dirx = tile.worldX - this.player.body.center.x;
-        var diry = tile.worldY - this.player.body.center.y;
-//        console.log(dirx);
-//        console.log(diry);
+      const tilePoint = new Phaser.Point();
 
-        var s = (vx*dirx+vy*diry)/120000.;
-//        console.log(s);
-        if (s>0){
-          s = 0;
-        }
-        if (s<-0.9){
-          s = -0.9;
-        }
-        //console.log(s);
-        this.player.body.velocity.x = vx*(1+s);
-        this.player.body.velocity.y = vy*(1+s);
-                
+      this.collisionLayer.getTileXY(this.game.input.mousePointer.worldX, this.game.input.mousePointer.worldY, tilePoint);
+
+      const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+
+      const dirx = tile.worldX - this.player.body.center.x;
+      const diry = tile.worldY - this.player.body.center.y;
+
+      const s = this.math.clamp((vx * dirx + vy * diry) / 120000, -0.9, 0);
+
+      this.player.body.velocity.x += vx * s;
+      this.player.body.velocity.y += vy * s;
     }
   },
 
@@ -342,12 +330,12 @@ module.exports = {
     const tilePoint = new Phaser.Point();
     this.collisionLayer.getTileXY(pointer.worldX, pointer.worldY, tilePoint);
     const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
-  
+
     const playerX = this.player.body.center.x;
-    const playerY = this.player.body.center.y;    
+    const playerY = this.player.body.center.y;
     const distance = Phaser.Math.distance( playerX, playerY, pointer.worldX, pointer.worldY);
     const threshold = 30;
-        
+
     if ((!this.isRopeActive) && (distance>threshold)){
         // FIXME: This should be a check against existing switches,
         //        not places they could go.
@@ -371,7 +359,7 @@ module.exports = {
       this.game.time.events.add(Phaser.Timer.SECOND * 2, function () {
         this.isRopeActive = false;
         console.log('deactivated rope')
-      }, this);             
+      }, this);
     }
   },
 
