@@ -16,6 +16,8 @@ module.exports = {
     }, this);
 
     this.dialogueGroup = this.add.group();
+    this.music = this.add.audio('intro-scene');
+    this.music.play();
 
     this.playDialogue(0);
   },
@@ -148,6 +150,7 @@ module.exports = {
   },
 
   endScene() {
+    this.music.stop();
     this.state.start('main', true, false, this.sceneId);
   },
 };

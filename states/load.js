@@ -32,6 +32,7 @@ module.exports = {
 
     // Background music
     this.load.audio('intro', 'assets/audio/soundtrack/title-or-intro.wav');
+    this.load.audio('intro-scene', 'assets/audio/soundtrack/intro-strings.wav');
 
     // Sfx
     this.load.audio('leftFootstep', 'assets/audio/sfx/footsteps/left.wav');
