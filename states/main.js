@@ -22,12 +22,8 @@ module.exports = {
     this.keys = {
       cursors:  this.input.keyboard.createCursorKeys(),
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
-    };      
+    };
 
-    this.keys.spacebar.onDown.add(() => {
-     this.eatWall();
-    });
-        
     this.score = 0;
 
     this.setupMap();
@@ -54,14 +50,6 @@ module.exports = {
     this.puzzleComplete = false;
   },
 
-  enableSpaceBarListener() {
-    this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
-  },
-
-  disableSpaceBarListener() {
-    this.keys.spacebar.onDown.remove(this.turnOnNearbySwitches, this);
-  },
-
   turnOnNearbySwitches() {
     const threshold = 40;
     const playerX = this.player.x;
@@ -82,24 +70,59 @@ module.exports = {
   },
 
   showSolution() {
-    this.disableSpaceBarListener();
+    this.disableInput();
 
-    let initialTimeout = 1000;
-    let incrementalTimeout = 1000;
+    this.tweenCameraToSwitch(0);
+  },
 
-    // FIX ME: won't work for ingame pause, use Phaser timer instead
-    setTimeout(() => {
-      this.order.forEach((id, index) => {
-        setTimeout(() => {
-          this.pullSwitch(id);
+  tweenCameraToSwitch(index) {
+    const id = this.order[index];
 
-          // if last iteration enable spacebar again
-          if (this.order.length === index + 1) {
-            this.enableSpaceBarListener();
-          }
-        }, incrementalTimeout * index);
-      });
-    }, initialTimeout);
+    if (id === undefined) {
+      this.tweenCameraToPlayer();
+
+      return;
+    }
+
+    const _switch = this.getSwitch(id);
+
+    if (!_switch) {
+      return;
+    }
+
+    this.camera.unfollow();
+
+    this.tweenCamera(_switch, Phaser.Timer.SECOND * 1.5)
+      .onComplete.add(function onComplete() {
+        this.pullSwitch(id);
+
+        this.time.events.add(Phaser.Timer.SECOND / 2, function tweenToNext() {
+          this.tweenCameraToSwitch(index + 1);
+        }, this);
+      }.bind(this));
+  },
+
+  tweenCameraToPlayer() {
+    this.tweenCamera(this.player, 750).onComplete.add(function tweenToNext() {
+      this.camera.follow(this.player);
+      this.enableInput();
+    }.bind(this));
+  },
+
+  tweenCamera(target, duration) {
+    return this.add.tween(this.camera).to(
+      {
+        x: target.x - this.camera.width / 2,
+        y: target.y - this.camera.height / 2,
+      },
+      duration,
+      Phaser.Easing.Quadratic.InOut,
+      true
+    );
+  },
+
+  getSwitch(id) {
+    return this.switchGroup.iterate('id', id, Phaser.Group.RETURN_CHILD);
   },
 
   pullSwitch(id) {
@@ -118,6 +141,25 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.obstacleGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
+    if (this.inputEnabled) {
+      this.movePlayer();
+    }
+
+    if (this.score === this.order.length) {
+      if (!this.puzzleComplete) {
+        this.puzzleComplete = true;
+        this.puzzleCompleteSound.play();
+      }
+
+      this.add.text(16, 16, 'You have won!', { fontSize: '32px', fill: '#000' });
+    }
+  },
+
+  render() {
+
+  },
+
+  movePlayer() {
     let hasMoved = false;
 
     if (this.keys.cursors.up.isDown) {
@@ -145,28 +187,16 @@ module.exports = {
     } else {
       this.player.stop();
     }
-
-    if (this.score == this.order.length) {
-      if (!this.puzzleComplete){
-        this.puzzleComplete = true;
-        this.puzzleCompleteSound.play();
-      }
-
-      this.add.text(16, 16, 'You have won!', { fontSize: '32px', fill: '#000' });
-    }
-  },
-
-  render() {
-
   },
 
   addTimer(callback) {
     this.timer = this.time.create(false).loop(Phaser.Timer.SECOND * 1, function () {
       callback(this.timer.count);
-      this.timer.count += 1;
+
+      this.timer.count++;
     }, this);
+
     this.timer.count = 0;
-    console.log(this.timer);
   },
 
   startTimer() {
@@ -183,12 +213,15 @@ module.exports = {
 
   addTimerText() {
     const style = {
-      font: 'monospace',
+      font:     'monospace',
       fontSize: 16,
+
       fill: '#fff',
-      stroke: '#000',
-      strokeThickness: 3
+
+      stroke:          '#000',
+      strokeThickness: 3,
     };
+
     this.timerText = this.add.text(0, 0, 'Time left: 0', style);
     this.timerText.fixedToCamera = true;
   },
@@ -203,9 +236,10 @@ module.exports = {
   },
 
   setupPlayer() {
-    this.player = new Player(this.game, this.keys.cursors, this.world.centerX, this.world.centerY);
+    this.player = new Player(this.game, this.world.centerX, this.world.centerY);
 
     this.camera.follow(this.player);
+    this.camera.update();
   },
 
   setupMap() {
@@ -243,7 +277,6 @@ module.exports = {
 
   setupObstacles() {
     this.obstacleGroup = this.add.group();
-    this.input.onUp.add(this.addObstacleFromPointer, this);
   },
 
   addObstacleFromPointer(pointer) {
@@ -317,9 +350,11 @@ module.exports = {
   // Accepts values in world coordinates
   collidesWithMap(x, y, width, height) {
     let tiles = this.collisionLayer.getTiles(x, y, width, height);
+
     tiles = tiles.map(tile => tile.index);
 
     let collide = false;
+
     for (let i = 0; i < tiles.length; i++) {
       if (tiles[i] > 0) {
         collide = true;
@@ -329,28 +364,57 @@ module.exports = {
     return collide;
   },
 
-  eatWall(){    
+  eatWall() {
     const playerX = this.player.x;
     const playerY = this.player.y;
 
-    
-    var cr=0;
+    let cr = 0;
+
     const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
       const threshold = 80;
-      const distance = Phaser.Math.distance( playerX, playerY, obstacle.x, obstacle.y);
-      if (distance < threshold*4) {  
-        cr++;  
+      const distance = Phaser.Math.distance(
+        playerX, playerY, obstacle.x, obstacle.y
+      );
+
+      if (distance < threshold * 4) {
+        cr++;
         return true;
-      }  
+      }
+
       return false;
     });
 
     obstaclesToDestroy.removeAll(true);
-    const k=0.8;    
-    this.player.scale.setTo(this.player.scale.x+cr*k, this.player.scale.y+cr*k);
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function () {
-      this.player.scale.setTo(this.player.scale.x-cr*k, this.player.scale.y-cr*k);
-    }, this);    
+
+    const k = 0.8;
+
+    this.player.scale.set(
+      this.player.scale.x + cr * k, this.player.scale.y + cr * k
+    );
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function() {
+      this.player.scale.set(
+        this.player.scale.x - cr * k, this.player.scale.y - cr * k
+      );
+    }, this);
   },
 
+  enableInput() {
+    this.inputEnabled = true;
+
+    this.input.onUp.add(this.addObstacleFromPointer, this);
+
+    // FIXME: Fix this conflict!
+    this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
+    this.keys.spacebar.onDown.add(this.eatWall, this);
+
+    this.player.enableInput(this.keys.cursors);
+  },
+
+  disableInput() {
+    this.inputEnabled = false;
+
+    this.input.onUp.removeAll();
+    this.keys.spacebar.onDown.removeAll();
+    this.player.disableInput(this.keys.cursors);
+  },
 };

@@ -2,7 +2,7 @@
 
 class Player extends Phaser.Sprite {
 
-  constructor(game, cursors, x, y) {
+  constructor(game, x, y) {
     super(game, x, y, 'dude');
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
@@ -12,17 +12,25 @@ class Player extends Phaser.Sprite {
     game.add.existing(this);
     this.leftFootstepSound = game.add.audio('leftFootstep');
     this.rightFootstepSound = game.add.audio('rightFootstep');
+  }
 
+  enableInput(cursors) {
     // To determine whether to restart the sound or not.
     this.walkingSoundIsPlaying = false;
 
-    Object.keys(cursors).forEach((key,index) => {      
-        cursors[key].onDown.add(() => {
-          if (!this.walkingSoundIsPlaying){
-            this.isWalking = true;
-            this.startWalkingSound();
-          }
-        });
+    Object.keys(cursors).forEach((key) => {
+      cursors[key].onDown.add(() => {
+        if (!this.walkingSoundIsPlaying) {
+          this.isWalking = true;
+          this.startWalkingSound();
+        }
+      });
+    });
+  }
+
+  disableInput(cursors) {
+    Object.keys(cursors).forEach((key) => {
+      cursors[key].onDown.removeAll();
     });
   }
 
@@ -36,13 +44,13 @@ class Player extends Phaser.Sprite {
       if (this.isWalking) {
         this.rightFootstepSound.play();
         this.walkingSoundIsPlaying = true;
-        
+
         this.rightFootstepSound.onStop.addOnce(() => {
           this.walkingSoundIsPlaying = false;
 
           if (this.isWalking) {
             this.startWalkingSound();
-          } 
+          }
         });
       }
     });
