@@ -517,19 +517,22 @@ module.exports = {
 
     obstaclesToDestroy.removeAll(true);
 
-    var scaleK = cr*0.8;
+    let scaleK = cr * 0.8;
 
-    if (this.player.scale.x + scaleK>7){
-      scaleK = 7-this.player.scale.x;
+    if (this.player.scale.x + scaleK > 7){
+      scaleK = 7 - this.player.scale.x;
     }
 
-    this.player.scale.set(
-      this.player.scale.x + scaleK, this.player.scale.y + scaleK
-    );
+    this.add.tween(this.player.scale).to({
+      x: this.player.scale.x + scaleK,
+      y: this.player.scale.y + scaleK,
+    }, 200, Phaser.Easing.LINEAR, true);
+
     this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-      this.player.scale.set(
-        this.player.scale.x - scaleK, this.player.scale.y - scaleK
-      );
+      this.add.tween(this.player.scale).to({
+        x: this.player.scale.x - scaleK,
+        y: this.player.scale.y - scaleK,
+      }, 200, Phaser.Easing.LINEAR, true);
     }, this);
   },
 
