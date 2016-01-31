@@ -23,10 +23,8 @@ class Player extends Phaser.Sprite {
 
     Object.keys(cursors).forEach((key) => {
       cursors[key].onDown.add(() => {
-        if (!this.walkingSoundIsPlaying) {
-          this.isWalking = true;
-          this.startWalkingSound();
-        }
+        this.isWalking = true;
+        this.startWalkingSound();
       });
     });
   }
@@ -38,9 +36,11 @@ class Player extends Phaser.Sprite {
   }
 
   startWalkingSound() {
-    this.leftFootstepSound.play();
-    this.walkingSoundIsPlaying = true;
-
+    if (!this.walkingSoundIsPlaying){
+      this.leftFootstepSound.play();
+      this.walkingSoundIsPlaying = true;
+    }
+    
     this.leftFootstepSound.onStop.addOnce(() => {
       this.walkingSoundIsPlaying = false;
 
