@@ -416,8 +416,8 @@ module.exports = {
             const alpha = i / (this.points.length - 1);
             const beta = 1 - alpha;
 
-            this.points[i].x = (tile.worldX - xx) * beta + Math.sin(i * 5 + count) * 20;
-            this.points[i].y = (tile.worldY - yy) * beta + Math.cos(i * 5 + count) * 20;
+            this.points[i].x = (tile.worldX - xx) * beta;
+            this.points[i].y = (tile.worldY - yy) * beta;
           }
         };
       }
