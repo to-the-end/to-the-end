@@ -2,7 +2,22 @@
   "dialogue": [
     {
       "position": "tl",
-      "text": "Still more testing!"
+      "text": "I caught up with the girl."
+    },
+    {
+      "position": "bl",
+      "text": "I looked at her and saw her face – although to me it was blank like all the others, but for some reason I felt there was something different about her... I kept staring and she stared back, blank and expressionless."
+    },
+    {
+      "clear": true,
+      "position": "tl",
+      "text": "She tucked her hair behind her ear, and for a moment, I knew her. The way she moved her hand, and her hair fell immediately back into her eyes. It called up something that made me feel fiercely about her, that I'd let her down, that I had to protect her. Who was she?",
+      "image": "scene-1-back-0"
+    },
+    {
+      "clear": true,
+      "position": "tl",
+      "text": "Before I could ask, she had turned and run again. I started after her..."
     }
   ]
 }
