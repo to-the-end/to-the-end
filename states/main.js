@@ -338,7 +338,7 @@ module.exports = {
     const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
       const threshold = 80;
       const distance = Phaser.Math.distance( playerX, playerY, obstacle.x, obstacle.y);
-      if (distance < threshold) {  
+      if (distance < threshold*4) {  
         cr++;  
         return true;
       }  
@@ -346,7 +346,7 @@ module.exports = {
     });
 
     obstaclesToDestroy.removeAll(true);
-    const k=0.2;    
+    const k=0.8;    
     this.player.scale.setTo(this.player.scale.x+cr*k, this.player.scale.y+cr*k);
     this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function () {
       this.player.scale.setTo(this.player.scale.x-cr*k, this.player.scale.y-cr*k);
