@@ -13,26 +13,36 @@ class Player extends Phaser.Sprite {
     this.leftFootstepSound = game.add.audio('leftFootstep');
     this.rightFootstepSound = game.add.audio('rightFootstep');
 
-    Object.keys(cursors).forEach((key,index) => {
-      cursors[key].onDown.add(() => {
-        this.isWalking = true;
-        this.startWalkingSound();
-      });
+    // To determine whether to restart the sound or not.
+    this.walkingSoundIsPlaying = false;
+
+    Object.keys(cursors).forEach((key,index) => {      
+        cursors[key].onDown.add(() => {
+          if (!this.walkingSoundIsPlaying){
+            this.isWalking = true;
+            this.startWalkingSound();
+          }
+        });
     });
   }
 
   startWalkingSound() {
     this.leftFootstepSound.play();
+    this.walkingSoundIsPlaying = true;
 
     this.leftFootstepSound.onStop.addOnce(() => {
+      this.walkingSoundIsPlaying = false;
 
       if (this.isWalking) {
         this.rightFootstepSound.play();
+        this.walkingSoundIsPlaying = true;
+        
         this.rightFootstepSound.onStop.addOnce(() => {
+          this.walkingSoundIsPlaying = false;
 
           if (this.isWalking) {
             this.startWalkingSound();
-          }
+          } 
         });
       }
     });
