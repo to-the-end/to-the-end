@@ -3,7 +3,7 @@
 class Player extends Phaser.Sprite {
 
   constructor(game, x, y) {
-    super(game, x, y, 'character');
+    super(game, x, y, 'character', 130);
     this.anchor.set(0.5);
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
@@ -93,8 +93,8 @@ class Player extends Phaser.Sprite {
 
   stop() {
     this.resetVelocity();
-    this.animations.stop();
     this.stopWalkingSound();
+    this.frame = 130;
   }
 }
 
