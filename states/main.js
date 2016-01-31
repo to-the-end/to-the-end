@@ -282,7 +282,19 @@ module.exports = {
   },
 
   setupPlayer() {
-    this.player = new Player(this.game, this.world.centerX, this.world.centerY);
+    let tiles = this.playerLayer.getTiles(
+      0, 0, this.world.width, this.world.height
+    );
+
+    tiles = tiles.filter(function isValid(tile) {
+      return tile.index > 0;
+    });
+
+    const tile = this.rnd.pick(tiles);
+
+    this.player = new Player(
+      this.game, (tile.x + 0.5) * tile.width,  (tile.y + 0.5) * tile.height
+    );
 
     this.camera.follow(this.player);
     this.camera.update();
@@ -294,6 +306,7 @@ module.exports = {
     this.map.addTilesetImage('terrain', 'terrain-tiles');
     this.map.addTilesetImage('collision', 'collision-tiles');
     this.map.addTilesetImage('switches', 'switches-tiles');
+    this.map.addTilesetImage('player', 'player-tiles');
     this.map.setCollisionByExclusion([], true, 'collision');
 
     this.collisionLayer = this.map.createLayer('collision');
@@ -301,6 +314,9 @@ module.exports = {
 
     this.switchesLayer = this.map.createLayer('switches');
     this.switchesLayer.alpha = 0;
+
+    this.playerLayer = this.map.createLayer('player');
+    this.playerLayer.alpha = 0;
 
     this.terrainLayer = this.map.createLayer('terrain');
     this.terrainLayer.resizeWorld();
