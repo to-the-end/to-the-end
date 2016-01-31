@@ -10,6 +10,8 @@ module.exports = {
   create() {
     this.loadScene(this.sceneId);
 
+    this.dialogueGroup = this.add.group();
+
     this.playDialogue(0);
   },
 
@@ -34,6 +36,10 @@ module.exports = {
       this.endScene();
 
       return;
+    }
+
+    if (dialogue.clear) {
+      this.dialogueGroup.removeAll(true);
     }
 
     let x;
@@ -67,6 +73,8 @@ module.exports = {
 
     text.anchor.set(anchorX, anchorY);
     text.fixedToCamera = true;
+
+    this.dialogueGroup.add(text);
 
     let i = 0;
 
