@@ -28,7 +28,7 @@ module.exports = {
     this.load.spritesheet(
       'character', 'assets/character/long-white.png', 64, 64
     );
-    this.load.spritesheet('switch', 'assets/lever.png', 32, 32);
+    this.load.spritesheet('switch', 'assets/torch.png', 128, 128);
 
     // Background music
     this.load.audio('intro', 'assets/audio/soundtrack/title-or-intro.wav');

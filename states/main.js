@@ -74,7 +74,7 @@ module.exports = {
   },
 
   turnOnNearbySwitches() {
-    const threshold = 80;
+    const threshold = 200;
     const playerX = this.player.x;
     const playerY = this.player.y;
 
@@ -228,7 +228,7 @@ module.exports = {
       console.log("button pressed");
 
       joystick.buttonPressed = false;
-      
+
       this.turnOnNearbySwitches();
       this.eatWall();
     }
@@ -242,7 +242,7 @@ module.exports = {
       this.player.walkRight();
       hasMoved = true;
     }
-    
+
     if (this.keys.cursors.up.isDown || (joystick.value && joystick.value[0] > 200)) {
       if (hasMoved){
         this.player.body.velocity.y--;
