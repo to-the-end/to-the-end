@@ -9,6 +9,11 @@ module.exports = {
 
   create() {
     this.loadScene(this.sceneId);
+    let enter = this.input.keyboard.addKey(13);
+    enter.onDown.add(function () {
+      this.endScene();
+      enter.onDown.removeAll();
+    }, this);
 
     this.dialogueGroup = this.add.group();
 
