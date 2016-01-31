@@ -584,6 +584,12 @@ module.exports = {
       id++;
     }
 
-    this.state.start('scene', true, false, id);
+    let state = 'scene';
+
+    if (id > 0) {
+      state = 'end';
+    }
+
+    this.state.start(state, true, false, id);
   },
 };
