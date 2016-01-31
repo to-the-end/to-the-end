@@ -6,15 +6,14 @@ let mainWindow;
 
 const createWindow = function createWindow() {
   mainWindow = new electron.BrowserWindow({
-    title:  'GGJ 16',
-    width:  1600,
-    height: 900,
-    // fullscreen: true,
-    // frame:      false,
+    title:      'To The End',
+    width:      1600,
+    height:     900,
+    fullscreen: true,
+    frame:      false,
   });
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-  mainWindow.openDevTools();
 
   mainWindow.on('closed', function onClosed() {
     mainWindow = null;
