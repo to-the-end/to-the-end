@@ -142,7 +142,7 @@ module.exports = {
       }
 
       if (i >= repetitions) {
-        this.time.events.add(Phaser.Timer.SECOND * 2, function playNext() {
+        this.time.events.add(Phaser.Timer.SECOND * 3, function playNext() {
           this.playDialogue(index + 1);
         }, this);
       }
