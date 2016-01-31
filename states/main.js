@@ -393,7 +393,7 @@ module.exports = {
           points.push(new Phaser.Point(i * length, 0));
         }
 
-        this.rope = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'snake', null, points);
+        this.rope = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'chain', null, points);
 
         const state = this;
 
