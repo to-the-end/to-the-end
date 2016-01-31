@@ -40,8 +40,11 @@ module.exports = {
       this.load.audio('switch' + x, 'assets/audio/sfx/switches/switch' + (x + 1) + '.wav');
     }
 
+    for (var x = 0; x < 3; x++){
+      this.load.audio('barrier' + x, 'assets/audio/sfx/antagonist-actions/barrier-placement/barrierplacement' + (x + 1) + '.wav');
+    }
+
     this.load.audio('puzzleCompleteMinor', 'assets/audio/sfx/puzzlecomplete/minor.wav');
-    this.load.audio('barrierPlacement', 'assets/audio/sfx/antagonist-actions/barrier-placement.wav');
 
     this.load.image('obstacle', 'assets/obstacle.png');
 

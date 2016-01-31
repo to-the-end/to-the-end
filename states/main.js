@@ -49,13 +49,13 @@ module.exports = {
     this.showSolution();
   },
 
-  buildSwitchesSoundCollection() {
-    var switches = [];
-    for (var x = 0; x < 7; x++) {
-      switches.push(this.add.audio('switch' + x));
+  buildSoundCollection(componentName, numberOfAudioClips){
+    var sounds = [];
+    for (var x = 0; x < numberOfAudioClips; x++){
+      sounds.push(this.add.audio(componentName + x));
     }
 
-    return switches;
+    return sounds;
   },
 
   setupAudio() {
@@ -63,8 +63,9 @@ module.exports = {
     this.levelMusic.play();
     this.puzzleCompleteSound = this.add.audio('puzzleCompleteMinor');
     this.puzzleComplete = false;
-    this.barrierPlacementSound = this.add.audio('barrierPlacement');
-    this.switchSounds = this.buildSwitchesSoundCollection();
+    this.switchSounds = this.buildSoundCollection('switch', 7);
+    this.barrierSounds = this.buildSoundCollection('barrier', 3);
+    this.barrierSoundIndex = 0;
   },
 
   turnOnNearbySwitches() {
@@ -368,7 +369,7 @@ module.exports = {
   },
 
   addObstacle(x, y) {
-    this.barrierPlacementSound.play();
+    this.playBarrierSound();
     const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
     obstacle.id = Math.round(+new Date()/1000);
 
@@ -387,6 +388,12 @@ module.exports = {
         item.destroy();
       }
     });
+  },
+
+  playBarrierSound(){
+    // Play in sequence
+    this.barrierSounds[this.barrierSoundIndex].play();
+    this.barrierSoundIndex = (this.barrierSoundIndex + 1) % 3;
   },
 
   makePhysicsSprite(x, y, asset) {
