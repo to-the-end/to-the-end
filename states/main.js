@@ -49,9 +49,10 @@ module.exports = {
     this.showSolution();
   },
 
-  buildSoundCollection(componentName, numberOfAudioClips){
-    var sounds = [];
-    for (var x = 0; x < numberOfAudioClips; x++){
+  buildSoundCollection(componentName, numberOfAudioClips) {
+    const sounds = [];
+
+    for (let x = 0; x < numberOfAudioClips; x++) {
       sounds.push(this.add.audio(componentName + x));
     }
 
@@ -78,6 +79,7 @@ module.exports = {
 
       if (distance < threshold) {
         let switchId = s.flick();
+
         this.score = s.flick() === this.order[this.score] ? this.score + 1 : 0;
 
         if (this.score === 0) {
@@ -212,7 +214,7 @@ module.exports = {
 
       const tilePoint = new Phaser.Point();
 
-      this.collisionLayer.getTileXY(this.game.input.mousePointer.worldX, this.game.input.mousePointer.worldY, tilePoint);
+      this.collisionLayer.getTileXY(this.input.mousePointer.worldX, this.input.mousePointer.worldY, tilePoint);
 
       const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
@@ -227,7 +229,7 @@ module.exports = {
   },
 
   addTimer(callback) {
-    this.timer = this.time.create(false).loop(Phaser.Timer.SECOND * 1, function () {
+    this.timer = this.time.create(false).loop(Phaser.Timer.SECOND * 1, function() {
       callback(this.timer.count);
 
       this.timer.count++;
@@ -324,24 +326,28 @@ module.exports = {
   },
 
   setupObstacles() {
+    this.obstaclesPlaceable = true;
     this.obstacleGroup = this.add.group();
-    this.input.onDown.add(this.addObstacleFromPointer, this);
-/*    this.input.onUp.add(() => {
-     this.isRopeActive = false;
-    }, this);*/
   },
 
   addObstacleFromPointer(pointer) {
     const tilePoint = new Phaser.Point();
+
     this.collisionLayer.getTileXY(pointer.worldX, pointer.worldY, tilePoint);
+
     const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
     const playerX = this.player.body.center.x;
     const playerY = this.player.body.center.y;
-    const distance = Phaser.Math.distance( playerX, playerY, pointer.worldX, pointer.worldY);
+    const distance = this.math.distance(playerX, playerY, pointer.worldX, pointer.worldY);
     const threshold = 30;
 
-    if ((!this.isRopeActive) && (distance>threshold)){
+    if (!this.isRopeActive) {
+      if (distance > threshold) {
+        if (!this.obstaclesPlaceable) {
+          return;
+        }
+
         // FIXME: This should be a check against existing switches,
         //        not places they could go.
         if (tile.index > 0) {
@@ -356,27 +362,34 @@ module.exports = {
           return;
         }
 
-        this.addObstacle(tile.worldX, tile.worldY);
-    }
-    if ((!this.isRopeActive) && (distance<threshold)){
-      this.isRopeActive = true;
-      console.log('activated rope')
-      this.game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-        this.isRopeActive = false;
-        console.log('deactivated rope')
-      }, this);
+        this.addBarrier(tile.worldX, tile.worldY);
+      } else {
+        this.isRopeActive = true;
+
+        this.game.time.events.add(Phaser.Timer.SECOND * 2, function deactivateRope() {
+          this.isRopeActive = false;
+        }, this);
+      }
     }
   },
 
-  addObstacle(x, y) {
+  addBarrier(x, y) {
     this.playBarrierSound();
+
     const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
-    obstacle.id = Math.round(+new Date()/1000);
+
+    obstacle.id = Math.round(+new Date() / 1000);
 
     obstacle.body.moves = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function () {
-      this.removeObstacle(obstacle.id)
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
+      this.removeObstacle(obstacle.id);
+    }, this);
+
+    this.obstaclesPlaceable = false;
+
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.cooldown, function() {
+      this.obstaclesPlaceable = true;
     }, this);
 
     this.obstacleGroup.add(obstacle);
@@ -409,6 +422,7 @@ module.exports = {
     let x;
     let y;
     let available = false;
+
     while (!available) {
       x = this.rnd.integerInRange(areaX, areaX + areaWidth - width);
       y = this.rnd.integerInRange(areaY, areaY + areaHeight - height);
@@ -416,6 +430,7 @@ module.exports = {
         available = true;
       }
     }
+
     return { x, y };
   },
 
@@ -463,7 +478,7 @@ module.exports = {
     this.player.scale.set(
       this.player.scale.x + cr * k, this.player.scale.y + cr * k
     );
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function() {
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
       this.player.scale.set(
         this.player.scale.x - cr * k, this.player.scale.y - cr * k
       );
@@ -493,7 +508,7 @@ module.exports = {
   enableInput() {
     this.inputEnabled = true;
 
-    this.input.onUp.add(this.addObstacleFromPointer, this);
+    this.input.onDown.add(this.addObstacleFromPointer, this);
 
     // FIXME: Fix this conflict!
     this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
@@ -505,7 +520,7 @@ module.exports = {
   disableInput() {
     this.inputEnabled = false;
 
-    this.input.onUp.removeAll();
+    this.input.onDown.removeAll();
     this.keys.spacebar.onDown.removeAll();
     this.player.disableInput(this.keys.cursors);
   },
