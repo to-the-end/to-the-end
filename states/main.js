@@ -44,10 +44,13 @@ module.exports = {
     });
     this.startTimer();
     this.showSolution();
+
+    // Audio
     this.levelMusic =  this.add.audio('intro', 1, true);
     this.levelMusic.play();
     this.puzzleCompleteSound = this.add.audio('puzzleCompleteMinor');
     this.puzzleComplete = false;
+    this.barrierPlacementSound = this.add.audio('barrierPlacement');
   },
 
   turnOnNearbySwitches() {
@@ -311,6 +314,7 @@ module.exports = {
   },
 
   addObstacle(x, y) {
+    this.barrierPlacementSound.play();
     const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
     obstacle.id = Math.round(+new Date()/1000);
 
