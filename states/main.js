@@ -668,25 +668,36 @@ module.exports = {
 
     if (success) {
       id++;
-      this.state.start('end', true, false, id);
-    } else {
-      this.disableInput();
-      let playAgain = this.addFloatingText(this.camera.view.width / 2, this.camera.view.height / 2, 'Play again', 48);
-      playAgain.anchor.set(0.5);
-      let goToMainMenu = this.addFloatingText(playAgain.x, playAgain.y + 80, 'Go to main menu', 48);
-      goToMainMenu.anchor.set(0.5);
-      playAgain.inputEnabled = true;
-      playAgain.events.onInputUp.add(() => {
-        this.state.start('scene', true, false, id);
-        playAgain.destroy();
-        goToMainMenu.destroy();
-      });
-      goToMainMenu.inputEnabled = true;
-      goToMainMenu.events.onInputUp.add(() => {
-        this.state.start('mainMenu', true, false, id);
-        playAgain.destroy();
-        goToMainMenu.destroy();
-      });
     }
+
+    let state = 'scene';
+
+    if (id > 1) {
+      state = 'end';
+    }
+
+    if (success) {
+      this.state.start(state, true, false, id);
+
+      return;
+    }
+
+    this.disableInput();
+    let playAgain = this.addFloatingText(this.camera.view.width / 2, this.camera.view.height / 2, 'Try Again', 48);
+    playAgain.anchor.set(0.5);
+    let goToMainMenu = this.addFloatingText(playAgain.x, playAgain.y + 80, 'Go to Main Menu', 48);
+    goToMainMenu.anchor.set(0.5);
+    playAgain.inputEnabled = true;
+    playAgain.events.onInputUp.add(() => {
+      this.state.start(state, true, false, id);
+      playAgain.destroy();
+      goToMainMenu.destroy();
+    });
+    goToMainMenu.inputEnabled = true;
+    goToMainMenu.events.onInputUp.add(() => {
+      this.state.start('mainMenu', true, false, id);
+      playAgain.destroy();
+      goToMainMenu.destroy();
+    });
   },
 };
