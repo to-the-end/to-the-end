@@ -120,9 +120,9 @@ module.exports = {
       if (shakeCount === 0) {
         this.camera.follow(this.player);
         shakeTimer.stop();
-        
+
         if (typeof callback === "function") {
-          callback(); 
+          callback();
         }
 
         return;
@@ -231,7 +231,7 @@ module.exports = {
       this.player.walkRight();
       hasMoved = true;
     }
-    
+
     if (this.keys.cursors.up.isDown) {
       if (hasMoved){
         this.player.body.velocity.y--;
@@ -248,7 +248,7 @@ module.exports = {
         this.player.walkDown();
       }
       hasMoved = true;
-    }    
+    }
 
     if (hasMoved) {
       this.player.normalizeVelocity();
@@ -437,7 +437,7 @@ module.exports = {
         this.chainAttach.play();
         this.game.time.events.add(Phaser.Timer.SECOND * 0.8, function chainDrag() {
           this.playChainDrag();
-        }, this);        
+        }, this);
 
         this.game.time.events.add(Phaser.Timer.SECOND * 2, function deactivateRope() {
           this.isChainActive = false;
@@ -480,6 +480,11 @@ module.exports = {
     if (this.game.physics.arcade.overlap(this.player, obstacle)) {
       return;
     }
+
+    obstacle.animations.add('up', [2, 1, 0], 10, false);
+    obstacle.animations.add('down', [0, 1, 2], 10, false);
+
+    obstacle.animations.play('up');
     this.shake();
     this.playBarrierSound();
 
@@ -487,7 +492,10 @@ module.exports = {
     obstacle.body.moves = false;
 
     this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-      this.removeObstacle(obstacle.id);
+      obstacle.animations.play('down');
+      this.game.time.events.add(300, function () {
+        this.removeObstacle(obstacle.id);
+      }, this);
     }, this);
 
     this.obstaclesPlaceable = false;
