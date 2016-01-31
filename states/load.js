@@ -39,11 +39,13 @@ module.exports = {
     for (var x = 0; x < 7; x++){
       this.load.audio('switch' + x, 'assets/audio/sfx/switches/switch' + (x + 1) + '.wav');
     }
-    
+
     this.load.audio('puzzleCompleteMinor', 'assets/audio/sfx/puzzlecomplete/minor.wav');
     this.load.audio('barrierPlacement', 'assets/audio/sfx/antagonist-actions/barrier-placement.wav');
 
     this.load.image('obstacle', 'assets/obstacle.png');
+
+    this.load.script('vignetteFilter', 'filters/Vignette.js');
 
     this.loadLevel('level1');
 
