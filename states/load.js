@@ -20,9 +20,6 @@ module.exports = {
 
     const progressDisplay = this.add.text(0, 0, '', style);
 
-    // Audio
-    this.load.audio('leftFootstep', 'assets/audio/sfx/footsteps/left.wav');
-    this.load.audio('rightFootstep', 'assets/audio/sfx/footsteps/right.wav');
 
     this.load.tilemap('map', 'assets/tilemaps/main.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('terrain-tiles', 'assets/tilemaps/tiles/terrain.png');
@@ -35,9 +32,12 @@ module.exports = {
     // Background music
     this.load.audio('intro', 'assets/audio/soundtrack/title-or-intro.wav');
 
-    // Sfx 
+    // Sfx
+    this.load.audio('leftFootstep', 'assets/audio/sfx/footsteps/left.wav');
+    this.load.audio('rightFootstep', 'assets/audio/sfx/footsteps/right.wav');
     this.load.audio('switch', 'assets/audio/sfx/switches/switch1.wav');
     this.load.audio('puzzleCompleteMinor', 'assets/audio/sfx/puzzlecomplete/minor.wav');
+    this.load.audio('barrierPlacement', 'assets/audio/sfx/antagonist-actions/barrier-placement.wav');
 
     this.load.image('obstacle', 'assets/obstacle.png');
 
