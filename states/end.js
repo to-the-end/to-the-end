@@ -5,7 +5,7 @@
 module.exports = {
   create() {
     const style = {
-      font:     'monospace',
+      font:     'Raleway',
       fontSize: 48,
 
       fill: '#fff',

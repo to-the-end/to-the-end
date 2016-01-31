@@ -2,11 +2,15 @@
   "dialogue": [
     {
       "position": "tl",
-      "text": "This is some test text!"
+      "text": "Each day the world got greyer, falling away – life and colour, words and people. Faces turned blank until everyone looked the same, people I knew and those I didn’t."
     },
     {
-      "position": "br",
-      "text": "This is some more test text!"
+      "position": "bl",
+      "text": "Each day got shorter and each night got longer, until a sleep settled on me that fell like ash, and was too heavy to lift."
+    },
+    {
+      "clear": true,
+      "text": "In my nightmares, I fought to wake, but everything I did made it darker. I couldn’t escape on my own. I didn’t know where to go. All I knew was I had to follow it through to the end."
     }
   ]
 }

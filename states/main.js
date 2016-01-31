@@ -262,7 +262,7 @@ module.exports = {
 
   addFloatingText(x, y, message, fontSize) {
     const style = {
-      font:     'monospace',
+      font:     'Raleway',
       fontSize: fontSize || 16,
 
       fill: '#fff',

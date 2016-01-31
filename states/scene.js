@@ -21,7 +21,7 @@ module.exports = {
 
   playDialogue(index) {
     const style = {
-      font:     'monospace',
+      font:     'Raleway',
       fontSize: 24,
 
       fill: '#fff',

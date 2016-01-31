@@ -9,7 +9,7 @@ module.exports = {
 
   create() {
     const style = {
-      font:     'monospace',
+      font:     'Raleway',
       fontSize: 36,
 
       fill:   '#fff',
