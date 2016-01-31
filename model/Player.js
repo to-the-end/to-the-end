@@ -29,6 +29,12 @@ class Player extends Phaser.Sprite {
     });
   }
 
+  stopSound(){
+    this.isWalking = false;
+    this.leftFootstepSound.stop();
+    this.rightFootstepSound.stop();
+  }
+
   disableInput(cursors) {
     Object.keys(cursors).forEach((key) => {
       cursors[key].onDown.removeAll();
@@ -57,10 +63,6 @@ class Player extends Phaser.Sprite {
         });
       }
     });
-  }
-
-  stopWalkingSound() {
-    this.isWalking = false;
   }
 
   resetVelocity() {
@@ -106,7 +108,7 @@ class Player extends Phaser.Sprite {
 
   stop() {
     this.resetVelocity();
-    this.stopWalkingSound();
+    this.stopSound();
 
     if (!this.isAnimating) {
       this.frame = 130;

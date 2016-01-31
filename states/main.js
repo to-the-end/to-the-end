@@ -663,6 +663,9 @@ module.exports = {
   },
 
   endLevel(success) {
+    this.levelMusic.stop();
+    this.player.stop();
+
     let id = this.levelId;
 
     if (success) {
