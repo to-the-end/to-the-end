@@ -49,7 +49,7 @@ module.exports = {
     this.load.audio('puzzleCompleteMinor', 'assets/audio/sfx/puzzlecomplete/minor.wav');
 
     this.load.image('obstacle', 'assets/obstacle.png');
-    this.load.image('snake', 'assets/snake.png');
+    this.load.image('chain', 'assets/chain.png');
     this.load.script('vignetteFilter', 'filters/Vignette.js');
 
     this.loadScene(0);

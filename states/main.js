@@ -13,7 +13,7 @@ module.exports = {
   },
 
   create() {
-    this.isRopeActive = false;
+    this.isChainActive = false;
     this.bombsize = 40;
     this.isPlayerNextToSwitch = false;
     this.keys = {
@@ -201,7 +201,7 @@ module.exports = {
       this.player.stop();
     }
 
-    if (this.isRopeActive) {
+    if (this.isChainActive) {
       const vx = this.player.body.velocity.x;
       const vy = this.player.body.velocity.y;
 
@@ -355,7 +355,7 @@ module.exports = {
     const distance = this.math.distance(playerX, playerY, pointer.worldX, pointer.worldY);
     const threshold = 30;
 
-    if (!this.isRopeActive) {
+    if (!this.isChainActive) {
       if (distance > threshold) {
         if (!this.obstaclesPlaceable) {
           return;
@@ -377,48 +377,37 @@ module.exports = {
 
         this.addBarrier(tile.worldX, tile.worldY);
       } else {
-        this.isRopeActive = true;
+        this.isChainActive = true;
 
         this.game.time.events.add(Phaser.Timer.SECOND * 2, function deactivateRope() {
-          this.isRopeActive = false;
-          this.rope.destroy();
+          this.isChainActive = false;
+          this.chain.destroy();
         }, this);
 
-        this.ropecount = 0;
+        const length = 918 / 20;
+        const points = [];
 
-        var length = 918 / 20;
-        var points = [];
-
-        for (var i = 0; i < 20; i++) {
-            points.push(new Phaser.Point(i * length, 0));
+        for (let i = 0; i < 20; i++) {
+          points.push(new Phaser.Point(i * length, 0));
         }
 
-        this.rope = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'snake', null, points);
+        this.chain = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'chain', null, points);
 
-        this.rope.scale.set(1);
+        const state = this;
 
-        var z = this;
-        var count = 0;
-
-        this.rope.updateAnimation = function() {
-          count += 0.1;
-          const tilePoint = new Phaser.Point();
-
-          z.collisionLayer.getTileXY(z.game.input.mousePointer.worldX, z.game.input.mousePointer.worldY, tilePoint);
-          const tile = z.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
-
-          var xx = z.player.body.center.x;
-          var yy = z.player.body.center.y;
+        this.chain.updateAnimation = function updateAnimation() {
+          const xx = state.player.body.center.x;
+          const yy = state.player.body.center.y;
 
           this.x = xx;
           this.y = yy;
 
-          for (var i = 0; i < this.points.length; i++) {
-              var alfa = i/(this.points.length-1.);
-              var beta = 1-alfa;
+          for (let i = 0; i < this.points.length; i++) {
+            const alpha = i / (this.points.length - 1);
+            const beta = 1 - alpha;
 
-              this.points[i].x = xx*alfa+tile.worldX*beta-xx+Math.sin(i *5 + count) * 20;
-              this.points[i].y = yy*alfa+tile.worldY*beta-yy+Math.cos(i *5 + count) * 20;
+            this.points[i].x = (state.input.mousePointer.worldX - xx) * beta;
+            this.points[i].y = (state.input.mousePointer.worldY - yy) * beta;
           }
         };
       }
