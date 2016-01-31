@@ -244,7 +244,9 @@ module.exports = {
   },
 
   addTimerText() {
-    this.timerText = this.addFloatingText(0, 0, 'Time left: 0');
+    this.timerText = this.addFloatingText(
+      this.camera.view.width / 2, 0, `Time left: ${this.levelData.timer}`, 24
+    );
   },
 
   removeTimerText() {
@@ -253,13 +255,15 @@ module.exports = {
   },
 
   updateTimerText(time) {
-    this.timerText.setText('Time left: ' + time);
+    const remainingTime = this.levelData.timer - time;
+
+    this.timerText.setText(`Time left: ${remainingTime}`);
   },
 
-  addFloatingText(x, y, message) {
+  addFloatingText(x, y, message, fontSize) {
     const style = {
       font:     'monospace',
-      fontSize: 16,
+      fontSize: fontSize || 16,
 
       fill: '#fff',
 
