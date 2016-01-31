@@ -151,7 +151,7 @@ module.exports = {
         this.puzzleCompleteSound.play();
       }
 
-      this.add.text(16, 16, 'You have won!', { fontSize: '32px', fill: '#000' });
+      this.addFloatingText(100, 100, 'You have won!');
     }
   },
 
@@ -212,6 +212,19 @@ module.exports = {
   },
 
   addTimerText() {
+    this.timerText = this.addFloatingText(0, 0, 'Time left: 0');
+  },
+
+  removeTimerText() {
+    this.timerText.destroy();
+    this.timerText = null;
+  },
+
+  updateTimerText(time) {
+    this.timerText.setText('Time left: ' + time);
+  },
+
+  addFloatingText(x, y, message) {
     const style = {
       font:     'monospace',
       fontSize: 16,
@@ -222,17 +235,11 @@ module.exports = {
       strokeThickness: 3,
     };
 
-    this.timerText = this.add.text(0, 0, 'Time left: 0', style);
-    this.timerText.fixedToCamera = true;
-  },
+    const text = this.add.text(x, y, message, style);
 
-  removeTimerText() {
-    this.timerText.destroy();
-    this.timerText = null;
-  },
+    text.fixedToCamera = true;
 
-  updateTimerText(time) {
-    this.timerText.setText('Time left: ' + time);
+    return text;
   },
 
   setupPlayer() {
