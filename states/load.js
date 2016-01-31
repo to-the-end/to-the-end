@@ -46,6 +46,7 @@ module.exports = {
     }
 
     this.load.audio('puzzleCompleteMinor', 'assets/audio/sfx/puzzlecomplete/minor.wav');
+    this.load.audio('wrong', 'assets/audio/sfx/wrong.wav');
 
     this.load.image('obstacle', 'assets/obstacle.png');
     this.load.image('chain', 'assets/chain.png');

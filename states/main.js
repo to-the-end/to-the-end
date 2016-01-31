@@ -64,6 +64,7 @@ module.exports = {
     this.switchSounds = this.buildSoundCollection('switch', 7);
     this.barrierSounds = this.buildSoundCollection('barrier', 3);
     this.barrierSoundIndex = 0;
+    this.wrongSound = this.add.audio('wrong');
   },
 
   turnOnNearbySwitches() {
@@ -77,10 +78,14 @@ module.exports = {
       if (distance < threshold) {
         let switchId = s.flick();
 
-        this.score = s.flick() === this.order[this.score] ? this.score + 1 : 0;
+        const playerChoiceCorrect = this.order[this.score]
+        this.score = switchId === playerChoiceCorrect ? this.score + 1 : 0;
 
         if (this.score === 0) {
+          this.wrongSound.play();
           this.showSolution();
+        } else {
+          s.playSound();
         }
       }
     });
@@ -146,6 +151,7 @@ module.exports = {
     const _switch = this.getSwitch(id);
 
     _switch.on();
+    _switch.playSound();
     _switch.off();
   },
 
