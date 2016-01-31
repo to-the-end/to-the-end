@@ -426,12 +426,15 @@ module.exports = {
   },
 
   addBarrier(x, y) {
-    this.playBarrierSound();
-
     const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
 
-    obstacle.id = Math.round(+new Date() / 1000);
+    if (this.game.physics.arcade.overlap(this.player, obstacle)) {
+      return;
+    }
 
+    this.playBarrierSound();
+
+    obstacle.id = Math.round(+new Date() / 1000);
     obstacle.body.moves = false;
 
     this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
