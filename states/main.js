@@ -298,7 +298,7 @@ module.exports = {
   },
 
   setupMap() {
-    this.map = this.add.tilemap('map');
+    this.map = this.add.tilemap(`map-${this.levelId}`);
 
     this.map.addTilesetImage('terrain', 'terrain-tiles');
     this.map.addTilesetImage('collision', 'collision-tiles');
