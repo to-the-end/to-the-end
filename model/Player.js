@@ -3,12 +3,14 @@
 class Player extends Phaser.Sprite {
 
   constructor(game, x, y) {
-    super(game, x, y, 'dude');
+    super(game, x, y, 'character');
     this.anchor.set(0.5);
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
-    this.animations.add('left', [0, 1, 2, 3], 10, true);
-    this.animations.add('right', [5, 6, 7, 8], 10, true);
+    this.animations.add('up', [105, 106, 107, 108, 109, 110, 111, 112], 10, true);
+    this.animations.add('left', [118, 119, 120, 121, 122, 123, 124, 125], 10, true);
+    this.animations.add('down', [131, 132, 133, 134, 135, 136, 137, 138], 10, true);
+    this.animations.add('right', [144, 145, 146, 147, 148, 149, 150, 151], 10, true);
     game.add.existing(this);
     this.leftFootstepSound = game.add.audio('leftFootstep');
     this.rightFootstepSound = game.add.audio('rightFootstep');
@@ -77,10 +79,12 @@ class Player extends Phaser.Sprite {
 
   walkUp() {
     this.body.velocity.y = -1;
+    this.animations.play('up');
   }
 
   walkDown() {
     this.body.velocity.y = 1;
+    this.animations.play('down');
   }
 
   normalizeVelocity() {
@@ -89,7 +93,7 @@ class Player extends Phaser.Sprite {
 
   stop() {
     this.resetVelocity();
-    this.frame = 4;
+    this.animations.stop();
     this.stopWalkingSound();
   }
 }
