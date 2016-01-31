@@ -4,6 +4,12 @@
 
 module.exports = {
   create() {
+    const sprite = this.add.sprite(
+      this.camera.view.width / 2, this.camera.view.height / 2, 'menu-back'
+    );
+
+    sprite.anchor.set(0.5);
+
     const style = {
       font:     'Raleway',
       fontSize: 48,
