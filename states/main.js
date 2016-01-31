@@ -98,7 +98,7 @@ module.exports = {
   showSolution(shake) {
     this.disableInput();
 
-    if (true) {
+    if (shake) {
       this.shake(() => {
         this.tweenCameraToSwitch(0);
       });
