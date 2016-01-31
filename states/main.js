@@ -63,7 +63,7 @@ module.exports = {
     this.puzzleCompleteSound = this.add.audio('puzzleCompleteMinor');
     this.puzzleComplete = false;
     this.barrierPlacementSound = this.add.audio('barrierPlacement');
-    this.switchSounds = this.buildSwitchesSoundCollection();
+    this.switchSounds = this.buildSwitchSoundCollection();
   },
 
   turnOnNearbySwitches() {
