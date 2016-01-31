@@ -60,6 +60,8 @@ module.exports = {
     this.load.image('chain', 'assets/chain.png');
     this.load.script('vignetteFilter', 'filters/Vignette.js');
 
+    this.load.image('menu-back', 'assets/scenes/backdrops/-1-0.jpg');
+
     this.load.image('scene-0-back-0', 'assets/scenes/backdrops/0-0.jpg');
     this.load.image('scene-0-anim-0', 'assets/scenes/animations/0-0.jpg');
     this.load.image('scene-0-anim-1', 'assets/scenes/animations/0-1.jpg');
