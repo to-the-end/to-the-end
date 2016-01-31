@@ -190,7 +190,7 @@ module.exports = {
       this.player.walkRight();
       hasMoved = true;
     }
-    
+
     if (this.keys.cursors.up.isDown) {
       if (hasMoved){
         this.player.body.velocity.y--;
@@ -207,7 +207,7 @@ module.exports = {
         this.player.walkDown();
       }
       hasMoved = true;
-    }    
+    }
 
     if (hasMoved) {
       this.player.normalizeVelocity();
@@ -435,13 +435,20 @@ module.exports = {
       return;
     }
 
+    obstacle.animations.add('up', [2, 1, 0], 10, false);
+    obstacle.animations.add('down', [0, 1, 2], 10, false);
+
+    obstacle.animations.play('up');
     this.playBarrierSound();
 
     obstacle.id = Math.round(+new Date() / 1000);
     obstacle.body.moves = false;
 
     this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-      this.removeObstacle(obstacle.id);
+      obstacle.animations.play('down');
+      this.game.time.events.add(300, function () {
+        this.removeObstacle(obstacle.id);
+      }, this);
     }, this);
 
     this.obstaclesPlaceable = false;
