@@ -26,6 +26,8 @@ module.exports = {
 
     this.score = 0;
 
+    this.setupAudio();
+
     this.setupMap();
     this.setupObstacles();
     this.setupPlayer();
@@ -44,13 +46,24 @@ module.exports = {
     });
     this.startTimer();
     this.showSolution();
+  },
 
-    // Audio
+  buildSwitchesSoundCollection(){
+    var switches = [];
+    for (var x = 0; x < 7; x++){
+      switches.push(this.add.audio('switch' + x));
+    }
+
+    return switches;
+  },
+
+  setupAudio(){
     this.levelMusic =  this.add.audio('intro', 1, true);
     this.levelMusic.play();
     this.puzzleCompleteSound = this.add.audio('puzzleCompleteMinor');
     this.puzzleComplete = false;
     this.barrierPlacementSound = this.add.audio('barrierPlacement');
+    this.switchSounds = this.buildSwitchSoundCollection();
   },
 
   turnOnNearbySwitches() {
@@ -280,7 +293,8 @@ module.exports = {
       .getTiles(0, 0, this.world.width, this.world.height)
       .filter((tile) => { return tile.index > 0; })
       .forEach((tile) => {
-        let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height, switchId++);
+        let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height, switchId, this.switchSounds[switchId - 1]);
+        switchId++;
         this.switchGroup.add(newSwitch);
       });
   },

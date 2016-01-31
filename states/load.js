@@ -35,7 +35,11 @@ module.exports = {
     // Sfx
     this.load.audio('leftFootstep', 'assets/audio/sfx/footsteps/left.wav');
     this.load.audio('rightFootstep', 'assets/audio/sfx/footsteps/right.wav');
-    this.load.audio('switch', 'assets/audio/sfx/switches/switch1.wav');
+
+    for (var x = 0; x < 7; x++){
+      this.load.audio('switch' + x, 'assets/audio/sfx/switches/switch' + (x + 1) + '.wav');
+    }
+    
     this.load.audio('puzzleCompleteMinor', 'assets/audio/sfx/puzzlecomplete/minor.wav');
     this.load.audio('barrierPlacement', 'assets/audio/sfx/antagonist-actions/barrier-placement.wav');
 

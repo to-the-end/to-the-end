@@ -2,7 +2,7 @@
 
 class Switch extends Phaser.Sprite {
 
-  constructor(game, x, y, id) {
+  constructor(game, x, y, id, switchSound) {
     super(game, x, y, 'switch');
     this.id = id;
     this.frame = 11;
@@ -13,7 +13,7 @@ class Switch extends Phaser.Sprite {
     this.animations.add('on', [11, 23, 35], 10, false);
     this.animations.add('off', [35, 23, 11], 10, false);
     this.isOn = false;
-    this.soundEffect = game.add.audio('switch');
+    this.soundEffect = switchSound;
     game.add.existing(this);  // adds object to the game world
   }
 
