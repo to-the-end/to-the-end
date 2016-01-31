@@ -20,7 +20,6 @@ module.exports = {
 
     const progressDisplay = this.add.text(0, 0, '', style);
 
-    this.load.tilemap('map', 'assets/tilemaps/main.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('terrain-tiles', 'assets/tilemaps/tiles/terrain.png');
     this.load.image('collision-tiles', 'assets/tilemaps/tiles/collision.png');
     this.load.image('switches-tiles', 'assets/tilemaps/tiles/switches.png');
@@ -71,6 +70,7 @@ module.exports = {
   },
 
   loadLevel(id) {
+    this.load.tilemap(`map-${id}`, `assets/tilemaps/level-${id}.json`, null, Phaser.Tilemap.TILED_JSON);
     this.load.json(`level-${id}`, `assets/levels/${id}.json`);
   },
 };
