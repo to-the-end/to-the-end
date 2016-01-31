@@ -534,6 +534,8 @@ module.exports = {
         y: this.player.scale.y - scaleK,
       }, 200, Phaser.Easing.LINEAR, true);
     }, this);
+
+    this.player.animateCast();
   },
 
   updateWorldTint() {

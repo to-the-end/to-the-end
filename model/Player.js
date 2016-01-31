@@ -3,10 +3,11 @@
 class Player extends Phaser.Sprite {
 
   constructor(game, x, y) {
-    super(game, x, y, 'character');
+    super(game, x, y, 'character', 130);
     this.anchor.set(0.5);
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
+    this.animations.add('cast', [0, 1, 2, 3, 4, 5, 6], 5, false);
     this.animations.add('up', [105, 106, 107, 108, 109, 110, 111, 112], 10, true);
     this.animations.add('left', [118, 119, 120, 121, 122, 123, 124, 125], 10, true);
     this.animations.add('down', [131, 132, 133, 134, 135, 136, 137, 138], 10, true);
@@ -69,22 +70,34 @@ class Player extends Phaser.Sprite {
 
   walkLeft() {
     this.body.velocity.x = -1;
-    this.animations.play('left');
+
+    if (!this.isAnimating) {
+      this.animations.play('left');
+    }
   }
 
   walkRight() {
     this.body.velocity.x = 1;
-    this.animations.play('right');
+
+    if (!this.isAnimating) {
+      this.animations.play('right');
+    }
   }
 
   walkUp() {
     this.body.velocity.y = -1;
-    this.animations.play('up');
+
+    if (!this.isAnimating) {
+      this.animations.play('up');
+    }
   }
 
   walkDown() {
     this.body.velocity.y = 1;
-    this.animations.play('down');
+
+    if (!this.isAnimating) {
+      this.animations.play('down');
+    }
   }
 
   normalizeVelocity() {
@@ -93,8 +106,20 @@ class Player extends Phaser.Sprite {
 
   stop() {
     this.resetVelocity();
-    this.animations.stop();
     this.stopWalkingSound();
+
+    if (!this.isAnimating) {
+      this.frame = 130;
+    }
+  }
+
+  animateCast() {
+    this.isAnimating = true;
+    // TODO: Stop other animations overriding it.
+    this.animations.play('cast')
+      .onComplete.add(function reenableAnimations() {
+        this.isAnimating = false;
+      }.bind(this));
   }
 }
 
