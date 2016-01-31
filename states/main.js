@@ -22,7 +22,7 @@ module.exports = {
     this.keys = {
       cursors:  this.input.keyboard.createCursorKeys(),
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
-    };      
+    };
 
     this.keys.spacebar.onDown.add(() => {
      this.eatWall();
@@ -163,10 +163,11 @@ module.exports = {
   addTimer(callback) {
     this.timer = this.time.create(false).loop(Phaser.Timer.SECOND * 1, function () {
       callback(this.timer.count);
-      this.timer.count += 1;
+
+      this.timer.count++;
     }, this);
+
     this.timer.count = 0;
-    console.log(this.timer);
   },
 
   startTimer() {
@@ -183,12 +184,15 @@ module.exports = {
 
   addTimerText() {
     const style = {
-      font: 'monospace',
+      font:     'monospace',
       fontSize: 16,
+
       fill: '#fff',
-      stroke: '#000',
-      strokeThickness: 3
+
+      stroke:          '#000',
+      strokeThickness: 3,
     };
+
     this.timerText = this.add.text(0, 0, 'Time left: 0', style);
     this.timerText.fixedToCamera = true;
   },
@@ -317,9 +321,11 @@ module.exports = {
   // Accepts values in world coordinates
   collidesWithMap(x, y, width, height) {
     let tiles = this.collisionLayer.getTiles(x, y, width, height);
+
     tiles = tiles.map(tile => tile.index);
 
     let collide = false;
+
     for (let i = 0; i < tiles.length; i++) {
       if (tiles[i] > 0) {
         collide = true;
@@ -329,28 +335,38 @@ module.exports = {
     return collide;
   },
 
-  eatWall(){    
+  eatWall() {
     const playerX = this.player.x;
     const playerY = this.player.y;
 
-    
-    var cr=0;
+    let cr = 0;
+
     const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
       const threshold = 80;
-      const distance = Phaser.Math.distance( playerX, playerY, obstacle.x, obstacle.y);
-      if (distance < threshold*4) {  
-        cr++;  
+      const distance = Phaser.Math.distance(
+        playerX, playerY, obstacle.x, obstacle.y
+      );
+
+      if (distance < threshold * 4) {
+        cr++;
         return true;
-      }  
+      }
+
       return false;
     });
 
     obstaclesToDestroy.removeAll(true);
-    const k=0.8;    
-    this.player.scale.setTo(this.player.scale.x+cr*k, this.player.scale.y+cr*k);
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function () {
-      this.player.scale.setTo(this.player.scale.x-cr*k, this.player.scale.y-cr*k);
-    }, this);    
+
+    const k = 0.8;
+
+    this.player.scale.set(
+      this.player.scale.x + cr * k, this.player.scale.y + cr * k
+    );
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function() {
+      this.player.scale.set(
+        this.player.scale.x - cr * k, this.player.scale.y - cr * k
+      );
+    }, this);
   },
 
 };
