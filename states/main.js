@@ -348,7 +348,7 @@ module.exports = {
 
     this.collisionLayer.getTileXY(pointer.worldX, pointer.worldY, tilePoint);
 
-    const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+    let tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
     const playerX = this.player.body.center.x;
     const playerY = this.player.body.center.y;
@@ -386,39 +386,38 @@ module.exports = {
 
         this.ropecount = 0;
 
-        var length = 918 / 20;
-        var points = [];
+        const length = 918 / 20;
+        const points = [];
 
-        for (var i = 0; i < 20; i++) {
-            points.push(new Phaser.Point(i * length, 0));
+        for (let i = 0; i < 20; i++) {
+          points.push(new Phaser.Point(i * length, 0));
         }
 
         this.rope = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'snake', null, points);
 
-        this.rope.scale.set(1);
+        const state = this;
 
-        var z = this;
-        var count = 0;
+        let count = 0;
 
-        this.rope.updateAnimation = function() {
+        this.rope.updateAnimation = function updateAnimation() {
           count += 0.1;
-          const tilePoint = new Phaser.Point();
 
-          z.collisionLayer.getTileXY(z.game.input.mousePointer.worldX, z.game.input.mousePointer.worldY, tilePoint);
-          const tile = z.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+          state.collisionLayer.getTileXY(state.input.mousePointer.worldX, state.input.mousePointer.worldY, tilePoint);
 
-          var xx = z.player.body.center.x;
-          var yy = z.player.body.center.y;
+          tile = state.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+
+          const xx = state.player.body.center.x;
+          const yy = state.player.body.center.y;
 
           this.x = xx;
           this.y = yy;
 
-          for (var i = 0; i < this.points.length; i++) {
-              var alfa = i/(this.points.length-1.);
-              var beta = 1-alfa;
+          for (let i = 0; i < this.points.length; i++) {
+            const alpha = i / (this.points.length - 1);
+            const beta = 1 - alpha;
 
-              this.points[i].x = xx*alfa+tile.worldX*beta-xx+Math.sin(i *5 + count) * 20;
-              this.points[i].y = yy*alfa+tile.worldY*beta-yy+Math.cos(i *5 + count) * 20;
+            this.points[i].x = (tile.worldX - xx) * beta + Math.sin(i * 5 + count) * 20;
+            this.points[i].y = (tile.worldY - yy) * beta + Math.cos(i * 5 + count) * 20;
           }
         };
       }
