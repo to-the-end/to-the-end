@@ -13,9 +13,6 @@ module.exports = {
   },
 
   create() {
-    // FIXME: muted just for dev purposes
-    this.game.sound.mute = true;
-
     this.isChainActive = false;
     this.bombsize = 40;
     this.isPlayerNextToSwitch = false;
