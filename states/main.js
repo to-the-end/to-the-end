@@ -301,6 +301,10 @@ module.exports = {
 
     this.terrainLayer = this.map.createLayer('terrain');
     this.terrainLayer.resizeWorld();
+
+    const vignette = this.add.filter('Vignette');
+
+    this.world.filters = [ vignette ];
   },
 
   setupSwitches() {
