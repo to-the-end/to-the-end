@@ -611,10 +611,13 @@ module.exports = {
     }, 200, Phaser.Easing.LINEAR, true);
 
     this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-      this.add.tween(this.player.scale).to({
+      this.player.scale.x -= scaleK;
+      this.player.scale.y -= scaleK;
+/*      this.add.tween(this.player.scale).to({
         x: this.player.scale.x - scaleK,
         y: this.player.scale.y - scaleK,
       }, 200, Phaser.Easing.LINEAR, true);
+      */
     }, this);
 
     this.player.animateCast();

@@ -46,7 +46,7 @@ module.exports = {
     }
 
     for (var x = 0; x < 1; x++){
-      this.load.audio('hua' + x, 'assets/audio/sfx/player-actions/hua' + (x + 1) + '.wav');
+      this.load.audio('hua' + x, 'assets/audio/sfx/player-actions/destroybarrier' + (x + 1) + '.wav');
     }
     for (var x = 0; x < 2; x++){
       this.load.audio('chainDrag' + x, 'assets/audio/sfx/antagonist-actions/chains/chainDrag' + (x + 1) + '.wav');
