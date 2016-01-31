@@ -44,6 +44,12 @@ module.exports = {
       'Instructions', defaultStyle
     );
     this.instructionsText.anchor.set(0.5);
+
+    this.creditsText = this.add.text(
+      this.instructionsText.x, this.instructionsText.y + 80,
+      'Credits', defaultStyle
+    );
+    this.creditsText.anchor.set(0.5);
   },
 
   enableInteraction() {
@@ -56,11 +62,17 @@ module.exports = {
     this.instructionsText.events.onInputUp.add(() => {
       this.showInstructions();
     });
+
+    this.creditsText.inputEnabled = true;
+    this.creditsText.events.onInputUp.add(() => {
+      this.showCredits();
+    });
   },
 
   showInstructions() {
     this.playText.kill();
     this.instructionsText.kill();
+    this.creditsText.kill();
     const instructionsStyle = {
       font: 'Raleway',
       fontSize: 48,
@@ -76,8 +88,122 @@ module.exports = {
       instructions.destroy();
       this.playText.revive();
       this.instructionsText.revive();
+      this.creditsText.revive();
       this.input.onDown.removeAll();
     }, this);
-  }
+  },
+
+  showCredits() {
+    this.playText.kill();
+    this.instructionsText.kill();
+    this.creditsText.kill();
+
+    const style = {
+      font: 'Raleway',
+      fontSize: 28,
+      fill: '#fff',
+      stroke: '#000',
+      strokeThickness: 3,
+      align: 'center',
+    };
+
+    const thanksStyle = {
+      font: 'Raleway',
+      fontSize: 24,
+      fill: '#fff',
+      stroke: '#000',
+      strokeThickness: 3,
+      align: 'center',
+    };
+
+    const ggj = this.add.text(
+      this.camera.view.centerX, 200, 'Made for Global Game Jam 2016', style
+    );
+
+    ggj.anchor.set(0.5, 0);
+
+    const antonio = this.add.text(
+      this.camera.view.centerX, ggj.y + 100,
+      'Antonio LaBarbera - Art', style
+    );
+
+    antonio.anchor.set(0.5, 0);
+
+    const endrit = this.add.text(
+      this.camera.view.centerX, antonio.y + 38,
+      'Endrit Bajo - Code', style
+    );
+
+    endrit.anchor.set(0.5, 0);
+
+    const felix = this.add.text(
+      this.camera.view.centerX, endrit.y + 38,
+      'Felix Laurie von Massenbach - Code', style
+    );
+
+    felix.anchor.set(0.5, 0);
+
+    const michael = this.add.text(
+      this.camera.view.centerX, felix.y + 38,
+      'Michael Le - Code', style
+    );
+
+    michael.anchor.set(0.5, 0);
+
+    const archil = this.add.text(
+      this.camera.view.centerX, michael.y + 38,
+      'Archil Tsiskaridze - Code', style
+    );
+
+    archil.anchor.set(0.5, 0);
+
+    const sam = this.add.text(
+      this.camera.view.centerX, archil.y + 38,
+      'Zhaoqian Yu - Code', style
+    );
+
+    sam.anchor.set(0.5, 0);
+
+    const duncan = this.add.text(
+      this.camera.view.centerX, sam.y + 38,
+      'Duncan McKenna - Narrative', style
+    );
+
+    duncan.anchor.set(0.5, 0);
+
+    const dave = this.add.text(
+      this.camera.view.centerX, duncan.y + 38,
+      'Dave Allen - Sound', style
+    );
+
+    dave.anchor.set(0.5, 0);
+
+    const thanks = this.add.text(
+      this.camera.view.centerX, dave.y + 100,
+      'Source images from:\n\nChristophe Verdier\nMarLeah Cole\nPepe Free Hair',
+      thanksStyle
+    );
+
+    thanks.anchor.set(0.5, 0);
+
+    this.input.onDown.add(function () {
+      ggj.destroy();
+      antonio.destroy();
+      endrit.destroy();
+      felix.destroy();
+      michael.destroy();
+      archil.destroy();
+      sam.destroy();
+      duncan.destroy();
+      dave.destroy();
+      thanks.destroy();
+
+      this.playText.revive();
+      this.instructionsText.revive();
+      this.creditsText.revive();
+
+      this.input.onDown.removeAll();
+    }, this);
+  },
 };
 
