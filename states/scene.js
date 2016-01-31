@@ -54,6 +54,8 @@ module.exports = {
     let text;
 
     if (dialogue.text) {
+      const margin = 60;
+
       let x;
       let y;
       let anchorX;
@@ -62,29 +64,29 @@ module.exports = {
       let alignV;
 
       if (dialogue.position === 'tl') {
-        x = 0;
-        y = 0;
+        x = margin;
+        y = margin;
         anchorX = 0;
         anchorY = 0;
         alignH = 'left';
         alignV = 'top';
       } else if (dialogue.position === 'tr') {
-        x = this.camera.view.width;
-        y = 0;
+        x = this.camera.view.width - margin;
+        y = margin;
         anchorX = 1;
         anchorY = 0;
         alignH = 'right';
         alignV = 'top';
       } else if (dialogue.position === 'bl') {
-        x = 0;
-        y = this.camera.view.height;
+        x = margin;
+        y = this.camera.view.height - margin;
         anchorX = 0;
         anchorY = 1;
         alignH = 'left';
         alignV = 'bottom';
       } else if (dialogue.position === 'br') {
-        x = this.camera.view.width;
-        y = this.camera.view.height;
+        x = this.camera.view.width - margin;
+        y = this.camera.view.height - margin;
         anchorX = 1;
         anchorY = 1;
         alignH = 'right';
