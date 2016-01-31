@@ -2,7 +2,7 @@
   "dialogue": [
     {
       "position": "tl",
-      "text": "Each day the world got greyer, falling away – life and colour, words and people. Faces turned blank until everyone looked the same, people I knew and those I didn’t."
+      "text": "Each day the world got greyer, falling away – life and colour, words and people. Faces turned blank until everyone looked the same, people I knew and those I didn't."
     },
     {
       "position": "bl",
@@ -10,7 +10,42 @@
     },
     {
       "clear": true,
-      "text": "In my nightmares, I fought to wake, but everything I did made it darker. I couldn’t escape on my own. I didn’t know where to go. All I knew was I had to follow it through to the end."
+      "position": "tl",
+      "text": "In my nightmares, I fought to wake, but everything I did made it darker. I couldn't escape on my own. I didn't know where to go. All I knew was I had to follow it through to the end.",
+      "image": "scene-0-back-0"
+    },
+    {
+      "clear": true,
+      "position": "tl",
+      "text": "Out of the darkness, shapes formed – massive walls came out of the blackness and grew up way above me.",
+      "image": "scene-0-back-0"
+    },
+    {
+      "clear": true,
+      "position": "tl",
+      "text": "I stood - slowly, under the weight of the shadows – and looked around at the walls extending into the distance in every direction."
+    },
+    {
+      "text": "No end in sight, no clue of where to go."
+    },
+    {
+      "clear": true,
+      "position": "tl",
+      "text": "I looked around at each of the paths – then, in front of me, I saw a girl..."
+    },
+    {
+      "clear": true,
+      "image": "scene-0-anim-0"
+    },
+    {
+      "clear": true,
+      "image": "scene-0-anim-1"
+    },
+    {
+      "clear": true,
+      "position": "tl",
+      "text": "I shouted after her, but she kept on running.",
+      "image": "scene-0-anim-2"
     }
   ]
 }
