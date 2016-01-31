@@ -54,12 +54,14 @@ module.exports = {
 
     this.loadLevel('level1');
 
+    this.loadScene(0);
+
     this.load.onFileComplete.add(function handleProgress(progress) {
       progressDisplay.setText(`${progress}%`);
     }, this);
 
     this.load.onLoadComplete.add(function startMain() {
-      this.state.start('main');
+      this.state.start('scene', true, false, 0);
     }, this);
 
     this.load.start();
@@ -67,5 +69,9 @@ module.exports = {
 
   loadLevel(level) {
     this.load.json(level, `assets/levels/${level}.json`);
-  }
+  },
+
+  loadScene(id) {
+    this.load.json(`scene-${id}`, `assets/scenes/${id}.json`);
+  },
 };

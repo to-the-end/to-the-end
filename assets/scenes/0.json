@@ -1,0 +1,12 @@
+{
+  "dialogue": [
+    {
+      "position": "tl",
+      "text": "This is some test text!"
+    },
+    {
+      "position": "br",
+      "text": "This is some more test text!"
+    }
+  ]
+}
