@@ -47,18 +47,18 @@ module.exports = {
       anchorX = 0;
       anchorY = 0;
     } else if (dialogue.position === 'tr') {
-      x = this.world.width;
+      x = this.camera.view.width;
       y = 0;
       anchorX = 1;
       anchorY = 0;
     } else if (dialogue.position === 'bl') {
       x = 0;
-      y = this.world.height;
+      y = this.camera.view.height;
       anchorX = 0;
       anchorY = 1;
     } else {
-      x = this.world.width;
-      y = this.world.height;
+      x = this.camera.view.width;
+      y = this.camera.view.height;
       anchorX = 1;
       anchorY = 1;
     }
