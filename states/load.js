@@ -20,11 +20,11 @@ module.exports = {
 
     const progressDisplay = this.add.text(0, 0, '', style);
 
-
     this.load.tilemap('map', 'assets/tilemaps/main.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('terrain-tiles', 'assets/tilemaps/tiles/terrain.png');
     this.load.image('collision-tiles', 'assets/tilemaps/tiles/collision.png');
     this.load.image('switches-tiles', 'assets/tilemaps/tiles/switches.png');
+    this.load.image('player-tiles', 'assets/tilemaps/tiles/player.png');
 
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
     this.load.spritesheet('switch', 'assets/lever.png', 32, 32);
