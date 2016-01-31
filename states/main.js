@@ -38,7 +38,6 @@ module.exports = {
       // FIXME: instead of levelData we need to change to this.currentLevelJson
       if (timer >= this.levelData.timer) {
         this.stopTimer();
-
         this.endLevel(false);
       }
     });
@@ -65,6 +64,11 @@ module.exports = {
     this.barrierSounds = this.buildSoundCollection('barrier', 3);
     this.barrierSoundIndex = 0;
     this.wrongSound = this.add.audio('wrong');
+    this.huaSounds = this.buildSoundCollection('hua',1);
+    this.huaSoundIndex = 0;
+    this.chainDragSounds = this.buildSoundCollection('chainDrag',2);
+    this.chainDragSoundIndex = 0;
+    this.chainAttach = this.add.audio('chainAttach');
   },
 
   turnOnNearbySwitches() {
@@ -83,7 +87,7 @@ module.exports = {
 
         if (this.score === 0) {
           this.wrongSound.play();
-          this.showSolution();
+          this.showSolution(true);
         } else {
           s.playSound();
         }
@@ -91,10 +95,47 @@ module.exports = {
     });
   },
 
-  showSolution() {
+  showSolution(shake) {
     this.disableInput();
 
-    this.tweenCameraToSwitch(0);
+    if (true) {
+      this.shake(() => {
+        this.tweenCameraToSwitch(0);
+      });
+    } else {
+      this.tweenCameraToSwitch(0);
+    }
+  },
+
+  shake(callback) {
+    this.camera.unfollow();
+    const shakeTimer = this.time.create(false);
+
+    const shakeRange = 20;
+    const shakeInterval = 60;
+    let shakeCount = 10;
+
+    shakeTimer.loop(shakeInterval, () => {
+
+      if (shakeCount === 0) {
+        this.camera.follow(this.player);
+        shakeTimer.stop();
+
+        if (typeof callback === "function") {
+          callback();
+        }
+
+        return;
+      }
+
+      let shift1 = shakeCount % 2 ? -shakeRange / 2 : shakeRange / 2;
+      this.camera.x += shift1;
+
+      shakeCount--;
+
+    }, this);
+
+    shakeTimer.start();
   },
 
   tweenCameraToSwitch(index) {
@@ -276,7 +317,7 @@ module.exports = {
 
   addFloatingText(x, y, message, fontSize) {
     const style = {
-      font:     'monospace',
+      font:     'Raleway',
       fontSize: fontSize || 16,
 
       fill: '#fff',
@@ -393,6 +434,11 @@ module.exports = {
       } else {
         this.isChainActive = true;
 
+        this.chainAttach.play();
+        this.game.time.events.add(Phaser.Timer.SECOND * 0.8, function chainDrag() {
+          this.playChainDrag();
+        }, this);
+
         this.game.time.events.add(Phaser.Timer.SECOND * 2, function deactivateRope() {
           this.isChainActive = false;
           this.chain.destroy();
@@ -439,6 +485,7 @@ module.exports = {
     obstacle.animations.add('down', [0, 1, 2], 10, false);
 
     obstacle.animations.play('up');
+    this.shake();
     this.playBarrierSound();
 
     obstacle.id = Math.round(+new Date() / 1000);
@@ -473,6 +520,17 @@ module.exports = {
     this.barrierSounds[this.barrierSoundIndex].play();
     this.barrierSoundIndex = (this.barrierSoundIndex + 1) % 3;
   },
+
+  playChainDrag(){
+    this.chainDragSounds[this.chainDragSoundIndex].play();
+    this.chainDragSoundIndex = (this.chainDragSoundIndex + 1) % 2;
+  },
+  playHua(){
+    this.huaSounds[this.huaSoundIndex].play();
+    this.huaSoundIndex = (this.huaSoundIndex + 1) % 1;
+  },
+
+
 
   makePhysicsSprite(x, y, asset) {
     const sprite = this.make.sprite(x, y, asset);
@@ -535,6 +593,9 @@ module.exports = {
 
       return false;
     });
+    if (cr>0){
+          this.playHua();
+    }
 
     obstaclesToDestroy.removeAll(true);
 
@@ -604,14 +665,25 @@ module.exports = {
 
     if (success) {
       id++;
+      this.state.start('end', true, false, id);
+    } else {
+      this.disableInput();
+      let playAgain = this.addFloatingText(this.camera.view.width / 2, this.camera.view.height / 2, 'Play again', 48);
+      playAgain.anchor.set(0.5);
+      let goToMainMenu = this.addFloatingText(playAgain.x, playAgain.y + 80, 'Go to main menu', 48);
+      goToMainMenu.anchor.set(0.5);
+      playAgain.inputEnabled = true;
+      playAgain.events.onInputUp.add(() => {
+        this.state.start('scene', true, false, id);
+        playAgain.destroy();
+        goToMainMenu.destroy();
+      });
+      goToMainMenu.inputEnabled = true;
+      goToMainMenu.events.onInputUp.add(() => {
+        this.state.start('mainMenu', true, false, id);
+        playAgain.destroy();
+        goToMainMenu.destroy();
+      });
     }
-
-    let state = 'scene';
-
-    if (id > 0) {
-      state = 'end';
-    }
-
-    this.state.start(state, true, false, id);
   },
 };

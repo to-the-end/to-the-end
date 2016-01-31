@@ -5,7 +5,7 @@
 module.exports = {
   create() {
     const style = {
-      font:     'monospace',
+      font:     'Raleway',
       fontSize: 48,
 
       fill: '#fff',
@@ -16,7 +16,7 @@ module.exports = {
 
     const text = this.add.text(
       this.camera.view.centerX, this.camera.view.centerY,
-      'Thanks for playing!', style
+      'To be continued...', style
     );
 
     text.anchor.set(0.5);
