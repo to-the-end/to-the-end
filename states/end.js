@@ -5,7 +5,7 @@
 module.exports = {
   create() {
     const sprite = this.add.sprite(
-      this.camera.view.width / 2, this.camera.view.height / 2, 'menu-back'
+      this.camera.view.width / 2, this.camera.view.height / 2, 'end-back'
     );
 
     sprite.anchor.set(0.5);
