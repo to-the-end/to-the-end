@@ -6,6 +6,7 @@ class Switch extends Phaser.Sprite {
     super(game, x, y, 'switch');
     this.id = id;
     this.frame = 11;
+    this.anchor.set(0.5);
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
     this.body.setSize(32, 32, 0, 0);

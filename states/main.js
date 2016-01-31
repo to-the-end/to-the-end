@@ -319,7 +319,7 @@ module.exports = {
       .getTiles(0, 0, this.world.width, this.world.height)
       .filter((tile) => { return tile.index > 0; })
       .forEach((tile) => {
-        let newSwitch = new Switch(this.game, tile.x * tile.width, tile.y * tile.height, switchId, this.switchSounds[switchId - 1]);
+        let newSwitch = new Switch(this.game, (tile.x + 0.5) * tile.width, (tile.y + 0.5) * tile.height, switchId, this.switchSounds[switchId - 1]);
         switchId++;
         this.switchGroup.add(newSwitch);
       });
