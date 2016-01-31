@@ -83,7 +83,7 @@ module.exports = {
 
         if (this.score === 0) {
           this.wrongSound.play();
-          this.showSolution();
+          this.showSolution(true);
         } else {
           s.playSound();
         }
@@ -91,10 +91,47 @@ module.exports = {
     });
   },
 
-  showSolution() {
+  showSolution(shake) {
     this.disableInput();
 
-    this.tweenCameraToSwitch(0);
+    if (true) {
+      this.shake(() => {
+        this.tweenCameraToSwitch(0);
+      });
+    } else {
+      this.tweenCameraToSwitch(0);
+    }
+  },
+
+  shake(callback) {
+    this.camera.unfollow();
+    const shakeTimer = this.time.create(false);
+
+    const shakeRange = 20;
+    const shakeInterval = 60;
+    let shakeCount = 10;
+
+    shakeTimer.loop(shakeInterval, () => {
+
+      if (shakeCount === 0) {
+        this.camera.follow(this.player);
+        shakeTimer.stop();
+        
+        if (typeof callback === "function") {
+          callback(); 
+        }
+
+        return;
+      }
+
+      let shift1 = shakeCount % 2 ? -shakeRange / 2 : shakeRange / 2;
+      this.camera.x += shift1;
+
+      shakeCount--;
+
+    }, this);
+
+    shakeTimer.start();
   },
 
   tweenCameraToSwitch(index) {
@@ -426,7 +463,7 @@ module.exports = {
     if (this.game.physics.arcade.overlap(this.player, obstacle)) {
       return;
     }
-
+    this.shake();
     this.playBarrierSound();
 
     obstacle.id = Math.round(+new Date() / 1000);
