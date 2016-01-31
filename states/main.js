@@ -17,12 +17,17 @@ module.exports = {
   },
 
   create() {
+    this.bombsize = 40;
     this.isPlayerNextToSwitch = false;
     this.keys = {
       cursors:  this.input.keyboard.createCursorKeys(),
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
-    };
+    };      
 
+    this.keys.spacebar.onDown.add(() => {
+     this.eatWall();
+    });
+        
     this.score = 0;
 
     this.setupMap();
@@ -31,6 +36,7 @@ module.exports = {
     this.switchJson = this.cache.getJSON('level1');
     this.order = this.switchJson.order;
     this.setupSwitches();
+
     this.addTimerText();
     this.addTimer((timer) => {
       this.updateTimerText(timer);
@@ -322,4 +328,29 @@ module.exports = {
 
     return collide;
   },
+
+  eatWall(){    
+    const playerX = this.player.x;
+    const playerY = this.player.y;
+
+    
+    var cr=0;
+    const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
+      const threshold = 80;
+      const distance = Phaser.Math.distance( playerX, playerY, obstacle.x, obstacle.y);
+      if (distance < threshold) {  
+        cr++;  
+        return true;
+      }  
+      return false;
+    });
+
+    obstaclesToDestroy.removeAll(true);
+    const k=0.2;    
+    this.player.scale.setTo(this.player.scale.x+cr*k, this.player.scale.y+cr*k);
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function () {
+      this.player.scale.setTo(this.player.scale.x-cr*k, this.player.scale.y-cr*k);
+    }, this);    
+  },
+
 };
