@@ -181,16 +181,6 @@ module.exports = {
   movePlayer() {
     let hasMoved = false;
 
-    if (this.keys.cursors.up.isDown) {
-      this.player.walkUp();
-      hasMoved = true;
-    }
-
-    if (this.keys.cursors.down.isDown) {
-      this.player.walkDown();
-      hasMoved = true;
-    }
-
     if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
       hasMoved = true;
@@ -200,6 +190,24 @@ module.exports = {
       this.player.walkRight();
       hasMoved = true;
     }
+    
+    if (this.keys.cursors.up.isDown) {
+      if (hasMoved){
+        this.player.body.velocity.y--;
+      } else {
+        this.player.walkUp();
+      }
+      hasMoved = true;
+    }
+
+    if (this.keys.cursors.down.isDown) {
+      if (hasMoved){
+        this.player.body.velocity.y++;
+      } else {
+        this.player.walkDown();
+      }
+      hasMoved = true;
+    }    
 
     if (hasMoved) {
       this.player.normalizeVelocity();
