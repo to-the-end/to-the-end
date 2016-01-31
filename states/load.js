@@ -9,7 +9,7 @@ module.exports = {
 
   create() {
     const style = {
-      font:     'monospace',
+      font:     'Raleway',
       fontSize: 36,
 
       fill:   '#fff',
@@ -60,8 +60,13 @@ module.exports = {
     this.load.image('chain', 'assets/chain.png');
     this.load.script('vignetteFilter', 'filters/Vignette.js');
 
-    this.loadScene(0);
-    this.loadLevel(0);
+    this.load.image('scene-0-back-0', 'assets/scenes/backdrops/0-0.jpg');
+    this.load.image('scene-0-anim-0', 'assets/scenes/animations/0-0.jpg');
+    this.load.image('scene-0-anim-1', 'assets/scenes/animations/0-1.jpg');
+    this.load.image('scene-0-anim-2', 'assets/scenes/animations/0-2.jpg');
+
+    this.loadScenes();
+    this.loadLevels();
 
     this.load.onFileComplete.add(function handleProgress(progress) {
       progressDisplay.setText(`${progress}%`);
@@ -74,12 +79,16 @@ module.exports = {
     this.load.start();
   },
 
-  loadScene(id) {
-    this.load.json(`scene-${id}`, `assets/scenes/${id}.json`);
+  loadScenes() {
+    for (let i = 0; i < 2; i++) {
+      this.load.json(`scene-${i}`, `assets/scenes/${i}.json`);
+    }
   },
 
-  loadLevel(id) {
-    this.load.tilemap(`map-${id}`, `assets/tilemaps/level-${id}.json`, null, Phaser.Tilemap.TILED_JSON);
-    this.load.json(`level-${id}`, `assets/levels/${id}.json`);
+  loadLevels() {
+    for (let i = 0; i < 2; i++) {
+      this.load.tilemap(`map-${i}`, `assets/tilemaps/level-${i}.json`, null, Phaser.Tilemap.TILED_JSON);
+      this.load.json(`level-${i}`, `assets/levels/${i}.json`);
+    }
   },
 };

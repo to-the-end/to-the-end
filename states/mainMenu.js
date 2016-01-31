@@ -14,14 +14,14 @@ module.exports = {
 
   addUIElements() {
     const titleStyle = {
-      font: 'monospace',
+      font: 'Raleway',
       fontSize: 88,
       fill: '#fff',
       stroke: '#000',
       strokeThickness: 3
     };
     const defaultStyle = {
-      font: 'monospace',
+      font: 'Raleway',
       fontSize: 48,
       fill: '#fff',
       stroke: '#000',
@@ -62,7 +62,7 @@ module.exports = {
     this.playText.kill();
     this.instructionsText.kill();
     const instructionsStyle = {
-      font: 'monospace',
+      font: 'Raleway',
       fontSize: 48,
       fill: '#fff',
       stroke: '#000',
