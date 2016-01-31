@@ -48,22 +48,22 @@ module.exports = {
     this.showSolution();
   },
 
-  buildSwitchesSoundCollection(){
+  buildSwitchesSoundCollection() {
     var switches = [];
-    for (var x = 0; x < 7; x++){
+    for (var x = 0; x < 7; x++) {
       switches.push(this.add.audio('switch' + x));
     }
 
     return switches;
   },
 
-  setupAudio(){
+  setupAudio() {
     this.levelMusic =  this.add.audio('intro', 1, true);
     this.levelMusic.play();
     this.puzzleCompleteSound = this.add.audio('puzzleCompleteMinor');
     this.puzzleComplete = false;
     this.barrierPlacementSound = this.add.audio('barrierPlacement');
-    this.switchSounds = this.buildSwitchSoundCollection();
+    this.switchSounds = this.buildSwitchesSoundCollection();
   },
 
   turnOnNearbySwitches() {
