@@ -70,7 +70,7 @@ module.exports = {
   },
 
   turnOnNearbySwitches() {
-    const threshold = 40;
+    const threshold = 80;
     const playerX = this.player.x;
     const playerY = this.player.y;
 
