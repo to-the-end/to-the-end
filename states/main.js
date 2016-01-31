@@ -531,6 +531,8 @@ module.exports = {
         this.player.scale.x - scaleK, this.player.scale.y - scaleK
       );
     }, this);
+
+    this.player.animateCast();
   },
 
   updateWorldTint() {
