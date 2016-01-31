@@ -13,15 +13,21 @@ module.exports = {
   },
 
   addUIElements() {
+    const sprite = this.add.sprite(
+      this.camera.view.width / 2, this.camera.view.height / 2, 'menu-back'
+    );
+
+    sprite.anchor.set(0.5);
+
     const titleStyle = {
-      font: 'monospace',
+      font: 'Raleway',
       fontSize: 88,
       fill: '#fff',
       stroke: '#000',
       strokeThickness: 3
     };
     const defaultStyle = {
-      font: 'monospace',
+      font: 'Raleway',
       fontSize: 48,
       fill: '#fff',
       stroke: '#000',
@@ -62,7 +68,7 @@ module.exports = {
     this.playText.kill();
     this.instructionsText.kill();
     const instructionsStyle = {
-      font: 'monospace',
+      font: 'Raleway',
       fontSize: 48,
       fill: '#fff',
       stroke: '#000',
