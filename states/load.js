@@ -60,7 +60,7 @@ module.exports = {
     }, this);
 
     this.load.onLoadComplete.add(function startMain() {
-      this.state.start('scene', true, false, 0);
+      this.state.start('mainMenu', true, false, 0);
     }, this);
 
     this.load.start();
