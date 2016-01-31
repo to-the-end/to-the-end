@@ -20,16 +20,6 @@ module.exports = {
   },
 
   playDialogue(index) {
-    const style = {
-      font:     'Raleway',
-      fontSize: 24,
-
-      fill: '#fff',
-
-      stroke:          '#000',
-      strokeThickness: 3,
-    };
-
     const dialogue = this.sceneData.dialogue[index];
 
     if (!dialogue) {
@@ -46,28 +36,60 @@ module.exports = {
     let y;
     let anchorX;
     let anchorY;
+    let alignH;
+    let alignV;
 
     if (dialogue.position === 'tl') {
       x = 0;
       y = 0;
       anchorX = 0;
       anchorY = 0;
+      alignH = 'left';
+      alignV = 'top';
     } else if (dialogue.position === 'tr') {
       x = this.camera.view.width;
       y = 0;
       anchorX = 1;
       anchorY = 0;
+      alignH = 'right';
+      alignV = 'top';
     } else if (dialogue.position === 'bl') {
       x = 0;
       y = this.camera.view.height;
       anchorX = 0;
       anchorY = 1;
-    } else {
+      alignH = 'left';
+      alignV = 'bottom';
+    } else if (dialogue.position === 'br') {
       x = this.camera.view.width;
       y = this.camera.view.height;
       anchorX = 1;
       anchorY = 1;
+      alignH = 'right';
+      alignV = 'bottom';
+    } else {
+      x = this.camera.view.width / 2;
+      y = this.camera.view.height / 2;
+      anchorX = 0.5;
+      anchorY = 0.5;
+      alignH = 'center';
+      alignV = 'center';
     }
+
+    const style = {
+      font:     'Raleway',
+      fontSize: 24,
+
+      fill: '#fff',
+
+      stroke:          '#000',
+      strokeThickness: 3,
+
+      boundsAlignH:  alignH,
+      boundsAlignV:  alignV,
+      wordWrap:      true,
+      wordWrapWidth: this.camera.view.width * 0.6,
+    };
 
     const text = this.add.text(x, y, '', style);
 
@@ -84,7 +106,7 @@ module.exports = {
       text.setText(dialogue.text.substring(0, i));
 
       if (i >= dialogue.text.length) {
-        this.time.events.add(Phaser.Timer.SECOND * 2, function playNext() {
+        this.time.events.add(Phaser.Timer.SECOND * 2.5, function playNext() {
           this.playDialogue(index + 1);
         }, this);
       }
