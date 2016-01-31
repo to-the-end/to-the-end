@@ -14,7 +14,7 @@ class Switch extends Phaser.Sprite {
     this.animations.add('on', [11, 23, 35], 10, false);
     this.animations.add('off', [35, 23, 11], 10, false);
     this.isOn = false;
-    this.soundEffect = switchSound;
+    this.switchSound = switchSound;
     game.add.existing(this);  // adds object to the game world
   }
 
@@ -25,15 +25,17 @@ class Switch extends Phaser.Sprite {
   on() {
     this.isOn = true;
     this.animations.play('on');
-    this.soundEffect.play();
     return this.getId();
   }
 
   off() {
     this.isOn = false;
     this.animations.play('off');
-    this.soundEffect.play();
     return this.getId();
+  }
+
+  playSound(){
+    this.switchSound.play();
   }
 
   flick() {
