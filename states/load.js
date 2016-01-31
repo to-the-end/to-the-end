@@ -52,20 +52,25 @@ module.exports = {
     this.load.image('snake', 'assets/snake.png');
     this.load.script('vignetteFilter', 'filters/Vignette.js');
 
-    this.loadLevel('level1');
+    this.loadScene(0);
+    this.loadLevel(0);
 
     this.load.onFileComplete.add(function handleProgress(progress) {
       progressDisplay.setText(`${progress}%`);
     }, this);
 
     this.load.onLoadComplete.add(function startMain() {
-      this.state.start('main');
+      this.state.start('scene', true, false, 0);
     }, this);
 
     this.load.start();
   },
 
-  loadLevel(level) {
-    this.load.json(level, `assets/levels/${level}.json`);
-  }
+  loadScene(id) {
+    this.load.json(`scene-${id}`, `assets/scenes/${id}.json`);
+  },
+
+  loadLevel(id) {
+    this.load.json(`level-${id}`, `assets/levels/${id}.json`);
+  },
 };

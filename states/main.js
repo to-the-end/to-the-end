@@ -8,12 +8,8 @@ const Player = require('../model/Player');
 const Switch = require('../model/Switch');
 
 module.exports = {
-  init() {
-
-  },
-
-  preload() {
-
+  init(levelId) {
+    this.levelId = levelId;
   },
 
   create() {
@@ -32,17 +28,18 @@ module.exports = {
     this.setupMap();
     this.setupObstacles();
     this.setupPlayer();
-    this.switchJson = this.cache.getJSON('level1');
-    this.order = this.switchJson.order;
+    this.levelData = this.cache.getJSON(`level-${this.levelId}`);
+    this.order = this.levelData.order;
     this.setupSwitches();
 
     this.addTimerText();
     this.addTimer((timer) => {
       this.updateTimerText(timer);
-      // FIXME: instead of switchJson we need to change to this.currentLevelJson
-      if (timer >= this.switchJson.timer) {
+      // FIXME: instead of levelData we need to change to this.currentLevelJson
+      if (timer >= this.levelData.timer) {
         this.stopTimer();
-        // TODO: insert loosing condition here
+
+        this.endLevel(false);
       }
     });
     this.startTimer();
@@ -171,12 +168,8 @@ module.exports = {
         this.puzzleCompleteSound.play();
       }
 
-      this.addFloatingText(100, 100, 'You have won!');
+      this.endLevel(true);
     }
-  },
-
-  render() {
-
   },
 
   movePlayer() {
@@ -582,5 +575,21 @@ module.exports = {
     this.input.onDown.removeAll();
     this.keys.spacebar.onDown.removeAll();
     this.player.disableInput(this.keys.cursors);
+  },
+
+  endLevel(success) {
+    let id = this.levelId;
+
+    if (success) {
+      id++;
+    }
+
+    let state = 'scene';
+
+    if (id > 0) {
+      state = 'end';
+    }
+
+    this.state.start(state, true, false, id);
   },
 };
