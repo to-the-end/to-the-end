@@ -426,7 +426,7 @@ module.exports = {
     distance = Math.min(Math.round(distance), 999);
 
     this.terrainLayer.tint = Phaser.Color.interpolateColor(
-      0x111111, 0xffffff, 1000, distance, 1
+      0xffffff, 0x555555, 1000, distance, 1
     );
   },
 
