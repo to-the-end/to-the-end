@@ -144,6 +144,8 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.obstacleGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
+    this.updateWorldTint();
+
     if (this.inputEnabled) {
       this.movePlayer();
     }
@@ -266,9 +268,8 @@ module.exports = {
     this.switchesLayer = this.map.createLayer('switches');
     this.switchesLayer.alpha = 0;
 
-    const layer = this.map.createLayer('terrain');
-
-    layer.resizeWorld();
+    this.terrainLayer = this.map.createLayer('terrain');
+    this.terrainLayer.resizeWorld();
   },
 
   setupSwitches() {
@@ -407,6 +408,26 @@ module.exports = {
         this.player.scale.x - cr * k, this.player.scale.y - cr * k
       );
     }, this);
+  },
+
+  updateWorldTint() {
+    let distance;
+
+    this.switchGroup.forEachAlive(function getClosest(s) {
+      const d = this.math.distance(this.player.x, this.player.y, s.x, s.y);
+
+      if (!distance || d < distance) {
+        distance = d;
+
+        return;
+      }
+    }, this);
+
+    distance = Math.min(Math.round(distance), 999);
+
+    this.terrainLayer.tint = Phaser.Color.interpolateColor(
+      0x111111, 0xffffff, 1000, distance, 1
+    );
   },
 
   enableInput() {
