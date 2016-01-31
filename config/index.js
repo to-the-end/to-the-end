@@ -8,6 +8,7 @@ module.exports = {
     height: window.innerHeight,
   },
   obstacles: {
-    timer: 4
-  }
+    duration: 4,
+    cooldown: 0.5,
+  },
 };

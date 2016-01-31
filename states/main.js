@@ -326,6 +326,7 @@ module.exports = {
   },
 
   setupObstacles() {
+    this.obstaclesPlaceable = true;
     this.obstacleGroup = this.add.group();
   },
 
@@ -343,6 +344,9 @@ module.exports = {
 
     if (!this.isRopeActive) {
       if (distance > threshold) {
+        if (!this.obstaclesPlaceable) {
+          return;
+        }
 
         // FIXME: This should be a check against existing switches,
         //        not places they could go.
@@ -378,8 +382,14 @@ module.exports = {
 
     obstacle.body.moves = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function() {
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
       this.removeObstacle(obstacle.id);
+    }, this);
+
+    this.obstaclesPlaceable = false;
+
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.cooldown, function() {
+      this.obstaclesPlaceable = true;
     }, this);
 
     this.obstacleGroup.add(obstacle);
@@ -468,7 +478,7 @@ module.exports = {
     this.player.scale.set(
       this.player.scale.x + cr * k, this.player.scale.y + cr * k
     );
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.timer, function() {
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
       this.player.scale.set(
         this.player.scale.x - cr * k, this.player.scale.y - cr * k
       );
