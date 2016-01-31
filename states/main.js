@@ -13,7 +13,7 @@ module.exports = {
   },
 
   create() {
-    this.isRopeActive = false;
+    this.isChainActive = false;
     this.bombsize = 40;
     this.isPlayerNextToSwitch = false;
     this.keys = {
@@ -201,7 +201,7 @@ module.exports = {
       this.player.stop();
     }
 
-    if (this.isRopeActive) {
+    if (this.isChainActive) {
       const vx = this.player.body.velocity.x;
       const vy = this.player.body.velocity.y;
 
@@ -348,14 +348,14 @@ module.exports = {
 
     this.collisionLayer.getTileXY(pointer.worldX, pointer.worldY, tilePoint);
 
-    let tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+    const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
     const playerX = this.player.body.center.x;
     const playerY = this.player.body.center.y;
     const distance = this.math.distance(playerX, playerY, pointer.worldX, pointer.worldY);
     const threshold = 30;
 
-    if (!this.isRopeActive) {
+    if (!this.isChainActive) {
       if (distance > threshold) {
         if (!this.obstaclesPlaceable) {
           return;
@@ -377,14 +377,12 @@ module.exports = {
 
         this.addBarrier(tile.worldX, tile.worldY);
       } else {
-        this.isRopeActive = true;
+        this.isChainActive = true;
 
         this.game.time.events.add(Phaser.Timer.SECOND * 2, function deactivateRope() {
-          this.isRopeActive = false;
-          this.rope.destroy();
+          this.isChainActive = false;
+          this.chain.destroy();
         }, this);
-
-        this.ropecount = 0;
 
         const length = 918 / 20;
         const points = [];
@@ -393,19 +391,11 @@ module.exports = {
           points.push(new Phaser.Point(i * length, 0));
         }
 
-        this.rope = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'chain', null, points);
+        this.chain = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'chain', null, points);
 
         const state = this;
 
-        let count = 0;
-
-        this.rope.updateAnimation = function updateAnimation() {
-          count += 0.1;
-
-          state.collisionLayer.getTileXY(state.input.mousePointer.worldX, state.input.mousePointer.worldY, tilePoint);
-
-          tile = state.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
-
+        this.chain.updateAnimation = function updateAnimation() {
           const xx = state.player.body.center.x;
           const yy = state.player.body.center.y;
 
@@ -416,8 +406,8 @@ module.exports = {
             const alpha = i / (this.points.length - 1);
             const beta = 1 - alpha;
 
-            this.points[i].x = (tile.worldX - xx) * beta;
-            this.points[i].y = (tile.worldY - yy) * beta;
+            this.points[i].x = (state.input.mousePointer.worldX - xx) * beta;
+            this.points[i].y = (state.input.mousePointer.worldY - yy) * beta;
           }
         };
       }
