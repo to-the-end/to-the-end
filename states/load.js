@@ -26,7 +26,9 @@ module.exports = {
     this.load.image('switches-tiles', 'assets/tilemaps/tiles/switches.png');
     this.load.image('player-tiles', 'assets/tilemaps/tiles/player.png');
 
-    this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+    this.load.spritesheet(
+      'character', 'assets/character/long-white.png', 64, 64
+    );
     this.load.spritesheet('switch', 'assets/lever.png', 32, 32);
 
     // Background music
