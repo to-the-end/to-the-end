@@ -78,13 +78,13 @@ module.exports = {
 
     let i = 0;
 
-    this.time.events.repeat(10, dialogue.text.length, function updateText() {
+    this.time.events.repeat(15, dialogue.text.length, function updateText() {
       i++;
 
       text.setText(dialogue.text.substring(0, i));
 
       if (i >= dialogue.text.length) {
-        this.time.events.add(Phaser.Timer.SECOND * 1, function playNext() {
+        this.time.events.add(Phaser.Timer.SECOND * 2, function playNext() {
           this.playDialogue(index + 1);
         }, this);
       }
