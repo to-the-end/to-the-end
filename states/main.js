@@ -207,24 +207,34 @@ module.exports = {
     } else {
       this.player.stop();
     }
+    if (this.isRopeActive){
+        var vx = this.player.body.velocity.x;
+        var vy = this.player.body.velocity.y;
 
-    if (this.isRopeActive) {
-      const vx = this.player.body.velocity.x;
-      const vy = this.player.body.velocity.y;
+        const tilePoint = new Phaser.Point();
+        this.collisionLayer.getTileXY(this.game.input.mousePointer.worldX, this.game.input.mousePointer.worldY, tilePoint);
+        const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+//         console.log(tile.worldX);
+//         console.log(tile.worldY);
 
-      const tilePoint = new Phaser.Point();
+//         console.log(this.player.body.center);
+        var dirx = tile.worldX - this.player.body.center.x;
+        var diry = tile.worldY - this.player.body.center.y;
+//        console.log(dirx);
+//        console.log(diry);
 
-      this.collisionLayer.getTileXY(this.input.mousePointer.worldX, this.input.mousePointer.worldY, tilePoint);
-
-      const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
-
-      const dirx = tile.worldX - this.player.body.center.x;
-      const diry = tile.worldY - this.player.body.center.y;
-
-      const s = this.math.clamp((vx * dirx + vy * diry) / 120000, -0.9, 0);
-
-      this.player.body.velocity.x += vx * s;
-      this.player.body.velocity.y += vy * s;
+        var s = (vx*dirx+vy*diry)/120000.;
+//        console.log(s);
+        if (s>0){
+          s = 0;
+        }
+        if (s<-0.9){
+          s = -0.9;
+        }
+        //console.log(s);
+        this.player.body.velocity.x = vx*(1+s);
+        this.player.body.velocity.y = vy*(1+s);
+                
     }
   },
 
@@ -344,6 +354,10 @@ module.exports = {
   setupObstacles() {
     this.obstaclesPlaceable = true;
     this.obstacleGroup = this.add.group();
+    this.input.onDown.add(this.addObstacleFromPointer, this);
+/*    this.input.onUp.add(() => {
+     this.isRopeActive = false;
+    }, this);*/
   },
 
   addObstacleFromPointer(pointer) {
@@ -354,8 +368,8 @@ module.exports = {
     const tile = this.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
 
     const playerX = this.player.body.center.x;
-    const playerY = this.player.body.center.y;
-    const distance = this.math.distance(playerX, playerY, pointer.worldX, pointer.worldY);
+    const playerY = this.player.body.center.y;    
+    const distance = Phaser.Math.distance( playerX, playerY, pointer.worldX, pointer.worldY);
     const threshold = 30;
 
     if (!this.isRopeActive) {
@@ -384,7 +398,70 @@ module.exports = {
 
         this.game.time.events.add(Phaser.Timer.SECOND * 2, function deactivateRope() {
           this.isRopeActive = false;
+        this.rope.destroy();
+        console.log('deactivated rope')
         }, this);
+
+      //add rope
+      this.ropecount = 0;
+      var length = 918 / 20;
+      var points = [];
+
+      for (var i = 0; i < 20; i++)
+      {
+          points.push(new Phaser.Point(i * length, 0));
+      }
+
+      this.rope = this.game.add.rope(this.player.body.center.x, this.player.body.center.y,
+       'snake', null, points);
+
+      console.log(this.game.world.centerX);
+      console.log(playerX);
+
+
+      this.rope.scale.set(1);
+      var z = this;
+      var count = 0;
+      this.rope.updateAnimation = function() {
+        count += 0.1;
+        const tilePoint = new Phaser.Point();
+
+        z.collisionLayer.getTileXY(z.game.input.mousePointer.worldX, z.game.input.mousePointer.worldY, tilePoint);
+        const tile = z.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+  
+        var xx = z.player.body.center.x;
+        var yy = z.player.body.center.y;         
+//console.log(playerX);
+        this.x = xx;
+        this.y = yy;
+        for (var i = 0; i < this.points.length; i++)
+        {
+            var alfa = i/(this.points.length-1.);
+            var beta = 1-alfa;      
+
+            this.points[i].x = xx*alfa+tile.worldX*beta-xx+Math.sin(i *5 + count) * 20;
+            this.points[i].y = yy*alfa+tile.worldY*beta-yy+Math.cos(i *5 + count) * 20;//0+Math.sin(i * 0.5 + count) * 20;
+        }
+      };
+    /*
+      this.rope.updateAnimation = function() {
+        const tilePoint = new Phaser.Point();
+
+        z.collisionLayer.getTileXY(z.game.input.mousePointer.worldX, z.game.input.mousePointer.worldY, tilePoint);
+        const tile = z.map.getTile(tilePoint.x, tilePoint.y, 'switches', true);
+  
+        const playerX = z.player.body.center.x;
+        const playerY = z.player.body.center.y;          
+
+        for (var i = 0; i < this.points.length; i++)
+        {
+          var alfa = i/(this.points.length-1.);
+          var beta = 1-alfa;
+            this.points[i].x =  tile.worldX*alfa + playerX*beta;
+            this.points[i].y =  tile.worldY*alfa + playerY*beta;
+        }
+        };                   
+        */
       }
     }
   },
@@ -489,14 +566,18 @@ module.exports = {
 
     obstaclesToDestroy.removeAll(true);
 
-    const k = 0.8;
+    var scaleK = cr*0.8;
+    
+    if (this.player.scale.x + scaleK>7){
+      scaleK = 7-this.player.scale.x;
+    }
 
     this.player.scale.set(
-      this.player.scale.x + cr * k, this.player.scale.y + cr * k
+      this.player.scale.x + scaleK, this.player.scale.y + scaleK      
     );
     this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
       this.player.scale.set(
-        this.player.scale.x - cr * k, this.player.scale.y - cr * k
+        this.player.scale.x - scaleK, this.player.scale.y - scaleK
       );
     }, this);
   },
