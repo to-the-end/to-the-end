@@ -233,17 +233,17 @@ module.exports = {
       this.eatWall();
     }
 
-    if (this.keys.cursors.left.isDown || joystick.value[1] > 200) {
+    if (this.keys.cursors.left.isDown || (joystick.value && joystick.value[1] > 200)) {
       this.player.walkLeft();
       hasMoved = true;
     }
 
-    if (this.keys.cursors.right.isDown || joystick.value[1] < 100) {
+    if (this.keys.cursors.right.isDown || (joystick.value && joystick.value[1] < 100)) {
       this.player.walkRight();
       hasMoved = true;
     }
     
-    if (this.keys.cursors.up.isDown || joystick.value[0] > 200) {
+    if (this.keys.cursors.up.isDown || (joystick.value && joystick.value[0] > 200)) {
       if (hasMoved){
         this.player.body.velocity.y--;
       } else {
@@ -252,7 +252,7 @@ module.exports = {
       hasMoved = true;
     }
 
-    if (this.keys.cursors.down.isDown || joystick.value[0] < 100) {
+    if (this.keys.cursors.down.isDown || (joystick.value && joystick.value[0] < 100)) {
       if (hasMoved){
         this.player.body.velocity.y++;
       } else {
@@ -496,7 +496,6 @@ module.exports = {
     obstacle.animations.add('down', [0, 1, 2], 10, false);
 
     obstacle.animations.play('up');
-    this.shake();
     this.playBarrierSound();
 
     obstacle.id = Math.round(+new Date() / 1000);
