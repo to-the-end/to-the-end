@@ -4,7 +4,6 @@
 
 const config = require('../config');
 
-const joystick = require('../bluetooth/ble');
 const Player = require('../model/Player');
 const Switch = require('../model/Switch');
 
@@ -14,7 +13,6 @@ module.exports = {
   },
 
   create() {
-    this.joystickPressed = false;
     this.isChainActive = false;
     this.bombsize = 40;
     this.isPlayerNextToSwitch = false;
@@ -224,26 +222,17 @@ module.exports = {
   movePlayer() {
     let hasMoved = false;
 
-    if (joystick.buttonPressed && this.inputEnabled) {
-      console.log("button pressed");
-
-      joystick.buttonPressed = false;
-
-      this.turnOnNearbySwitches();
-      this.eatWall();
-    }
-
-    if (this.keys.cursors.left.isDown || (joystick.value && joystick.value[1] > 200)) {
+    if (this.keys.cursors.left.isDown) {
       this.player.walkLeft();
       hasMoved = true;
     }
 
-    if (this.keys.cursors.right.isDown || (joystick.value && joystick.value[1] < 100)) {
+    if (this.keys.cursors.right.isDown) {
       this.player.walkRight();
       hasMoved = true;
     }
 
-    if (this.keys.cursors.up.isDown || (joystick.value && joystick.value[0] > 200)) {
+    if (this.keys.cursors.up.isDown) {
       if (hasMoved){
         this.player.body.velocity.y--;
       } else {
@@ -252,7 +241,7 @@ module.exports = {
       hasMoved = true;
     }
 
-    if (this.keys.cursors.down.isDown || (joystick.value && joystick.value[0] < 100)) {
+    if (this.keys.cursors.down.isDown) {
       if (hasMoved){
         this.player.body.velocity.y++;
       } else {
