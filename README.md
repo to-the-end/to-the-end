@@ -5,6 +5,11 @@
 This game was made for Global Game Jam 2016.
 
 
+## Play
+
+Download the appropriate [distribution for your system](https://github.com/to-the-end/to-the-end/releases).
+
+
 ## Develop
 
 This game can be run as a standalone executable using [Electron](http://electron.atom.io).
