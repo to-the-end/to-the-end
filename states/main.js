@@ -63,13 +63,12 @@ module.exports = {
     this.switchSounds = this.buildSoundCollection('switch', 7);
     this.barrierSounds = this.buildSoundCollection('barrier', 3);
     this.barrierSoundIndex = 0;
-    this.wrongSound = this.add.audio('wrong');
+    this.wrongSound = this.add.audio('wrong-c');
     this.huaSounds = this.buildSoundCollection('hua',1);
     this.huaSoundIndex = 0;
     this.chainDragSounds = this.buildSoundCollection('chainDrag',2);
     this.chainDragSoundIndex = 0;
     this.chainAttach = this.add.audio('chainAttach');
-    this.wrongSound = this.add.audio('wrong-c');
   },
 
   turnOnNearbySwitches() {
