@@ -1,5 +1,6 @@
 /build
 /dist
+/raw-assets
 *.sublime-*
 .editorconfig
 .electronignore
