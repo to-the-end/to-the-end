@@ -57,7 +57,7 @@ module.exports = {
     this.load.audio('chainAttach', 'assets/audio/sfx/antagonist-actions/chains/chainattach.wav');
 
     this.load.audio('puzzleCompleteMinor', 'assets/audio/sfx/puzzlecomplete/minor.wav');
-    this.load.audio('wrong', 'assets/audio/sfx/wrong.wav');
+    this.load.audio('wrong-c', 'assets/audio/sfx/wrong/wrong-c.wav');
 
     this.load.spritesheet('obstacle', 'assets/obstacle.png', 128, 128, 3);
     this.load.image('chain', 'assets/chain.png');
