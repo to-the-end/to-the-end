@@ -159,7 +159,7 @@ module.exports = {
 
     const antonio = this.add.text(
       this.camera.view.centerX, ggj.y + 100,
-      'Antonio LaBarbera - Art', style
+      'Antonio La Barbera - Art', style
     );
 
     antonio.anchor.set(0.5, 0);
