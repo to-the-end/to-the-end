@@ -69,6 +69,7 @@ module.exports = {
     this.chainDragSounds = this.buildSoundCollection('chainDrag',2);
     this.chainDragSoundIndex = 0;
     this.chainAttach = this.add.audio('chainAttach');
+    this.wrongSound = this.add.audio('wrong-c');
   },
 
   turnOnNearbySwitches() {
