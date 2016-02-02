@@ -134,7 +134,7 @@ module.exports = {
 
     let i = 0;
 
-    this.time.events.repeat(15, repetitions, function updateText() {
+    this.time.events.repeat(60, repetitions, function updateText() {
       i++;
 
       if (text) {
