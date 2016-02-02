@@ -348,6 +348,8 @@ module.exports = {
       this.game, (tile.x + 0.5) * tile.width,  (tile.y + 0.5) * tile.height
     );
 
+    this.player.canDestroyBarriers = true;
+
     this.camera.follow(this.player);
     this.camera.update();
   },
@@ -573,55 +575,72 @@ module.exports = {
   },
 
   destroyBarriers() {
-    const threshold = 320;
-    const playerX = this.player.body.center.x;
-    const playerY = this.player.body.center.y;
-
-    const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
-      const distance = Phaser.Math.distance(
-        playerX, playerY, obstacle.x, obstacle.y
-      );
-
-      if (distance < threshold) {
-        return true;
-      }
-
-      return false;
-    });
-
-    let scaleK = Math.max(obstaclesToDestroy.total * 0.8, 1);
-
-    if (this.player.scale.x + scaleK > 7) {
-      scaleK = 7 - this.player.scale.x;
+    if (!this.player.canDestroyBarriers) {
+      return;
     }
 
-    this.add.tween(this.player.scale).to(
-      {
-        x: this.player.scale.x + scaleK,
-        y: this.player.scale.y + scaleK,
-      },
-      400,
-      Phaser.Easing.LINEAR,
-      true
-    )
-      .onComplete.add(function destroyObstacles() {
-        if (obstaclesToDestroy.total) {
-          this.playBarrierDestroySound();
-        }
+    const scaleDelay    = 500;
+    const scaleDuration = 250;
+    const descaleDelay  = Phaser.Timer.SECOND * config.destruction.scale.duration;
 
-        obstaclesToDestroy.removeAll(true);
-      });
+    const threshold = 320;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-      this.player.scale.x -= scaleK;
-      this.player.scale.y -= scaleK;
-      // this.add.tween(this.player.scale).to({
-      //   x: this.player.scale.x - scaleK,
-      //   y: this.player.scale.y - scaleK,
-      // }, 250, Phaser.Easing.LINEAR, true);
-    }, this);
+    this.player.canDestroyBarriers = false;
 
     this.player.animateCast();
+
+    this.time.events.add(scaleDelay, function scale() {
+      const scaleDelta = Math.min(1, 5 - this.player.scale.x);
+
+      const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
+        const distance = this.math.distance(
+          this.player.body.center.x, this.player.body.center.y,
+          obstacle.x, obstacle.y
+        );
+
+        if (distance < threshold) {
+          return true;
+        }
+
+        return false;
+      }.bind(this));
+
+      this.add.tween(this.player.scale).to(
+        {
+          x: this.player.scale.x + scaleDelta,
+          y: this.player.scale.y + scaleDelta,
+        },
+        scaleDuration,
+        Phaser.Easing.LINEAR,
+        true
+      )
+        .onComplete.add(function destroyObstacles() {
+          if (obstaclesToDestroy.total) {
+            this.playBarrierDestroySound();
+          }
+
+          obstaclesToDestroy.removeAll(true);
+
+          this.player.canDestroyBarriers = true;
+
+          this.time.events.add(descaleDelay - scaleDuration, function descale() {
+            this.player.canDestroyBarriers = false;
+
+            this.add.tween(this.player.scale).to(
+              {
+                x: this.player.scale.x - scaleDelta,
+                y: this.player.scale.y - scaleDelta,
+              },
+              scaleDuration,
+              Phaser.Easing.LINEAR,
+              true
+            )
+              .onComplete.add(function enableDestruction() {
+                this.player.canDestroyBarriers = true;
+              }, this);
+          }, this);
+        }, this);
+    }, this);
   },
 
   updateWorldTint() {
