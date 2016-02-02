@@ -573,7 +573,7 @@ module.exports = {
     return collide;
   },
 
-  eatWall() {
+  destroyBarriers() {
     const threshold = 320;
     const playerX = this.player.body.center.x;
     const playerY = this.player.body.center.y;
@@ -646,7 +646,7 @@ module.exports = {
 
     // FIXME: Fix this conflict!
     this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
-    this.keys.spacebar.onDown.add(this.eatWall, this);
+    this.keys.spacebar.onDown.add(this.destroyBarriers, this);
 
     this.player.enableInput(this.keys.cursors);
   },
