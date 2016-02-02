@@ -64,9 +64,9 @@ module.exports = {
     this.barrierSounds = this.buildSoundCollection('barrier', 3);
     this.barrierSoundIndex = 0;
     this.wrongSound = this.add.audio('wrong-c');
-    this.huaSounds = this.buildSoundCollection('hua',1);
-    this.huaSoundIndex = 0;
-    this.chainDragSounds = this.buildSoundCollection('chainDrag',2);
+    this.barrierDestroySounds = this.buildSoundCollection('barrierDestroy', 1);
+    this.barrierDestroySoundIndex = 0;
+    this.chainDragSounds = this.buildSoundCollection('chainDrag', 2);
     this.chainDragSoundIndex = 0;
     this.chainAttach = this.add.audio('chainAttach');
   },
@@ -514,22 +514,21 @@ module.exports = {
     });
   },
 
-  playBarrierSound(){
+  playBarrierSound() {
     // Play in sequence
     this.barrierSounds[this.barrierSoundIndex].play();
     this.barrierSoundIndex = (this.barrierSoundIndex + 1) % 3;
   },
 
-  playChainDrag(){
+  playChainDrag() {
     this.chainDragSounds[this.chainDragSoundIndex].play();
     this.chainDragSoundIndex = (this.chainDragSoundIndex + 1) % 2;
   },
-  playHua(){
-    this.huaSounds[this.huaSoundIndex].play();
-    this.huaSoundIndex = (this.huaSoundIndex + 1) % 1;
+
+  playBarrierDestroySound() {
+    this.barrierDestroySounds[this.barrierDestroySoundIndex].play();
+    this.barrierDestroySoundIndex = (this.barrierDestroySoundIndex + 1) % 1;
   },
-
-
 
   makePhysicsSprite(x, y, asset) {
     const sprite = this.make.sprite(x, y, asset);
@@ -590,7 +589,7 @@ module.exports = {
       return false;
     });
 
-    this.playHua();
+    this.playBarrierDestroySound();
 
     let scaleK = Math.max(obstaclesToDestroy.total * 0.8, 1);
 
