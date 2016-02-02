@@ -574,49 +574,46 @@ module.exports = {
   },
 
   eatWall() {
+    const threshold = 320;
     const playerX = this.player.body.center.x;
     const playerY = this.player.body.center.y;
 
-    let cr = 0;
-
     const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
-      const threshold = 80;
       const distance = Phaser.Math.distance(
         playerX, playerY, obstacle.x, obstacle.y
       );
 
-      if (distance < threshold * 4) {
-        cr++;
+      if (distance < threshold) {
         return true;
       }
 
       return false;
     });
-    if (cr>0){
-          this.playHua();
 
-          obstaclesToDestroy.removeAll(true);
+    if (obstaclesToDestroy.total) {
+      this.playHua();
 
-          let scaleK = cr * 0.8;
+      let scaleK = obstaclesToDestroy.total * 0.8;
 
-          if (this.player.scale.x + scaleK > 7){
-            scaleK = 7 - this.player.scale.x;
-          }
+      if (this.player.scale.x + scaleK > 7) {
+        scaleK = 7 - this.player.scale.x;
+      }
 
-          this.add.tween(this.player.scale).to({
-            x: this.player.scale.x + scaleK,
-            y: this.player.scale.y + scaleK,
-          }, 200, Phaser.Easing.LINEAR, true);
+      this.add.tween(this.player.scale).to({
+        x: this.player.scale.x + scaleK,
+        y: this.player.scale.y + scaleK,
+      }, 200, Phaser.Easing.LINEAR, true);
 
-          this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-            this.player.scale.x -= scaleK;
-            this.player.scale.y -= scaleK;
-      /*      this.add.tween(this.player.scale).to({
-              x: this.player.scale.x - scaleK,
-              y: this.player.scale.y - scaleK,
-            }, 200, Phaser.Easing.LINEAR, true);
-            */
-          }, this);
+      this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
+        this.player.scale.x -= scaleK;
+        this.player.scale.y -= scaleK;
+        // this.add.tween(this.player.scale).to({
+        //   x: this.player.scale.x - scaleK,
+        //   y: this.player.scale.y - scaleK,
+        // }, 200, Phaser.Easing.LINEAR, true);
+      }, this);
+
+      obstaclesToDestroy.removeAll(true);
     }
 
     this.player.animateCast();
