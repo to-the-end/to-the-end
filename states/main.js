@@ -590,37 +590,35 @@ module.exports = {
       return false;
     });
 
-    if (obstaclesToDestroy.total) {
-      this.playHua();
+    this.playHua();
 
-      let scaleK = obstaclesToDestroy.total * 0.8;
+    let scaleK = Math.max(obstaclesToDestroy.total * 0.8, 1);
 
-      if (this.player.scale.x + scaleK > 7) {
-        scaleK = 7 - this.player.scale.x;
-      }
-
-      this.add.tween(this.player.scale).to(
-        {
-          x: this.player.scale.x + scaleK,
-          y: this.player.scale.y + scaleK,
-        },
-        400,
-        Phaser.Easing.LINEAR,
-        true
-      )
-        .onComplete.add(function destroyObstacles() {
-          obstaclesToDestroy.removeAll(true);
-        });
-
-      this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-        this.player.scale.x -= scaleK;
-        this.player.scale.y -= scaleK;
-        // this.add.tween(this.player.scale).to({
-        //   x: this.player.scale.x - scaleK,
-        //   y: this.player.scale.y - scaleK,
-        // }, 200, Phaser.Easing.LINEAR, true);
-      }, this);
+    if (this.player.scale.x + scaleK > 7) {
+      scaleK = 7 - this.player.scale.x;
     }
+
+    this.add.tween(this.player.scale).to(
+      {
+        x: this.player.scale.x + scaleK,
+        y: this.player.scale.y + scaleK,
+      },
+      400,
+      Phaser.Easing.LINEAR,
+      true
+    )
+      .onComplete.add(function destroyObstacles() {
+        obstaclesToDestroy.removeAll(true);
+      });
+
+    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
+      this.player.scale.x -= scaleK;
+      this.player.scale.y -= scaleK;
+      // this.add.tween(this.player.scale).to({
+      //   x: this.player.scale.x - scaleK,
+      //   y: this.player.scale.y - scaleK,
+      // }, 250, Phaser.Easing.LINEAR, true);
+    }, this);
 
     this.player.animateCast();
   },
