@@ -64,9 +64,9 @@ module.exports = {
     this.barrierSounds = this.buildSoundCollection('barrier', 3);
     this.barrierSoundIndex = 0;
     this.wrongSound = this.add.audio('wrong-c');
-    this.huaSounds = this.buildSoundCollection('hua',1);
-    this.huaSoundIndex = 0;
-    this.chainDragSounds = this.buildSoundCollection('chainDrag',2);
+    this.barrierDestroySounds = this.buildSoundCollection('barrierDestroy', 1);
+    this.barrierDestroySoundIndex = 0;
+    this.chainDragSounds = this.buildSoundCollection('chainDrag', 2);
     this.chainDragSoundIndex = 0;
     this.chainAttach = this.add.audio('chainAttach');
   },
@@ -348,6 +348,9 @@ module.exports = {
       this.game, (tile.x + 0.5) * tile.width,  (tile.y + 0.5) * tile.height
     );
 
+    this.player.canDestroyBarriers = true;
+    this.player.scaleCount = 0;
+
     this.camera.follow(this.player);
     this.camera.update();
   },
@@ -514,22 +517,21 @@ module.exports = {
     });
   },
 
-  playBarrierSound(){
+  playBarrierSound() {
     // Play in sequence
     this.barrierSounds[this.barrierSoundIndex].play();
     this.barrierSoundIndex = (this.barrierSoundIndex + 1) % 3;
   },
 
-  playChainDrag(){
+  playChainDrag() {
     this.chainDragSounds[this.chainDragSoundIndex].play();
     this.chainDragSoundIndex = (this.chainDragSoundIndex + 1) % 2;
   },
-  playHua(){
-    this.huaSounds[this.huaSoundIndex].play();
-    this.huaSoundIndex = (this.huaSoundIndex + 1) % 1;
+
+  playBarrierDestroySound() {
+    this.barrierDestroySounds[this.barrierDestroySoundIndex].play();
+    this.barrierDestroySoundIndex = (this.barrierDestroySoundIndex + 1) % 1;
   },
-
-
 
   makePhysicsSprite(x, y, asset) {
     const sprite = this.make.sprite(x, y, asset);
@@ -573,53 +575,85 @@ module.exports = {
     return collide;
   },
 
-  eatWall() {
-    const playerX = this.player.body.center.x;
-    const playerY = this.player.body.center.y;
+  destroyBarriers() {
+    if (!this.player.canDestroyBarriers) {
+      return;
+    }
 
-    let cr = 0;
+    const scaleDelay    = 500;
+    const scaleDuration = 250;
+    const descaleDelay  = Phaser.Timer.SECOND * config.destruction.scale.duration;
 
-    const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
-      const threshold = 80;
-      const distance = Phaser.Math.distance(
-        playerX, playerY, obstacle.x, obstacle.y
-      );
+    const threshold = 320;
 
-      if (distance < threshold * 4) {
-        cr++;
-        return true;
-      }
+    this.player.canDestroyBarriers = false;
 
-      return false;
-    });
-    if (cr>0){
-          this.playHua();
+    this.player.animateCast();
+
+    this.time.events.add(scaleDelay, function scale() {
+      const scaleOrigin = this.player.scaleTarget || this.player.scale.x;
+
+      this.player.scaleTarget = Math.min(1 + scaleOrigin, 8 - scaleOrigin);
+      this.player.scaleCount++;
+
+      const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
+        const distance = this.math.distance(
+          this.player.body.center.x, this.player.body.center.y,
+          obstacle.x, obstacle.y
+        );
+
+        if (distance < threshold) {
+          return true;
+        }
+
+        return false;
+      }.bind(this));
+
+      this.add.tween(this.player.scale).to(
+        {
+          x: this.player.scaleTarget,
+          y: this.player.scaleTarget,
+        },
+        scaleDuration,
+        Phaser.Easing.LINEAR,
+        true
+      )
+        .onComplete.add(function destroyObstacles() {
+          if (obstaclesToDestroy.total) {
+            this.playBarrierDestroySound();
+          }
 
           obstaclesToDestroy.removeAll(true);
 
-          let scaleK = cr * 0.8;
+          this.player.canDestroyBarriers = true;
 
-          if (this.player.scale.x + scaleK > 7){
-            scaleK = 7 - this.player.scale.x;
-          }
+          this.time.events.add(descaleDelay - scaleDuration, function descale() {
+            this.player.canDestroyBarriers = false;
 
-          this.add.tween(this.player.scale).to({
-            x: this.player.scale.x + scaleK,
-            y: this.player.scale.y + scaleK,
-          }, 200, Phaser.Easing.LINEAR, true);
+            this.player.scaleCount--;
 
-          this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-            this.player.scale.x -= scaleK;
-            this.player.scale.y -= scaleK;
-      /*      this.add.tween(this.player.scale).to({
-              x: this.player.scale.x - scaleK,
-              y: this.player.scale.y - scaleK,
-            }, 200, Phaser.Easing.LINEAR, true);
-            */
+            if (this.player.scaleCount) {
+              this.player.canDestroyBarriers = true;
+              return;
+            }
+
+            this.player.scaleTarget = 1;
+
+            this.add.tween(this.player.scale).to(
+              {
+                x: this.player.scaleTarget,
+                y: this.player.scaleTarget,
+              },
+              scaleDuration,
+              Phaser.Easing.LINEAR,
+              true
+            )
+              .onComplete.add(function enableDestruction() {
+                this.player.canDestroyBarriers = true;
+              }, this);
           }, this);
-    }
-
-    this.player.animateCast();
+        }, this);
+    }, this);
   },
 
   updateWorldTint() {
@@ -655,7 +689,7 @@ module.exports = {
 
     // FIXME: Fix this conflict!
     this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
-    this.keys.spacebar.onDown.add(this.eatWall, this);
+    this.keys.spacebar.onDown.add(this.destroyBarriers, this);
 
     this.player.enableInput(this.keys.cursors);
   },

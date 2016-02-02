@@ -11,4 +11,9 @@ module.exports = {
     duration: 4,
     cooldown: 0.5,
   },
+  destruction: {
+    scale: {
+      duration: 4,
+    },
+  },
 };

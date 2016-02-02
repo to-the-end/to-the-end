@@ -47,7 +47,7 @@ module.exports = {
     }
 
     for (var x = 0; x < 1; x++){
-      this.load.audio('hua' + x, 'assets/audio/sfx/player-actions/destroybarrier' + (x + 1) + '.wav');
+      this.load.audio('barrierDestroy' + x, 'assets/audio/sfx/player-actions/destroybarrier' + (x + 1) + '.wav');
     }
 
     for (var x = 0; x < 2; x++){
