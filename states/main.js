@@ -349,6 +349,7 @@ module.exports = {
     );
 
     this.player.canDestroyBarriers = true;
+    this.player.scaleCount = 0;
 
     this.camera.follow(this.player);
     this.camera.update();
@@ -590,7 +591,10 @@ module.exports = {
     this.player.animateCast();
 
     this.time.events.add(scaleDelay, function scale() {
-      const scaleDelta = Math.min(1, 5 - this.player.scale.x);
+      const scaleOrigin = this.player.scaleTarget || this.player.scale.x;
+
+      this.player.scaleTarget = Math.min(1 + scaleOrigin, 8 - scaleOrigin);
+      this.player.scaleCount++;
 
       const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
         const distance = this.math.distance(
@@ -607,8 +611,8 @@ module.exports = {
 
       this.add.tween(this.player.scale).to(
         {
-          x: this.player.scale.x + scaleDelta,
-          y: this.player.scale.y + scaleDelta,
+          x: this.player.scaleTarget,
+          y: this.player.scaleTarget,
         },
         scaleDuration,
         Phaser.Easing.LINEAR,
@@ -626,10 +630,19 @@ module.exports = {
           this.time.events.add(descaleDelay - scaleDuration, function descale() {
             this.player.canDestroyBarriers = false;
 
+            this.player.scaleCount--;
+
+            if (this.player.scaleCount) {
+              this.player.canDestroyBarriers = true;
+              return;
+            }
+
+            this.player.scaleTarget = 1;
+
             this.add.tween(this.player.scale).to(
               {
-                x: this.player.scale.x - scaleDelta,
-                y: this.player.scale.y - scaleDelta,
+                x: this.player.scaleTarget,
+                y: this.player.scaleTarget,
               },
               scaleDuration,
               Phaser.Easing.LINEAR,
