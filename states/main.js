@@ -203,8 +203,6 @@ module.exports = {
     this.physics.arcade.collide(this.player, this.obstacleGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
-    this.updateWorldTint();
-
     if (this.inputEnabled) {
       this.movePlayer();
     }
@@ -217,6 +215,10 @@ module.exports = {
 
       this.endLevel(true);
     }
+  },
+
+  preRender() {
+    this.updateWorldTint();
   },
 
   movePlayer() {
