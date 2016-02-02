@@ -589,8 +589,6 @@ module.exports = {
       return false;
     });
 
-    this.playBarrierDestroySound();
-
     let scaleK = Math.max(obstaclesToDestroy.total * 0.8, 1);
 
     if (this.player.scale.x + scaleK > 7) {
@@ -607,6 +605,10 @@ module.exports = {
       true
     )
       .onComplete.add(function destroyObstacles() {
+        if (obstaclesToDestroy.total) {
+          this.playBarrierDestroySound();
+        }
+
         obstaclesToDestroy.removeAll(true);
       });
 
