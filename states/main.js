@@ -99,6 +99,7 @@ module.exports = {
 
   showSolution(shake) {
     this.disableInput();
+    this.player.stop();
 
     if (shake) {
       this.shake(() => {
@@ -207,6 +208,8 @@ module.exports = {
 
     if (this.inputEnabled) {
       this.movePlayer();
+    } else {
+      this.player.stop();
     }
 
     if (this.score === this.order.length) {
