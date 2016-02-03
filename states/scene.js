@@ -4,26 +4,54 @@
 
 module.exports = {
   init(sceneId) {
-    this.sceneId = sceneId;
+    this.loadScene(sceneId);
   },
 
   create() {
-    this.loadScene(this.sceneId);
-    let enter = this.input.keyboard.addKey(13);
-    enter.onDown.add(function () {
-      this.endScene();
-      enter.onDown.removeAll();
-    }, this);
+    this.keys = {
+      enter: this.input.keyboard.addKey(Phaser.Keyboard.ENTER),
+    };
 
+    this.setupDialogue();
+    this.setupMusic();
+
+    this.startScene();
+  },
+
+  loadScene(id) {
+    this.sceneId   = id;
+    this.sceneData = this.cache.getJSON(`scene-${id}`);
+  },
+
+  setupDialogue() {
     this.dialogueGroup = this.add.group();
+  },
+
+  setupMusic() {
     this.music = this.add.audio('intro-scene');
+  },
+
+  startScene() {
     this.music.play();
+
+    this.enableInput();
 
     this.playDialogue(0);
   },
 
-  loadScene(id) {
-    this.sceneData = this.cache.getJSON(`scene-${id}`);
+  endScene() {
+    this.music.stop();
+
+    this.state.start('main', true, false, this.sceneId);
+  },
+
+  enableInput() {
+    // TODO: Add a hint for this binding for a short time at the beginning.
+    this.keys.enter.onDown.add(this.endScene, this);
+  },
+
+  disableInput() {
+    this.keys.enter.onDown.removeAll();
   },
 
   playDialogue(index) {
@@ -147,10 +175,5 @@ module.exports = {
         }, this);
       }
     }, this);
-  },
-
-  endScene() {
-    this.music.stop();
-    this.state.start('main', true, false, this.sceneId);
   },
 };
