@@ -4,8 +4,8 @@
 
 const config = require('../config');
 
-const Player = require('../model/Player');
-const Switch = require('../model/Switch');
+const Player = require('../models/Player');
+const Switch = require('../models/Switch');
 
 module.exports = {
   init(levelId) {
