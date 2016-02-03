@@ -81,7 +81,7 @@ module.exports = {
       const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
 
       if (distance < threshold) {
-        let switchId = s.flick();
+        let switchId = s.getId();
 
         const playerChoiceCorrect = this.order[this.score]
         this.score = switchId === playerChoiceCorrect ? this.score + 1 : 0;
@@ -90,6 +90,7 @@ module.exports = {
           this.wrongSound.play();
           this.showSolution(true);
         } else {
+          s.flick();
           s.playSound();
         }
       }
