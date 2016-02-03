@@ -16,4 +16,7 @@ module.exports = {
       duration: 4,
     },
   },
+  level: {
+    count: 2,
+  },
 };

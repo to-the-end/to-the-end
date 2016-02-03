@@ -2,28 +2,58 @@
 
 'use strict';
 
+const textUtil = require('../utils/text');
+
 module.exports = {
   init(sceneId) {
-    this.sceneId = sceneId;
+    this.loadScene(sceneId);
   },
 
   create() {
-    this.loadScene(this.sceneId);
-    let enter = this.input.keyboard.addKey(13);
-    enter.onDown.add(function () {
-      this.endScene();
-      enter.onDown.removeAll();
-    }, this);
+    this.keys = {
+      enter: this.input.keyboard.addKey(Phaser.Keyboard.ENTER),
+    };
 
+    this.setupDialogue();
+    this.setupAudio();
+
+    this.startScene();
+  },
+
+  loadScene(id) {
+    this.sceneId   = id;
+    this.sceneData = this.cache.getJSON(`scene-${id}`);
+  },
+
+  setupDialogue() {
     this.dialogueGroup = this.add.group();
-    this.music = this.add.audio('intro-scene');
+  },
+
+  setupAudio() {
+    this.music = this.add.audio('scene-soundtrack');
+  },
+
+  startScene() {
     this.music.play();
+
+    this.enableInput();
 
     this.playDialogue(0);
   },
 
-  loadScene(id) {
-    this.sceneData = this.cache.getJSON(`scene-${id}`);
+  endScene() {
+    this.music.stop();
+
+    this.state.start('main', true, false, this.sceneId);
+  },
+
+  enableInput() {
+    // TODO: Add a hint for this binding for a short time at the beginning.
+    this.keys.enter.onDown.add(this.endScene, this);
+  },
+
+  disableInput() {
+    this.keys.enter.onDown.removeAll();
   },
 
   playDialogue(index) {
@@ -59,6 +89,7 @@ module.exports = {
     }
 
     let text;
+    let repetitions = 1;
 
     if (dialogue.text) {
       const margin = 60;
@@ -108,32 +139,25 @@ module.exports = {
       }
 
       const style = {
-        font:     'Raleway',
-        fontSize: 24,
-
-        fill: '#fff',
-
-        stroke:          '#000',
-        strokeThickness: 3,
-
+        fontSize:      24,
         boundsAlignH:  alignH,
         boundsAlignV:  alignV,
         wordWrap:      true,
         wordWrapWidth: this.camera.view.width * 0.6,
       };
 
-      text = this.add.text(x, y, '', style);
+      text = textUtil.addFixedText(this.game, x, y, '', style);
 
       text.anchor.set(anchorX, anchorY);
-      text.fixedToCamera = true;
 
       this.dialogueGroup.add(text);
-    }
 
-    const repetitions = dialogue.text ? dialogue.text.length : 1;
+      repetitions = dialogue.text.length;
+    }
 
     let i = 0;
 
+    // TODO: Pause on punctuation.
     this.time.events.repeat(60, repetitions, function updateText() {
       i++;
 
@@ -147,10 +171,5 @@ module.exports = {
         }, this);
       }
     }, this);
-  },
-
-  endScene() {
-    this.music.stop();
-    this.state.start('main', true, false, this.sceneId);
   },
 };

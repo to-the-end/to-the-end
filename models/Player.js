@@ -4,17 +4,20 @@ class Player extends Phaser.Sprite {
 
   constructor(game, x, y) {
     super(game, x, y, 'character', 130);
+
     this.anchor.set(0.5);
+
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
+
     this.animations.add('cast', [0, 1, 2, 3, 4, 5, 6], 5, false);
     this.animations.add('up', [105, 106, 107, 108, 109, 110, 111, 112], 10, true);
     this.animations.add('left', [118, 119, 120, 121, 122, 123, 124, 125], 10, true);
     this.animations.add('down', [131, 132, 133, 134, 135, 136, 137, 138], 10, true);
     this.animations.add('right', [144, 145, 146, 147, 148, 149, 150, 151], 10, true);
-    game.add.existing(this);
-    this.leftFootstepSound = game.add.audio('leftFootstep');
-    this.rightFootstepSound = game.add.audio('rightFootstep');
+
+    this.leftFootstepSound  = game.add.audio('left-footstep-sfx');
+    this.rightFootstepSound = game.add.audio('right-footstep-sfx');
   }
 
   enableInput(cursors) {
@@ -46,7 +49,7 @@ class Player extends Phaser.Sprite {
       this.leftFootstepSound.play();
       this.walkingSoundIsPlaying = true;
     }
-    
+
     this.leftFootstepSound.onStop.addOnce(() => {
       this.walkingSoundIsPlaying = false;
 

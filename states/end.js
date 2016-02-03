@@ -2,6 +2,8 @@
 
 'use strict';
 
+const textUtil = require('../utils/text');
+
 module.exports = {
   create() {
     const sprite = this.add.sprite(
@@ -10,25 +12,24 @@ module.exports = {
 
     sprite.anchor.set(0.5);
 
-    const style = {
-      font:     'Raleway',
-      fontSize: 48,
+    const scale = Math.max(
+      this.camera.view.width / sprite.width,
+      this.camera.view.height / sprite.height
+    );
 
-      fill: '#fff',
+    sprite.scale.set(scale);
 
-      stroke:          '#000',
-      strokeThickness: 3,
-    };
-
-    const text = this.add.text(
+    const text = textUtil.addFixedText(
+      this.game,
       this.camera.view.centerX, this.camera.view.centerY,
-      'To be continued...', style
+      'To be continued...',
+      { fontSize: 48 }
     );
 
     text.anchor.set(0.5);
 
     this.input.onDown.add(function restart() {
-      this.state.start('mainMenu', true, false, 0);
+      this.state.start('main-menu', true, false, 0);
     }, this);
   },
 };

@@ -4,8 +4,9 @@
 
 const config = require('../config');
 
-const Player = require('../model/Player');
-const Switch = require('../model/Switch');
+const Player   = require('../models/Player');
+const Switch   = require('../models/Switch');
+const textUtil = require('../utils/text');
 
 module.exports = {
   init(levelId) {
@@ -45,30 +46,30 @@ module.exports = {
     this.showSolution();
   },
 
-  buildSoundCollection(componentName, numberOfAudioClips) {
+  buildSfxCollection(componentName, numberOfAudioClips) {
     const sounds = [];
 
     for (let x = 0; x < numberOfAudioClips; x++) {
-      sounds.push(this.add.audio(componentName + x));
+      sounds.push(this.add.audio(`${componentName}-${x}-sfx`));
     }
 
     return sounds;
   },
 
   setupAudio() {
-    this.levelMusic =  this.add.audio('intro', 1, true);
+    this.levelMusic =  this.add.audio('main-soundtrack', 1, true);
     this.levelMusic.play();
-    this.puzzleCompleteSound = this.add.audio('puzzleCompleteMinor');
+    this.puzzleCompleteSound = this.add.audio('puzzle-complete-sfx');
     this.puzzleComplete = false;
-    this.switchSounds = this.buildSoundCollection('switch', 7);
-    this.barrierSounds = this.buildSoundCollection('barrier', 3);
+    this.switchSounds = this.buildSfxCollection('switch', 7);
+    this.barrierSounds = this.buildSfxCollection('barrier', 3);
     this.barrierSoundIndex = 0;
-    this.wrongSound = this.add.audio('wrong-c');
-    this.barrierDestroySounds = this.buildSoundCollection('barrierDestroy', 1);
+    this.wrongSound = this.add.audio('wrong-sfx');
+    this.barrierDestroySounds = this.buildSfxCollection('barrier-destroy', 1);
     this.barrierDestroySoundIndex = 0;
-    this.chainDragSounds = this.buildSoundCollection('chainDrag', 2);
+    this.chainDragSounds = this.buildSfxCollection('chain-drag', 2);
     this.chainDragSoundIndex = 0;
-    this.chainAttach = this.add.audio('chainAttach');
+    this.chainAttach = this.add.audio('chain-attach-sfx');
   },
 
   turnOnNearbySwitches() {
@@ -301,9 +302,14 @@ module.exports = {
   },
 
   addTimerText() {
-    this.timerText = this.addFloatingText(
-      this.camera.view.width / 2, 0, `Time left: ${this.levelData.timer}`, 24
+    this.timerText = textUtil.addFixedText(
+      this.game,
+      this.camera.view.width / 2, 0,
+      `Time left: ${this.levelData.timer}`,
+      { fontSize: 24 }
     );
+
+    this.timerText.anchor.set(0.5, 0);
   },
 
   removeTimerText() {
@@ -315,24 +321,6 @@ module.exports = {
     const remainingTime = this.levelData.timer - time;
 
     this.timerText.setText(`Time left: ${remainingTime}`);
-  },
-
-  addFloatingText(x, y, message, fontSize) {
-    const style = {
-      font:     'Raleway',
-      fontSize: fontSize || 16,
-
-      fill: '#fff',
-
-      stroke:          '#000',
-      strokeThickness: 3,
-    };
-
-    const text = this.add.text(x, y, message, style);
-
-    text.fixedToCamera = true;
-
-    return text;
   },
 
   setupPlayer() {
@@ -349,6 +337,8 @@ module.exports = {
     this.player = new Player(
       this.game, (tile.x + 0.5) * tile.width,  (tile.y + 0.5) * tile.height
     );
+
+    this.add.existing(this.player);
 
     this.player.canDestroyBarriers = true;
     this.player.scaleCount = 0;
@@ -392,9 +382,16 @@ module.exports = {
       .getTiles(0, 0, this.world.width, this.world.height)
       .filter((tile) => { return tile.index > 0; })
       .forEach((tile) => {
-        let newSwitch = new Switch(this.game, (tile.x + 0.5) * tile.width, (tile.y + 0.5) * tile.height, switchId, this.switchSounds[switchId - 1]);
+        const s = new Switch(
+          this.game,
+          (tile.x + 0.5) * tile.width, (tile.y + 0.5) * tile.height,
+          switchId,
+          this.switchSounds[switchId - 1]
+        );
+
+        this.switchGroup.add(s);
+
         switchId++;
-        this.switchGroup.add(newSwitch);
       });
   },
 
@@ -480,7 +477,7 @@ module.exports = {
   },
 
   addBarrier(x, y) {
-    const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
+    const obstacle = this.makePhysicsSprite(x, y, 'barrier');
 
     if (this.game.physics.arcade.overlap(this.player, obstacle)) {
       return;
@@ -708,40 +705,32 @@ module.exports = {
     this.levelMusic.stop();
     this.player.stop();
 
-    let id = this.levelId;
+    let state      = 'scene';
+    let clearWorld = true;
+    let id         = this.levelId;
 
     if (success) {
       id++;
-    }
 
-    let state = 'scene';
-
-    if (id > 1) {
-      state = 'end';
+      if (id >= config.level.count) {
+        state = 'end';
+      }
+    } else {
+      state      = 'level-fail-menu';
+      clearWorld = false;
     }
 
     if (success) {
-      this.state.start(state, true, false, id);
+      this.state.start(state, clearWorld, false, id);
 
       return;
     }
 
-    this.disableInput();
-    let playAgain = this.addFloatingText(this.camera.view.width / 2, this.camera.view.height / 2, 'Try Again', 48);
-    playAgain.anchor.set(0.5);
-    let goToMainMenu = this.addFloatingText(playAgain.x, playAgain.y + 80, 'Go to Main Menu', 48);
-    goToMainMenu.anchor.set(0.5);
-    playAgain.inputEnabled = true;
-    playAgain.events.onInputUp.add(() => {
-      this.state.start(state, true, false, id);
-      playAgain.destroy();
-      goToMainMenu.destroy();
-    });
-    goToMainMenu.inputEnabled = true;
-    goToMainMenu.events.onInputUp.add(() => {
-      this.state.start('mainMenu', true, false, id);
-      playAgain.destroy();
-      goToMainMenu.destroy();
-    });
+    const cameraPosition = {
+      x: this.camera.x,
+      y: this.camera.y,
+    };
+
+    this.state.start('level-fail-menu', clearWorld, false, id, cameraPosition);
   },
 };
