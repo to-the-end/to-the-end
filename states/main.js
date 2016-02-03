@@ -712,8 +712,7 @@ module.exports = {
     if (success) {
       id++;
 
-      // FIXME: Use the config for the level count.
-      if (id > 1) {
+      if (id >= config.level.count) {
         state = 'end';
       }
     } else {
