@@ -695,54 +695,33 @@ module.exports = {
     this.levelMusic.stop();
     this.player.stop();
 
-    let id = this.levelId;
+    let state      = 'scene';
+    let clearWorld = true;
+    let id         = this.levelId;
 
     if (success) {
       id++;
-    }
 
-    let state = 'scene';
-
-    if (id > 1) {
-      state = 'end';
+      // FIXME: Use the config for the level count.
+      if (id > 1) {
+        state = 'end';
+      }
+    } else {
+      state      = 'level-fail-menu';
+      clearWorld = false;
     }
 
     if (success) {
-      this.state.start(state, true, false, id);
+      this.state.start(state, clearWorld, false, id);
 
       return;
     }
 
-    this.disableInput();
+    const cameraPosition = {
+      x: this.camera.x,
+      y: this.camera.y,
+    };
 
-    const playAgain = textUtil.addFixedText(
-      this.game,
-      this.camera.view.width / 2, this.camera.view.height / 2,
-      'Try Again', 48
-    );
-
-    playAgain.anchor.set(0.5);
-
-    const goToMainMenu = textUtil.addFixedText(
-      this.game,
-      playAgain.x, playAgain.y + 80,
-      'Go to Main Menu', 48
-    );
-
-    goToMainMenu.anchor.set(0.5);
-
-    playAgain.inputEnabled = true;
-    playAgain.events.onInputUp.add(() => {
-      this.state.start(state, true, false, id);
-      playAgain.destroy();
-      goToMainMenu.destroy();
-    });
-
-    goToMainMenu.inputEnabled = true;
-    goToMainMenu.events.onInputUp.add(() => {
-      this.state.start('main-menu', true, false, id);
-      playAgain.destroy();
-      goToMainMenu.destroy();
-    });
+    this.state.start('level-fail-menu', clearWorld, false, id, cameraPosition);
   },
 };
