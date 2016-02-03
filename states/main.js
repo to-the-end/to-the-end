@@ -4,8 +4,9 @@
 
 const config = require('../config');
 
-const Player = require('../models/Player');
-const Switch = require('../models/Switch');
+const Player   = require('../models/Player');
+const Switch   = require('../models/Switch');
+const textUtil = require('../utils/text');
 
 module.exports = {
   init(levelId) {
@@ -301,8 +302,10 @@ module.exports = {
   },
 
   addTimerText() {
-    this.timerText = this.addFloatingText(
-      this.camera.view.width / 2, 0, `Time left: ${this.levelData.timer}`, 24
+    this.timerText = textUtil.addFixedText(
+      this.game,
+      this.camera.view.width / 2, 0,
+      `Time left: ${this.levelData.timer}`, 24
     );
   },
 
@@ -315,24 +318,6 @@ module.exports = {
     const remainingTime = this.levelData.timer - time;
 
     this.timerText.setText(`Time left: ${remainingTime}`);
-  },
-
-  addFloatingText(x, y, message, fontSize) {
-    const style = {
-      font:     'Raleway',
-      fontSize: fontSize || 16,
-
-      fill: '#fff',
-
-      stroke:          '#000',
-      strokeThickness: 3,
-    };
-
-    const text = this.add.text(x, y, message, style);
-
-    text.fixedToCamera = true;
-
-    return text;
   },
 
   setupPlayer() {
@@ -727,16 +712,30 @@ module.exports = {
     }
 
     this.disableInput();
-    let playAgain = this.addFloatingText(this.camera.view.width / 2, this.camera.view.height / 2, 'Try Again', 48);
+
+    const playAgain = textUtil.addFixedText(
+      this.game,
+      this.camera.view.width / 2, this.camera.view.height / 2,
+      'Try Again', 48
+    );
+
     playAgain.anchor.set(0.5);
-    let goToMainMenu = this.addFloatingText(playAgain.x, playAgain.y + 80, 'Go to Main Menu', 48);
+
+    const goToMainMenu = textUtil.addFixedText(
+      this.game,
+      playAgain.x, playAgain.y + 80,
+      'Go to Main Menu', 48
+    );
+
     goToMainMenu.anchor.set(0.5);
+
     playAgain.inputEnabled = true;
     playAgain.events.onInputUp.add(() => {
       this.state.start(state, true, false, id);
       playAgain.destroy();
       goToMainMenu.destroy();
     });
+
     goToMainMenu.inputEnabled = true;
     goToMainMenu.events.onInputUp.add(() => {
       this.state.start('main-menu', true, false, id);
