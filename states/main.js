@@ -739,7 +739,7 @@ module.exports = {
     });
     goToMainMenu.inputEnabled = true;
     goToMainMenu.events.onInputUp.add(() => {
-      this.state.start('mainMenu', true, false, id);
+      this.state.start('main-menu', true, false, id);
       playAgain.destroy();
       goToMainMenu.destroy();
     });

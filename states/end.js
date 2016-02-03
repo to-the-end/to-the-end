@@ -28,7 +28,7 @@ module.exports = {
     text.anchor.set(0.5);
 
     this.input.onDown.add(function restart() {
-      this.state.start('mainMenu', true, false, 0);
+      this.state.start('main-menu', true, false, 0);
     }, this);
   },
 };
