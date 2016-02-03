@@ -2,6 +2,8 @@
 
 'use strict';
 
+const textUtil = require('../utils/text');
+
 module.exports = {
   create() {
     const sprite = this.add.sprite(
@@ -10,19 +12,11 @@ module.exports = {
 
     sprite.anchor.set(0.5);
 
-    const style = {
-      font:     'Raleway',
-      fontSize: 48,
-
-      fill: '#fff',
-
-      stroke:          '#000',
-      strokeThickness: 3,
-    };
-
-    const text = this.add.text(
+    const text = textUtil.addFixedText(
+      this.game,
       this.camera.view.centerX, this.camera.view.centerY,
-      'To be continued...', style
+      'To be continued...',
+      { fontSize: 48 }
     );
 
     text.anchor.set(0.5);
