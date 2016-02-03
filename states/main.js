@@ -307,6 +307,8 @@ module.exports = {
       this.camera.view.width / 2, 0,
       `Time left: ${this.levelData.timer}`, 24
     );
+
+    this.timerText.anchor.set(0.5, 0);
   },
 
   removeTimerText() {
