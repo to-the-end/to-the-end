@@ -10,6 +10,7 @@ class Switch extends Phaser.Sprite {
     this.anchor.set(0.5);
 
     this.game.physics.arcade.enable(this);
+    this.body.setSize(21, 60, 0, 28);
     this.body.immovable = true;
 
     this.animations.add('on', [1, 2], 10, true);
