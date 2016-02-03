@@ -3,16 +3,19 @@
 'use strict';
 
 module.exports = {
-  addFixedText(game, x, y, message, fontSize) {
-    const style = {
-      font:     'Raleway',
-      fontSize: fontSize || 16,
+  addFixedText(game, x, y, message, extraStyles) {
+    const style = Object.assign(
+      {
+        font:     'Raleway',
+        fontSize: 16,
 
-      fill: '#fff',
+        fill: '#fff',
 
-      stroke:          '#000',
-      strokeThickness: 3,
-    };
+        stroke:          '#000',
+        strokeThickness: 3,
+      },
+      extraStyles
+    );
 
     const text = game.add.text(x, y, message, style);
 

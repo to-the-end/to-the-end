@@ -2,6 +2,8 @@
 
 'use strict';
 
+const textUtil = require('../utils/text');
+
 module.exports = {
   init(sceneId) {
     this.loadScene(sceneId);
@@ -136,24 +138,16 @@ module.exports = {
       }
 
       const style = {
-        font:     'Raleway',
-        fontSize: 24,
-
-        fill: '#fff',
-
-        stroke:          '#000',
-        strokeThickness: 3,
-
+        fontSize:      24,
         boundsAlignH:  alignH,
         boundsAlignV:  alignV,
         wordWrap:      true,
         wordWrapWidth: this.camera.view.width * 0.6,
       };
 
-      text = this.add.text(x, y, '', style);
+      text = textUtil.addFixedText(this.game, x, y, '', style);
 
       text.anchor.set(anchorX, anchorY);
-      text.fixedToCamera = true;
 
       this.dialogueGroup.add(text);
     }

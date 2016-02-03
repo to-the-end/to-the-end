@@ -305,7 +305,8 @@ module.exports = {
     this.timerText = textUtil.addFixedText(
       this.game,
       this.camera.view.width / 2, 0,
-      `Time left: ${this.levelData.timer}`, 24
+      `Time left: ${this.levelData.timer}`,
+      { fontSize: 24 }
     );
 
     this.timerText.anchor.set(0.5, 0);

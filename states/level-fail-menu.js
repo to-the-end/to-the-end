@@ -19,7 +19,8 @@ module.exports = {
     const retryText = textUtil.addFixedText(
       this.game,
       this.camera.view.width / 2, this.camera.view.height / 2,
-      'Try Again', 48
+      'Try Again',
+      { fontSize: 48 }
     );
 
     retryText.anchor.set(0.5);
@@ -33,7 +34,8 @@ module.exports = {
     const mainMenuText = textUtil.addFixedText(
       this.game,
       retryText.x, retryText.y + 80,
-      'Go to Main Menu', 48
+      'Go to Main Menu',
+      { fontSize: 48 }
     );
 
     mainMenuText.anchor.set(0.5);
