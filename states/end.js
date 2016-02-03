@@ -12,6 +12,13 @@ module.exports = {
 
     sprite.anchor.set(0.5);
 
+    const scale = Math.max(
+      this.camera.view.width / sprite.width,
+      this.camera.view.height / sprite.height
+    );
+
+    sprite.scale.set(scale);
+
     const text = textUtil.addFixedText(
       this.game,
       this.camera.view.centerX, this.camera.view.centerY,
