@@ -3,10 +3,6 @@
 'use strict';
 
 module.exports = {
-  preload() {
-
-  },
-
   create() {
     const style = {
       font:     'Raleway',
