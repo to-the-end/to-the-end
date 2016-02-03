@@ -338,6 +338,8 @@ module.exports = {
       this.game, (tile.x + 0.5) * tile.width,  (tile.y + 0.5) * tile.height
     );
 
+    this.add.existing(this.player);
+
     this.player.canDestroyBarriers = true;
     this.player.scaleCount = 0;
 
@@ -380,9 +382,16 @@ module.exports = {
       .getTiles(0, 0, this.world.width, this.world.height)
       .filter((tile) => { return tile.index > 0; })
       .forEach((tile) => {
-        let newSwitch = new Switch(this.game, (tile.x + 0.5) * tile.width, (tile.y + 0.5) * tile.height, switchId, this.switchSounds[switchId - 1]);
+        const s = new Switch(
+          this.game,
+          (tile.x + 0.5) * tile.width, (tile.y + 0.5) * tile.height,
+          switchId,
+          this.switchSounds[switchId - 1]
+        );
+
+        this.switchGroup.add(s);
+
         switchId++;
-        this.switchGroup.add(newSwitch);
       });
   },
 

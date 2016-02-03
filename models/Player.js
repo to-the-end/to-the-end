@@ -16,8 +16,6 @@ class Player extends Phaser.Sprite {
     this.animations.add('down', [131, 132, 133, 134, 135, 136, 137, 138], 10, true);
     this.animations.add('right', [144, 145, 146, 147, 148, 149, 150, 151], 10, true);
 
-    game.add.existing(this);
-
     this.leftFootstepSound  = game.add.audio('left-footstep-sfx');
     this.rightFootstepSound = game.add.audio('right-footstep-sfx');
   }
