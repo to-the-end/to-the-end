@@ -46,30 +46,30 @@ module.exports = {
     this.showSolution();
   },
 
-  buildSoundCollection(componentName, numberOfAudioClips) {
+  buildSfxCollection(componentName, numberOfAudioClips) {
     const sounds = [];
 
     for (let x = 0; x < numberOfAudioClips; x++) {
-      sounds.push(this.add.audio(componentName + x));
+      sounds.push(this.add.audio(`${componentName}-${x}-sfx`));
     }
 
     return sounds;
   },
 
   setupAudio() {
-    this.levelMusic =  this.add.audio('intro', 1, true);
+    this.levelMusic =  this.add.audio('main-soundtrack', 1, true);
     this.levelMusic.play();
-    this.puzzleCompleteSound = this.add.audio('puzzleCompleteMinor');
+    this.puzzleCompleteSound = this.add.audio('puzzle-complete-sfx');
     this.puzzleComplete = false;
-    this.switchSounds = this.buildSoundCollection('switch', 7);
-    this.barrierSounds = this.buildSoundCollection('barrier', 3);
+    this.switchSounds = this.buildSfxCollection('switch', 7);
+    this.barrierSounds = this.buildSfxCollection('barrier', 3);
     this.barrierSoundIndex = 0;
-    this.wrongSound = this.add.audio('wrong-c');
-    this.barrierDestroySounds = this.buildSoundCollection('barrierDestroy', 1);
+    this.wrongSound = this.add.audio('wrong-sfx');
+    this.barrierDestroySounds = this.buildSfxCollection('barrier-destroy', 1);
     this.barrierDestroySoundIndex = 0;
-    this.chainDragSounds = this.buildSoundCollection('chainDrag', 2);
+    this.chainDragSounds = this.buildSfxCollection('chain-drag', 2);
     this.chainDragSoundIndex = 0;
-    this.chainAttach = this.add.audio('chainAttach');
+    this.chainAttach = this.add.audio('chain-attach-sfx');
   },
 
   turnOnNearbySwitches() {
@@ -468,7 +468,7 @@ module.exports = {
   },
 
   addBarrier(x, y) {
-    const obstacle = this.makePhysicsSprite(x, y, 'obstacle');
+    const obstacle = this.makePhysicsSprite(x, y, 'barrier');
 
     if (this.game.physics.arcade.overlap(this.player, obstacle)) {
       return;

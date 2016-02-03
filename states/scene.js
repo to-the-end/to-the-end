@@ -30,7 +30,7 @@ module.exports = {
   },
 
   setupAudio() {
-    this.music = this.add.audio('intro-scene');
+    this.music = this.add.audio('scene-soundtrack');
   },
 
   startScene() {
