@@ -15,7 +15,7 @@ module.exports = {
     };
 
     this.setupDialogue();
-    this.setupMusic();
+    this.setupAudio();
 
     this.startScene();
   },
@@ -29,7 +29,7 @@ module.exports = {
     this.dialogueGroup = this.add.group();
   },
 
-  setupMusic() {
+  setupAudio() {
     this.music = this.add.audio('intro-scene');
   },
 
@@ -89,6 +89,7 @@ module.exports = {
     }
 
     let text;
+    let repetitions = 1;
 
     if (dialogue.text) {
       const margin = 60;
@@ -150,12 +151,13 @@ module.exports = {
       text.anchor.set(anchorX, anchorY);
 
       this.dialogueGroup.add(text);
-    }
 
-    const repetitions = dialogue.text ? dialogue.text.length : 1;
+      repetitions = dialogue.text.length;
+    }
 
     let i = 0;
 
+    // TODO: Pause on punctuation.
     this.time.events.repeat(60, repetitions, function updateText() {
       i++;
 
