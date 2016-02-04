@@ -1,13 +1,13 @@
 'use strict';
 
-class Player extends Phaser.Sprite {
+const PhysicsSprite = require('./physics-sprite');
 
+class Player extends PhysicsSprite {
   constructor(game, x, y) {
     super(game, x, y, 'character', 130);
 
     this.anchor.set(0.5);
 
-    this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
 
     this.animations.add('stop', [130], 1, true);

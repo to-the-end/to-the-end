@@ -1,17 +1,16 @@
 'use strict';
 
-class Switch extends Phaser.Sprite {
+const PhysicsSprite = require('./physics-sprite');
 
+class Switch extends PhysicsSprite {
   constructor(game, x, y, id, switchSound) {
-    super(game, x, y, 'switch', 0);
+    super(game, x, y, 'switch', 0, true);
 
     this.id = id;
 
     this.anchor.set(0.5);
 
-    this.game.physics.arcade.enable(this);
     this.body.setSize(21, 60, 0, 28);
-    this.body.immovable = true;
 
     this.animations.add('on', [1, 2], 10, true);
     this.animations.add('off', [2, 1, 0], 10, false);

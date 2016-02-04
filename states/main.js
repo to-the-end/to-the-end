@@ -4,6 +4,7 @@
 
 const config = require('../config');
 
+const Barrier  = require('../objects/barrier');
 const Player   = require('../objects/player');
 const Switch   = require('../objects/switch');
 const textUtil = require('../utils/text');
@@ -37,6 +38,7 @@ module.exports = {
   },
 
   buildSfxCollection(componentName, numberOfAudioClips) {
+    // FIXME: Make this a class.
     const sounds = [];
 
     for (let x = 0; x < numberOfAudioClips; x++) {
@@ -53,7 +55,6 @@ module.exports = {
     this.puzzleComplete = false;
     this.switchSounds = this.buildSfxCollection('switch', 7);
     this.barrierSounds = this.buildSfxCollection('barrier', 3);
-    this.barrierSoundIndex = 0;
     this.wrongSound = this.add.audio('wrong-sfx');
     this.barrierDestroySounds = this.buildSfxCollection('barrier-destroy', 1);
     this.barrierDestroySoundIndex = 0;
@@ -474,22 +475,17 @@ module.exports = {
   },
 
   addBarrier(x, y) {
-    const barrier = this.makePhysicsSprite(x, y, 'barrier');
+    const barrier = new Barrier(this.game, x, y, this.barrierSounds);
 
     if (this.game.physics.arcade.overlap(this.player, barrier)) {
       return;
     }
 
-    barrier.animations.add('up', [ 2, 1, 0 ], 10, false);
-    barrier.animations.add('down', [ 0, 1, 2 ], 10, false);
-
-    barrier.animations.play('up');
-    this.playBarrierSound();
-
-    barrier.body.moves = false;
+    barrier.playIntro();
 
     this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.duration, function() {
-      barrier.animations.play('down');
+      barrier.playOutro();
+
       this.game.time.events.add(300, barrier.destroy, barrier);
     }, this);
 
