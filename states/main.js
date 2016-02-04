@@ -46,7 +46,6 @@ module.exports = {
     this.switchSounds = audioUtil.buildSfxCollection(this.game, 'switch', 7);
     this.wrongSound = this.add.audio('wrong-sfx');
 
-    this.barrierSounds = audioUtil.buildSfxCollection(this.game, 'barrier', 3);
     this.barrierDestroySounds = audioUtil.buildSfxCollection(this.game, 'barrier-destroy', 1);
     this.barrierDestroySoundIndex = 0;
 
@@ -467,7 +466,7 @@ module.exports = {
   },
 
   addBarrier(x, y) {
-    const barrier = new Barrier(this.game, x, y, this.barrierSounds);
+    const barrier = new Barrier(this.game, x, y);
 
     if (this.game.physics.arcade.overlap(this.player, barrier)) {
       return;
@@ -488,12 +487,6 @@ module.exports = {
     }, this);
 
     this.barrierGroup.add(barrier);
-  },
-
-  playBarrierSound() {
-    // Play in sequence
-    this.barrierSounds[this.barrierSoundIndex].play();
-    this.barrierSoundIndex = (this.barrierSoundIndex + 1) % 3;
   },
 
   playChainDrag() {
