@@ -9,7 +9,12 @@ module.exports = {
   },
 
   create() {
-    // TODO: Add an overlay to darken the game.
+    // TODO: Fade this in.
+    const overlay = this.add.graphics();
+
+    overlay.beginFill(0x000000, 0.5);
+    overlay.drawRect(0, 0, this.world.width, this.world.height);
+    overlay.endFill();
 
     this.camera.x = this.cameraPosition.x;
     this.camera.y = this.cameraPosition.y;
