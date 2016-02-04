@@ -86,8 +86,13 @@ module.exports = {
       this.dialogueGroup.add(sprite);
     }
 
+    const delayNext = function delayNext() {
+      this.time.events.add(Phaser.Timer.SECOND * 3, function playNext() {
+        this.playDialogue(index + 1);
+      }, this);
+    }.bind(this);
+
     let text;
-    let repetitions = 1;
 
     if (dialogue.text) {
       const margin = 60;
@@ -150,24 +155,9 @@ module.exports = {
 
       this.dialogueGroup.add(text);
 
-      repetitions = dialogue.text.length;
+      textUtil.typeOutText(this.game, text, dialogue.text, delayNext);
+    } else {
+      delayNext();
     }
-
-    let i = 0;
-
-    // TODO: Pause on punctuation.
-    this.time.events.repeat(60, repetitions, function updateText() {
-      i++;
-
-      if (text) {
-        text.setText(dialogue.text.substring(0, i));
-      }
-
-      if (i >= repetitions) {
-        this.time.events.add(Phaser.Timer.SECOND * 3, function playNext() {
-          this.playDialogue(index + 1);
-        }, this);
-      }
-    }, this);
   },
 };

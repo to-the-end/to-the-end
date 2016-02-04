@@ -23,4 +23,23 @@ module.exports = {
 
     return text;
   },
+
+  typeOutText(game, textObj, textString, callback) {
+    let i = 0;
+
+    // TODO: Pause on punctuation.
+    game.time.events.repeat(
+      60,
+      textString.length,
+      function updateText() {
+        i++;
+
+        textObj.setText(textString.substring(0, i));
+
+        if (i >= textString.length) {
+          callback();
+        }
+      }
+    );
+  },
 };
