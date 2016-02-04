@@ -25,8 +25,7 @@ module.exports = {
 
     retryText.inputEnabled = true;
     retryText.events.onInputUp.add(function retry() {
-      // TODO: Should this go straight to the main state again?
-      this.closeMenu('scene');
+      this.closeMenu('main');
     }, this);
 
     const mainMenuText = textUtil.addFixedText(
