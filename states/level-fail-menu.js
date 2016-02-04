@@ -25,7 +25,7 @@ module.exports = {
 
     retryText.inputEnabled = true;
     retryText.events.onInputUp.add(function retry() {
-      this.closeMenu('main');
+      this.closeMenu('level');
     }, this);
 
     const mainMenuText = textUtil.addFixedText(

@@ -42,7 +42,7 @@ module.exports = {
   endScene() {
     this.music.stop();
 
-    this.state.start('main', true, false, this.sceneId);
+    this.state.start('level', true, false, this.sceneId);
   },
 
   enableInput() {
