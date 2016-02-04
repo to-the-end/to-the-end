@@ -1,5 +1,7 @@
 # To The End
 
+[![Build Status](https://travis-ci.org/to-the-end/to-the-end.svg?branch=master)](https://travis-ci.org/to-the-end/to-the-end)
+
 > The rituals we use to fight our inner demons, and the lengths we'll go for those we love. A top-down 2-player puzzler where one player strives to escape from a nightmare, and the other manipulates the environment to keep them there.
 
 This game was made for Global Game Jam 2016.
