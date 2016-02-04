@@ -104,7 +104,7 @@
     "no-undef-init": 2,
     "no-use-before-define": 2,
 
-    "callback-return": 2,
+    "callback-return": 0,
     "global-require": 2,
     "handle-callback-err": 2,
     "no-mixed-requires": [
