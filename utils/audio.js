@@ -6,9 +6,13 @@ module.exports = {
     const sounds = [];
 
     for (let i = 0; i < clipCount; i++) {
-      sounds.push(game.add.audio(`${componentName}-${i}-sfx`));
+      sounds.push(this.addSfx(game, componentName, i));
     }
 
     return sounds;
+  },
+
+  addSfx(game, componentName, clipId) {
+    return game.add.audio(`${componentName}-${clipId}-sfx`);
   },
 };
