@@ -483,13 +483,12 @@ module.exports = {
     obstacle.animations.play('up');
     this.playBarrierSound();
 
-    obstacle.id = Math.round(+new Date() / 1000);
     obstacle.body.moves = false;
 
     this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
       obstacle.animations.play('down');
       this.game.time.events.add(300, function () {
-        this.removeObstacle(obstacle.id);
+        obstacle.destroy();
       }, this);
     }, this);
 
@@ -500,14 +499,6 @@ module.exports = {
     }, this);
 
     this.obstacleGroup.add(obstacle);
-  },
-
-  removeObstacle(id) {
-    this.obstacleGroup.forEach((item) => {
-      if (item.id === id) {
-        item.destroy();
-      }
-    });
   },
 
   playBarrierSound() {
