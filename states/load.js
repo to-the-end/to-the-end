@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 'use strict';
 
 const config = require('../config');
@@ -43,7 +41,7 @@ module.exports = {
 
   loadObjects() {
     this.load.spritesheet('switch', 'assets/torch.png', 50, 116, -1, 78, 78);
-    this.load.spritesheet('barrier', 'assets/obstacle.png', 128, 128, 3);
+    this.load.spritesheet('barrier', 'assets/barrier.png', 128, 128, 3);
     this.load.image('chain', 'assets/chain.png');
   },
 
@@ -97,7 +95,7 @@ module.exports = {
   },
 
   loadFilters() {
-    this.load.script('vignette-filter', 'filters/Vignette.js');
+    this.load.script('vignette-filter', 'assets/filters/vignette.js');
   },
 
   loadMenus() {

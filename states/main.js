@@ -1,12 +1,12 @@
-/* eslint-env browser */
-
 'use strict';
 
 const config = require('../config');
 
-const Player   = require('../models/Player');
-const Switch   = require('../models/Switch');
-const textUtil = require('../utils/text');
+const Barrier   = require('../objects/barrier');
+const Player    = require('../objects/player');
+const Switch    = require('../objects/switch');
+const audioUtil = require('../utils/audio');
+const textUtil  = require('../utils/text');
 
 module.exports = {
   init(levelId) {
@@ -33,43 +33,25 @@ module.exports = {
     this.order = this.levelData.order;
     this.setupSwitches();
 
-    this.addTimerText();
-    this.addTimer((timer) => {
-      this.updateTimerText(timer);
-      // FIXME: instead of levelData we need to change to this.currentLevelJson
-      if (timer >= this.levelData.timer) {
-        this.stopTimer();
-        this.endLevel(false);
-      }
-    });
-    this.startTimer();
-    this.showSolution();
-  },
-
-  buildSfxCollection(componentName, numberOfAudioClips) {
-    const sounds = [];
-
-    for (let x = 0; x < numberOfAudioClips; x++) {
-      sounds.push(this.add.audio(`${componentName}-${x}-sfx`));
-    }
-
-    return sounds;
+    this.startIntro();
   },
 
   setupAudio() {
     this.levelMusic =  this.add.audio('main-soundtrack', 1, true);
     this.levelMusic.play();
-    this.puzzleCompleteSound = this.add.audio('puzzle-complete-sfx');
+
     this.puzzleComplete = false;
-    this.switchSounds = this.buildSfxCollection('switch', 7);
-    this.barrierSounds = this.buildSfxCollection('barrier', 3);
-    this.barrierSoundIndex = 0;
+    this.puzzleCompleteSound = this.add.audio('puzzle-complete-sfx');
+
+    this.switchSounds = audioUtil.buildSfxCollection(this.game, 'switch', 7);
     this.wrongSound = this.add.audio('wrong-sfx');
-    this.barrierDestroySounds = this.buildSfxCollection('barrier-destroy', 1);
+
+    this.barrierDestroySounds = audioUtil.buildSfxCollection(this.game, 'barrier-destroy', 1);
     this.barrierDestroySoundIndex = 0;
-    this.chainDragSounds = this.buildSfxCollection('chain-drag', 2);
+
+    this.chainAttachSound = this.add.audio('chain-attach-sfx');
+    this.chainDragSounds = audioUtil.buildSfxCollection(this.game, 'chain-drag', 2);
     this.chainDragSoundIndex = 0;
-    this.chainAttach = this.add.audio('chain-attach-sfx');
   },
 
   turnOnNearbySwitches() {
@@ -78,12 +60,13 @@ module.exports = {
     const playerY = this.player.y;
 
     this.switchGroup.forEach((s) => {
-      const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
+      const distance = this.math.distance(playerX, playerY, s.x, s.y);
 
       if (distance < threshold) {
         let switchId = s.getId();
 
-        const playerChoiceCorrect = this.order[this.score]
+        const playerChoiceCorrect = this.order[this.score];
+
         this.score = switchId === playerChoiceCorrect ? this.score + 1 : 0;
 
         if (this.score === 0) {
@@ -203,7 +186,7 @@ module.exports = {
     this.player.resetVelocity();
 
     this.physics.arcade.collide(this.player, this.collisionLayer);
-    this.physics.arcade.collide(this.player, this.obstacleGroup);
+    this.physics.arcade.collide(this.player, this.barrierGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
     if (this.inputEnabled) {
@@ -400,8 +383,8 @@ module.exports = {
   },
 
   setupObstacles() {
-    this.obstaclesPlaceable = true;
-    this.obstacleGroup = this.add.group();
+    this.canPlaceBarriers = true;
+    this.barrierGroup = this.add.group();
   },
 
   addObstacleFromPointer(pointer) {
@@ -413,12 +396,15 @@ module.exports = {
 
     const playerX = this.player.body.center.x;
     const playerY = this.player.body.center.y;
-    const distance = this.math.distance(playerX, playerY, pointer.worldX, pointer.worldY);
+
     const threshold = 30;
+    const distance = this.math.distance(
+      playerX, playerY, pointer.worldX, pointer.worldY
+    );
 
     if (!this.isChainActive) {
       if (distance > threshold) {
-        if (!this.obstaclesPlaceable) {
+        if (!this.canPlaceBarriers) {
           return;
         }
 
@@ -440,7 +426,7 @@ module.exports = {
       } else {
         this.isChainActive = true;
 
-        this.chainAttach.play();
+        this.chainAttachSound.play();
         this.game.time.events.add(Phaser.Timer.SECOND * 0.8, function chainDrag() {
           this.playChainDrag();
         }, this);
@@ -481,49 +467,27 @@ module.exports = {
   },
 
   addBarrier(x, y) {
-    const obstacle = this.makePhysicsSprite(x, y, 'barrier');
+    const barrier = new Barrier(this.game, x, y);
 
-    if (this.game.physics.arcade.overlap(this.player, obstacle)) {
+    if (this.game.physics.arcade.overlap(this.player, barrier)) {
       return;
     }
 
-    obstacle.animations.add('up', [2, 1, 0], 10, false);
-    obstacle.animations.add('down', [0, 1, 2], 10, false);
+    barrier.playIntro();
 
-    obstacle.animations.play('up');
-    this.playBarrierSound();
+    this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.duration, function() {
+      barrier.playOutro();
 
-    obstacle.id = Math.round(+new Date() / 1000);
-    obstacle.body.moves = false;
-
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-      obstacle.animations.play('down');
-      this.game.time.events.add(300, function () {
-        this.removeObstacle(obstacle.id);
-      }, this);
+      this.game.time.events.add(300, barrier.destroy, barrier);
     }, this);
 
-    this.obstaclesPlaceable = false;
+    this.canPlaceBarriers = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.cooldown, function() {
-      this.obstaclesPlaceable = true;
+    this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.cooldown, function() {
+      this.canPlaceBarriers = true;
     }, this);
 
-    this.obstacleGroup.add(obstacle);
-  },
-
-  removeObstacle(id) {
-    this.obstacleGroup.forEach((item) => {
-      if (item.id === id) {
-        item.destroy();
-      }
-    });
-  },
-
-  playBarrierSound() {
-    // Play in sequence
-    this.barrierSounds[this.barrierSoundIndex].play();
-    this.barrierSoundIndex = (this.barrierSoundIndex + 1) % 3;
+    this.barrierGroup.add(barrier);
   },
 
   playChainDrag() {
@@ -599,10 +563,10 @@ module.exports = {
       this.player.scaleTarget = Math.min(1 + scaleOrigin, 8 - scaleOrigin);
       this.player.scaleCount++;
 
-      const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
+      const barriersToDestroy = this.barrierGroup.filter(function(barrier) {
         const distance = this.math.distance(
           this.player.body.center.x, this.player.body.center.y,
-          obstacle.x, obstacle.y
+          barrier.x, barrier.y
         );
 
         if (distance < threshold) {
@@ -621,12 +585,12 @@ module.exports = {
         Phaser.Easing.LINEAR,
         true
       )
-        .onComplete.add(function destroyObstacles() {
-          if (obstaclesToDestroy.total) {
+        .onComplete.add(function destroyBarriers() {
+          if (barriersToDestroy.total) {
             this.playBarrierDestroySound();
           }
 
-          obstaclesToDestroy.removeAll(true);
+          barriersToDestroy.removeAll(true);
 
           this.player.canDestroyBarriers = true;
 
@@ -680,29 +644,32 @@ module.exports = {
 
     this.terrainLayer.tint = tint;
 
-    this.obstacleGroup.forEachAlive(function updateTint(obstacle) {
-      obstacle.tint = tint;
+    this.barrierGroup.forEachAlive(function updateTint(barrier) {
+      barrier.tint = tint;
     });
   },
 
-  enableInput() {
-    this.inputEnabled = true;
-
-    this.input.onDown.add(this.addObstacleFromPointer, this);
-
-    // FIXME: Fix this conflict!
-    this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
-    this.keys.spacebar.onDown.add(this.destroyBarriers, this);
-
-    this.player.enableInput(this.keys.cursors);
+  startIntro() {
+    // TODO: Play an intro cut scene, then do this.
+    this.startLevel();
   },
 
-  disableInput() {
-    this.inputEnabled = false;
+  startLevel() {
+    this.addTimerText();
 
-    this.input.onDown.removeAll();
-    this.keys.spacebar.onDown.removeAll();
-    this.player.disableInput(this.keys.cursors);
+    this.addTimer(function updateTimer(time) {
+      this.updateTimerText(time);
+
+      if (time >= this.levelData.timer) {
+        this.stopTimer();
+
+        this.endLevel(false);
+      }
+    }.bind(this));
+
+    this.startTimer();
+
+    this.showSolution();
   },
 
   endLevel(success) {
@@ -736,5 +703,25 @@ module.exports = {
     };
 
     this.state.start('level-fail-menu', clearWorld, false, id, cameraPosition);
+  },
+
+  enableInput() {
+    this.inputEnabled = true;
+
+    this.input.onDown.add(this.addObstacleFromPointer, this);
+
+    // FIXME: Fix this conflict!
+    this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
+    this.keys.spacebar.onDown.add(this.destroyBarriers, this);
+
+    this.player.enableInput(this.keys.cursors);
+  },
+
+  disableInput() {
+    this.inputEnabled = false;
+
+    this.input.onDown.removeAll();
+    this.keys.spacebar.onDown.removeAll();
+    this.player.disableInput(this.keys.cursors);
   },
 };
