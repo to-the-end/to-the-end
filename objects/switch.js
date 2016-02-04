@@ -12,8 +12,8 @@ class Switch extends PhysicsSprite {
 
     this.body.setSize(21, 60, 0, 28);
 
-    this.animations.add('on', [1, 2], 10, true);
-    this.animations.add('off', [2, 1, 0], 10, false);
+    this.animations.add('on', [ 1, 2 ], 10, true);
+    this.animations.add('off', [ 2, 1, 0 ], 10, false);
 
     this.switchSound = switchSound;
   }
@@ -34,7 +34,7 @@ class Switch extends PhysicsSprite {
     return this.getId();
   }
 
-  playSound(){
+  playSound() {
     this.switchSound.play();
   }
 
