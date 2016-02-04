@@ -673,36 +673,34 @@ module.exports = {
   },
 
   endLevel(success) {
-    this.levelMusic.stop();
     this.player.stop();
 
-    let state      = 'scene';
-    let clearWorld = true;
-    let id         = this.levelId;
+    let id = this.levelId;
 
-    if (success) {
-      id++;
+    if (!success) {
+      const cameraPosition = {
+        x: this.camera.x,
+        y: this.camera.y,
+      };
 
-      if (id >= config.level.count) {
-        state = 'end';
-      }
-    } else {
-      state      = 'level-fail-menu';
-      clearWorld = false;
-    }
-
-    if (success) {
-      this.state.start(state, clearWorld, false, id);
+      this.state.start(
+        'level-fail-menu', false, false, id, cameraPosition
+      );
 
       return;
     }
 
-    const cameraPosition = {
-      x: this.camera.x,
-      y: this.camera.y,
-    };
+    let state = 'scene';
 
-    this.state.start('level-fail-menu', clearWorld, false, id, cameraPosition);
+    id++;
+
+    if (id >= config.level.count) {
+      state = 'end';
+    }
+
+    this.sound.destroy();
+
+    this.state.start(state, true, false, id);
   },
 
   enableInput() {

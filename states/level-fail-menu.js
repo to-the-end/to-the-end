@@ -9,7 +9,12 @@ module.exports = {
   },
 
   create() {
-    // TODO: Add an overlay to darken the game.
+    // TODO: Fade this in.
+    const overlay = this.add.graphics();
+
+    overlay.beginFill(0x000000, 0.5);
+    overlay.drawRect(0, 0, this.world.width, this.world.height);
+    overlay.endFill();
 
     this.camera.x = this.cameraPosition.x;
     this.camera.y = this.cameraPosition.y;
@@ -25,8 +30,7 @@ module.exports = {
 
     retryText.inputEnabled = true;
     retryText.events.onInputUp.add(function retry() {
-      // TODO: Should this go straight to the main state again?
-      this.state.start('scene', true, false, this.nextLevelId);
+      this.closeMenu('level');
     }, this);
 
     const mainMenuText = textUtil.addFixedText(
@@ -40,7 +44,13 @@ module.exports = {
 
     mainMenuText.inputEnabled = true;
     mainMenuText.events.onInputUp.add(function mainMenu() {
-      this.state.start('main-menu', true, false, this.nextLevelId);
+      this.closeMenu('main-menu');
     }, this);
+  },
+
+  closeMenu(nextState) {
+    this.sound.destroy();
+
+    this.state.start(nextState, true, false, this.nextLevelId);
   },
 };
