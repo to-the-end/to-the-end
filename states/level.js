@@ -60,11 +60,11 @@ module.exports = {
     const playerX = this.player.x;
     const playerY = this.player.y;
 
-    this.switchGroup.forEach((s) => {
+    this.switchGroup.forEachAlive(function maybeFlickSwitch(s) {
       const distance = this.math.distance(playerX, playerY, s.x, s.y);
 
       if (distance < threshold) {
-        let switchId = s.getId();
+        const switchId = s.getId();
 
         const playerChoiceCorrect = this.order[this.score];
 
@@ -78,7 +78,7 @@ module.exports = {
           s.playSound();
         }
       }
-    });
+    }, this);
   },
 
   showSolution(shake) {
