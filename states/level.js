@@ -631,7 +631,9 @@ module.exports = {
       if (time >= this.levelData.timer) {
         this.stopTimer();
 
-        this.endLevel(false);
+        cameraUtil.shake(this.game, this.camera, function endLevel() {
+          this.endLevel(false);
+        }.bind(this));
       }
     }.bind(this));
 
