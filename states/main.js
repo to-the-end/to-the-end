@@ -4,8 +4,8 @@
 
 const config = require('../config');
 
-const Player   = require('../models/Player');
-const Switch   = require('../models/Switch');
+const Player   = require('../objects/player');
+const Switch   = require('../objects/switch');
 const textUtil = require('../utils/text');
 
 module.exports = {

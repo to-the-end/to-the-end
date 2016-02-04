@@ -97,7 +97,7 @@ module.exports = {
   },
 
   loadFilters() {
-    this.load.script('vignette-filter', 'filters/Vignette.js');
+    this.load.script('vignette-filter', 'assets/filters/vignette.js');
   },
 
   loadMenus() {
