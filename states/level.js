@@ -2,11 +2,12 @@
 
 const config = require('../config');
 
-const Barrier   = require('../objects/barrier');
-const Player    = require('../objects/player');
-const Switch    = require('../objects/switch');
-const audioUtil = require('../utils/audio');
-const textUtil  = require('../utils/text');
+const Barrier    = require('../objects/barrier');
+const Player     = require('../objects/player');
+const Switch     = require('../objects/switch');
+const audioUtil  = require('../utils/audio');
+const cameraUtil = require('../utils/camera');
+const textUtil   = require('../utils/text');
 
 module.exports = {
   init(levelId) {
@@ -85,43 +86,10 @@ module.exports = {
     this.player.stop();
 
     if (shake) {
-      this.shake(() => {
-        this.tweenCameraToSwitch(0);
-      });
+      cameraUtil.shake(this.game, this.camera, this.showSolution.bind(this));
     } else {
       this.tweenCameraToSwitch(0);
     }
-  },
-
-  shake(callback) {
-    this.camera.unfollow();
-    const shakeTimer = this.time.create(false);
-
-    const shakeRange = 20;
-    const shakeInterval = 60;
-    let shakeCount = 10;
-
-    shakeTimer.loop(shakeInterval, () => {
-
-      if (shakeCount === 0) {
-        this.camera.follow(this.player);
-        shakeTimer.stop();
-
-        if (typeof callback === "function") {
-          callback();
-        }
-
-        return;
-      }
-
-      let shift1 = shakeCount % 2 ? -shakeRange / 2 : shakeRange / 2;
-      this.camera.x += shift1;
-
-      shakeCount--;
-
-    }, this);
-
-    shakeTimer.start();
   },
 
   tweenCameraToSwitch(index) {
@@ -663,7 +631,9 @@ module.exports = {
       if (time >= this.levelData.timer) {
         this.stopTimer();
 
-        this.endLevel(false);
+        cameraUtil.shake(this.game, this.camera, function endLevel() {
+          this.endLevel(false);
+        }.bind(this));
       }
     }.bind(this));
 
