@@ -193,7 +193,7 @@ module.exports = {
     this.player.resetVelocity();
 
     this.physics.arcade.collide(this.player, this.collisionLayer);
-    this.physics.arcade.collide(this.player, this.obstacleGroup);
+    this.physics.arcade.collide(this.player, this.barrierGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
     if (this.inputEnabled) {
@@ -390,8 +390,8 @@ module.exports = {
   },
 
   setupObstacles() {
-    this.obstaclesPlaceable = true;
-    this.obstacleGroup = this.add.group();
+    this.canPlaceBarriers = true;
+    this.barrierGroup = this.add.group();
   },
 
   addObstacleFromPointer(pointer) {
@@ -403,12 +403,15 @@ module.exports = {
 
     const playerX = this.player.body.center.x;
     const playerY = this.player.body.center.y;
-    const distance = this.math.distance(playerX, playerY, pointer.worldX, pointer.worldY);
+
     const threshold = 30;
+    const distance = this.math.distance(
+      playerX, playerY, pointer.worldX, pointer.worldY
+    );
 
     if (!this.isChainActive) {
       if (distance > threshold) {
-        if (!this.obstaclesPlaceable) {
+        if (!this.canPlaceBarriers) {
           return;
         }
 
@@ -471,34 +474,32 @@ module.exports = {
   },
 
   addBarrier(x, y) {
-    const obstacle = this.makePhysicsSprite(x, y, 'barrier');
+    const barrier = this.makePhysicsSprite(x, y, 'barrier');
 
-    if (this.game.physics.arcade.overlap(this.player, obstacle)) {
+    if (this.game.physics.arcade.overlap(this.player, barrier)) {
       return;
     }
 
-    obstacle.animations.add('up', [2, 1, 0], 10, false);
-    obstacle.animations.add('down', [0, 1, 2], 10, false);
+    barrier.animations.add('up', [ 2, 1, 0 ], 10, false);
+    barrier.animations.add('down', [ 0, 1, 2 ], 10, false);
 
-    obstacle.animations.play('up');
+    barrier.animations.play('up');
     this.playBarrierSound();
 
-    obstacle.body.moves = false;
+    barrier.body.moves = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.duration, function() {
-      obstacle.animations.play('down');
-      this.game.time.events.add(300, function () {
-        obstacle.destroy();
-      }, this);
+    this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.duration, function() {
+      barrier.animations.play('down');
+      this.game.time.events.add(300, barrier.destroy, barrier);
     }, this);
 
-    this.obstaclesPlaceable = false;
+    this.canPlaceBarriers = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.obstacles.cooldown, function() {
-      this.obstaclesPlaceable = true;
+    this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.cooldown, function() {
+      this.canPlaceBarriers = true;
     }, this);
 
-    this.obstacleGroup.add(obstacle);
+    this.barrierGroup.add(barrier);
   },
 
   playBarrierSound() {
@@ -580,10 +581,10 @@ module.exports = {
       this.player.scaleTarget = Math.min(1 + scaleOrigin, 8 - scaleOrigin);
       this.player.scaleCount++;
 
-      const obstaclesToDestroy = this.obstacleGroup.filter(function(obstacle) {
+      const barriersToDestroy = this.barrierGroup.filter(function(barrier) {
         const distance = this.math.distance(
           this.player.body.center.x, this.player.body.center.y,
-          obstacle.x, obstacle.y
+          barrier.x, barrier.y
         );
 
         if (distance < threshold) {
@@ -602,12 +603,12 @@ module.exports = {
         Phaser.Easing.LINEAR,
         true
       )
-        .onComplete.add(function destroyObstacles() {
-          if (obstaclesToDestroy.total) {
+        .onComplete.add(function destroyBarriers() {
+          if (barriersToDestroy.total) {
             this.playBarrierDestroySound();
           }
 
-          obstaclesToDestroy.removeAll(true);
+          barriersToDestroy.removeAll(true);
 
           this.player.canDestroyBarriers = true;
 
@@ -661,8 +662,8 @@ module.exports = {
 
     this.terrainLayer.tint = tint;
 
-    this.obstacleGroup.forEachAlive(function updateTint(obstacle) {
-      obstacle.tint = tint;
+    this.barrierGroup.forEachAlive(function updateTint(barrier) {
+      barrier.tint = tint;
     });
   },
 

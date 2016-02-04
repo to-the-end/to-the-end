@@ -7,7 +7,7 @@ module.exports = {
     width:  window.innerWidth,
     height: window.innerHeight,
   },
-  obstacles: {
+  barriers: {
     duration: 4,
     cooldown: 0.5,
   },

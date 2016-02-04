@@ -43,7 +43,7 @@ module.exports = {
 
   loadObjects() {
     this.load.spritesheet('switch', 'assets/torch.png', 50, 116, -1, 78, 78);
-    this.load.spritesheet('barrier', 'assets/obstacle.png', 128, 128, 3);
+    this.load.spritesheet('barrier', 'assets/barrier.png', 128, 128, 3);
     this.load.image('chain', 'assets/chain.png');
   },
 
