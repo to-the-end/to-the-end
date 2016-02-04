@@ -60,12 +60,13 @@ module.exports = {
     const playerY = this.player.y;
 
     this.switchGroup.forEach((s) => {
-      const distance = Phaser.Math.distance(playerX, playerY, s.x, s.y);
+      const distance = this.math.distance(playerX, playerY, s.x, s.y);
 
       if (distance < threshold) {
         let switchId = s.getId();
 
-        const playerChoiceCorrect = this.order[this.score]
+        const playerChoiceCorrect = this.order[this.score];
+
         this.score = switchId === playerChoiceCorrect ? this.score + 1 : 0;
 
         if (this.score === 0) {
