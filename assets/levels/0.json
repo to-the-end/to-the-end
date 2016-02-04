@@ -1,4 +1,9 @@
 {
   "order": [3, 1, 2],
-  "timer": 360
+  "timer": 360,
+  "intro": [
+    {
+      "text": "Hello – excuse me? Can you help me? I'm stuck down here – I want to get out..."
+    }
+  ]
 }

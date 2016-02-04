@@ -632,8 +632,52 @@ module.exports = {
   },
 
   startIntro() {
-    // TODO: Play an intro cut scene, then do this.
-    this.startLevel();
+    this.dialogueGroup = this.add.group();
+
+    this.playDialogue(0);
+  },
+
+  playDialogue(index) {
+    const dialogue = this.levelData.intro[index];
+
+    if (!dialogue) {
+      this.dialogueGroup.destroy();
+      this.dialogueGroup = null;
+
+      this.startLevel();
+
+      return;
+    }
+
+    const style = {
+      fontSize:      24,
+      boundsAlignH:  'center',
+      boundsAlignV:  'center',
+      wordWrap:      true,
+      wordWrapWidth: this.camera.view.width * 0.6,
+    };
+
+    const text = textUtil.addFixedText(
+      this.game,
+      this.camera.view.width / 2, this.camera.view.height / 2,
+      '',
+      style
+    );
+
+    text.anchor.set(0.5);
+
+    this.dialogueGroup.add(text);
+
+    textUtil.typeOutText(
+      this.game,
+      text,
+      dialogue.text,
+      function delayNext() {
+        this.time.events.add(Phaser.Timer.SECOND * 3, function playNext() {
+          this.playDialogue(index + 1);
+        }, this);
+      }.bind(this)
+    );
   },
 
   startLevel() {
