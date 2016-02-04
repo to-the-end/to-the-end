@@ -26,7 +26,7 @@ module.exports = {
     retryText.inputEnabled = true;
     retryText.events.onInputUp.add(function retry() {
       // TODO: Should this go straight to the main state again?
-      this.state.start('scene', true, false, this.nextLevelId);
+      this.closeMenu('scene');
     }, this);
 
     const mainMenuText = textUtil.addFixedText(
@@ -40,7 +40,13 @@ module.exports = {
 
     mainMenuText.inputEnabled = true;
     mainMenuText.events.onInputUp.add(function mainMenu() {
-      this.state.start('main-menu', true, false, this.nextLevelId);
+      this.closeMenu('main-menu');
     }, this);
+  },
+
+  closeMenu(nextState) {
+    this.sound.destroy();
+
+    this.state.start(nextState, true, false, this.nextLevelId);
   },
 };

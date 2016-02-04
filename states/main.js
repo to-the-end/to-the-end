@@ -673,8 +673,6 @@ module.exports = {
   },
 
   endLevel(success) {
-    // FIXME: Don't stop the music when transitioning to the level-fail-menu.
-    this.levelMusic.stop();
     this.player.stop();
 
     let id = this.levelId;
@@ -685,7 +683,9 @@ module.exports = {
         y: this.camera.y,
       };
 
-      this.state.start('level-fail-menu', false, false, id, cameraPosition);
+      this.state.start(
+        'level-fail-menu', false, false, id, cameraPosition
+      );
 
       return;
     }
@@ -697,6 +697,8 @@ module.exports = {
     if (id >= config.level.count) {
       state = 'end';
     }
+
+    this.sound.destroy();
 
     this.state.start(state, true, false, id);
   },
