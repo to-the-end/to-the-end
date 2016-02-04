@@ -60,11 +60,11 @@ module.exports = {
     const playerX = this.player.x;
     const playerY = this.player.y;
 
-    this.switchGroup.forEach((s) => {
+    this.switchGroup.forEachAlive(function maybeFlickSwitch(s) {
       const distance = this.math.distance(playerX, playerY, s.x, s.y);
 
       if (distance < threshold) {
-        let switchId = s.getId();
+        const switchId = s.getId();
 
         const playerChoiceCorrect = this.order[this.score];
 
@@ -78,7 +78,7 @@ module.exports = {
           s.playSound();
         }
       }
-    });
+    }, this);
   },
 
   showSolution(shake) {
@@ -191,7 +191,7 @@ module.exports = {
     }
 
     if (this.keys.cursors.up.isDown) {
-      if (hasMoved){
+      if (hasMoved) {
         this.player.body.velocity.y--;
       } else {
         this.player.walkUp();
@@ -200,7 +200,7 @@ module.exports = {
     }
 
     if (this.keys.cursors.down.isDown) {
-      if (hasMoved){
+      if (hasMoved) {
         this.player.body.velocity.y++;
       } else {
         this.player.walkDown();
@@ -234,48 +234,41 @@ module.exports = {
     }
   },
 
-  addTimer(callback) {
-    this.timer = this.time.create(false).loop(Phaser.Timer.SECOND * 1, function() {
-      callback(this.timer.count);
+  addTimer(updateFn) {
+    this.levelTimer = this.time.create(false);
 
-      this.timer.count++;
+    this.levelTimer.count = 0;
+
+    this.levelTimer.loop(Phaser.Timer.SECOND, function incrementCounter() {
+      updateFn(this.levelTimer.count);
+
+      this.levelTimer.count++;
     }, this);
-
-    this.timer.count = 0;
   },
 
   startTimer() {
-    this.timer.timer.start();
+    this.levelTimer.start();
   },
 
   stopTimer() {
-    this.timer.timer.stop();
-  },
-
-  removeTimer() {
-    this.time.events.remove(this.timer);
+    this.levelTimer.stop();
   },
 
   addTimerText() {
-    this.timerText = textUtil.addFixedText(
+    this.levelTimerText = textUtil.addFixedText(
       this.game,
       this.camera.view.width / 2, 0,
       `Time left: ${this.levelData.timer}`,
       { fontSize: 24 }
     );
 
-    this.timerText.anchor.set(0.5, 0);
-  },
-
-  removeTimerText() {
-    this.timerText.destroy();
-    this.timerText = null;
+    this.levelTimerText.anchor.set(0.5, 0);
   },
 
   updateTimerText(time) {
     const remainingTime = this.levelData.timer - time;
 
-    this.timerText.setText(`Time left: ${remainingTime}`);
+    this.levelTimerText.setText(`Time left: ${remainingTime}`);
   },
 
   setupPlayer() {
@@ -335,8 +328,10 @@ module.exports = {
 
     this.switchesLayer
       .getTiles(0, 0, this.world.width, this.world.height)
-      .filter((tile) => { return tile.index > 0; })
-      .forEach((tile) => {
+      .filter(function isValid(tile) {
+        return tile.index > 0;
+      })
+      .forEach(function createSwitch(tile) {
         const s = new Switch(
           this.game,
           (tile.x + 0.5) * tile.width, (tile.y + 0.5) * tile.height,
@@ -347,7 +342,7 @@ module.exports = {
         this.switchGroup.add(s);
 
         switchId++;
-      });
+      }, this);
   },
 
   setupObstacles() {
@@ -413,11 +408,11 @@ module.exports = {
 
         this.chain = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'chain', null, points);
 
-        const state = this;
+        const self = this;
 
         this.chain.updateAnimation = function updateAnimation() {
-          const xx = state.player.body.center.x;
-          const yy = state.player.body.center.y;
+          const xx = self.player.body.center.x;
+          const yy = self.player.body.center.y;
 
           this.x = xx;
           this.y = yy;
@@ -426,8 +421,8 @@ module.exports = {
             const alpha = i / (this.points.length - 1);
             const beta = 1 - alpha;
 
-            this.points[i].x = (state.input.mousePointer.worldX - xx) * beta;
-            this.points[i].y = (state.input.mousePointer.worldY - yy) * beta;
+            this.points[i].x = (self.input.mousePointer.worldX - xx) * beta;
+            this.points[i].y = (self.input.mousePointer.worldY - yy) * beta;
           }
         };
       }
@@ -443,17 +438,25 @@ module.exports = {
 
     barrier.playIntro();
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.duration, function() {
-      barrier.playOutro();
+    this.game.time.events.add(
+      Phaser.Timer.SECOND * config.barriers.duration,
+      function destroyBarrier() {
+        barrier.playOutro();
 
-      this.game.time.events.add(300, barrier.destroy, barrier);
-    }, this);
+        this.game.time.events.add(300, barrier.destroy, barrier);
+      },
+      this
+    );
 
     this.canPlaceBarriers = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.cooldown, function() {
-      this.canPlaceBarriers = true;
-    }, this);
+    this.game.time.events.add(
+      Phaser.Timer.SECOND * config.barriers.cooldown,
+      function reenableBarrierPlacement() {
+        this.canPlaceBarriers = true;
+      },
+      this
+    );
 
     this.barrierGroup.add(barrier);
   },
@@ -531,18 +534,20 @@ module.exports = {
       this.player.scaleTarget = Math.min(1 + scaleOrigin, 8 - scaleOrigin);
       this.player.scaleCount++;
 
-      const barriersToDestroy = this.barrierGroup.filter(function(barrier) {
-        const distance = this.math.distance(
-          this.player.body.center.x, this.player.body.center.y,
-          barrier.x, barrier.y
-        );
+      const barriersToDestroy = this.barrierGroup.filter(
+        function shouldDestroy(barrier) {
+          const distance = this.math.distance(
+            this.player.body.center.x, this.player.body.center.y,
+            barrier.x, barrier.y
+          );
 
-        if (distance < threshold) {
-          return true;
-        }
+          if (distance < threshold) {
+            return true;
+          }
 
-        return false;
-      }.bind(this));
+          return false;
+        }.bind(this)
+      );
 
       this.add.tween(this.player.scale).to(
         {

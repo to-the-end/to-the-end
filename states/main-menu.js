@@ -18,17 +18,17 @@ module.exports = {
     sprite.anchor.set(0.5);
 
     const titleStyle = {
-      font: 'Raleway',
-      fontSize: 88,
-      fill: '#fff',
-      stroke: '#000',
-      strokeThickness: 3
+      font:            'Raleway',
+      fontSize:        88,
+      fill:            '#fff',
+      stroke:          '#000',
+      strokeThickness: 3,
     };
     const defaultStyle = {
-      font: 'Raleway',
-      fontSize: 48,
-      fill: '#fff',
-      stroke: '#000',
+      font:            'Raleway',
+      fontSize:        48,
+      fill:            '#fff',
+      stroke:          '#000',
       strokeThickness: 3,
     };
 
@@ -77,43 +77,53 @@ module.exports = {
     this.playText.kill();
     this.instructionsText.kill();
     this.creditsText.kill();
+
     const instructionsStyle = {
-      font: 'Raleway',
-      fontSize: 48,
-      fill: '#fff',
-      stroke: '#000',
+      font:            'Raleway',
+      fontSize:        48,
+      fill:            '#fff',
+      stroke:          '#000',
       strokeThickness: 3,
     };
     const commandsStyle = {
-      font: 'Raleway',
-      fontSize: 30,
-      fill: '#fff',
-      stroke: '#000',
+      font:            'Raleway',
+      fontSize:        30,
+      fill:            '#fff',
+      stroke:          '#000',
       strokeThickness: 3,
     };
 
-    let saviour = this.add.text(
+    const saviour = this.add.text(
       this.camera.view.width * 2 / 10, this.camera.view.height * 3 / 10, 'Saviour', instructionsStyle
     );
+
     saviour.anchor.set(0.5);
-    let protector = this.add.text(
+
+    const protector = this.add.text(
       this.camera.view.width - saviour.x, saviour.y, 'Protector', instructionsStyle
     );
+
     protector.anchor.set(0.5);
-    let saviourCommands1 = this.add.text(
+
+    const saviourCommands1 = this.add.text(
       saviour.x, saviour.y + 100, 'Arrow keys', commandsStyle
     );
+
     saviourCommands1.anchor.set(0.5);
-    let saviourCommands2 = this.add.text(
+
+    const saviourCommands2 = this.add.text(
       saviourCommands1.x, saviourCommands1.y + 80, 'Spacebar', commandsStyle
     );
+
     saviourCommands2.anchor.set(0.5);
-    let protectorCommands1 = this.add.text(
+
+    const protectorCommands1 = this.add.text(
       protector.x, protector.y + 100, 'Mouse', commandsStyle
     );
+
     protectorCommands1.anchor.set(0.5);
 
-    this.input.onDown.add(function () {
+    this.input.onDown.add(function returnToMain() {
       saviour.destroy();
       protector.destroy();
       saviourCommands1.destroy();
@@ -132,21 +142,21 @@ module.exports = {
     this.creditsText.kill();
 
     const style = {
-      font: 'Raleway',
-      fontSize: 28,
-      fill: '#fff',
-      stroke: '#000',
+      font:            'Raleway',
+      fontSize:        28,
+      fill:            '#fff',
+      stroke:          '#000',
       strokeThickness: 3,
-      align: 'center',
+      align:           'center',
     };
 
     const thanksStyle = {
-      font: 'Raleway',
-      fontSize: 24,
-      fill: '#fff',
-      stroke: '#000',
+      font:            'Raleway',
+      fontSize:        24,
+      fill:            '#fff',
+      stroke:          '#000',
       strokeThickness: 3,
-      align: 'center',
+      align:           'center',
     };
 
     const ggj = this.add.text(
@@ -219,7 +229,7 @@ module.exports = {
 
     thanks.anchor.set(0.5, 0);
 
-    this.input.onDown.add(function () {
+    this.input.onDown.add(function returnToMain() {
       ggj.destroy();
       antonio.destroy();
       endrit.destroy();
@@ -239,4 +249,3 @@ module.exports = {
     }, this);
   },
 };
-
