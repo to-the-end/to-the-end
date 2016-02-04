@@ -33,17 +33,7 @@ module.exports = {
     this.order = this.levelData.order;
     this.setupSwitches();
 
-    this.addTimerText();
-    this.addTimer((timer) => {
-      this.updateTimerText(timer);
-      // FIXME: instead of levelData we need to change to this.currentLevelJson
-      if (timer >= this.levelData.timer) {
-        this.stopTimer();
-        this.endLevel(false);
-      }
-    });
-    this.startTimer();
-    this.showSolution();
+    this.startIntro();
   },
 
   buildSfxCollection(componentName, numberOfAudioClips) {
@@ -685,24 +675,27 @@ module.exports = {
     });
   },
 
-  enableInput() {
-    this.inputEnabled = true;
-
-    this.input.onDown.add(this.addObstacleFromPointer, this);
-
-    // FIXME: Fix this conflict!
-    this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
-    this.keys.spacebar.onDown.add(this.destroyBarriers, this);
-
-    this.player.enableInput(this.keys.cursors);
+  startIntro() {
+    // TODO: Play an intro cut scene, then do this.
+    this.startLevel();
   },
 
-  disableInput() {
-    this.inputEnabled = false;
+  startLevel() {
+    this.addTimerText();
 
-    this.input.onDown.removeAll();
-    this.keys.spacebar.onDown.removeAll();
-    this.player.disableInput(this.keys.cursors);
+    this.addTimer(function updateTimer(time) {
+      this.updateTimerText(time);
+
+      if (time >= this.levelData.timer) {
+        this.stopTimer();
+
+        this.endLevel(false);
+      }
+    }.bind(this));
+
+    this.startTimer();
+
+    this.showSolution();
   },
 
   endLevel(success) {
@@ -736,5 +729,25 @@ module.exports = {
     };
 
     this.state.start('level-fail-menu', clearWorld, false, id, cameraPosition);
+  },
+
+  enableInput() {
+    this.inputEnabled = true;
+
+    this.input.onDown.add(this.addObstacleFromPointer, this);
+
+    // FIXME: Fix this conflict!
+    this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
+    this.keys.spacebar.onDown.add(this.destroyBarriers, this);
+
+    this.player.enableInput(this.keys.cursors);
+  },
+
+  disableInput() {
+    this.inputEnabled = false;
+
+    this.input.onDown.removeAll();
+    this.keys.spacebar.onDown.removeAll();
+    this.player.disableInput(this.keys.cursors);
   },
 };
