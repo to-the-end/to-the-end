@@ -10,6 +10,7 @@ class Player extends Phaser.Sprite {
     this.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
 
+    this.animations.add('stop', [130], 1, true);
     this.animations.add('cast', [0, 1, 2, 3, 4, 5, 6], 5, false);
     this.animations.add('up', [105, 106, 107, 108, 109, 110, 111, 112], 10, true);
     this.animations.add('left', [118, 119, 120, 121, 122, 123, 124, 125], 10, true);
@@ -113,8 +114,8 @@ class Player extends Phaser.Sprite {
     this.resetVelocity();
     this.stopSound();
 
-    if (!this.isAnimating) {
-      this.frame = 130;
+    if (!this.isAnimating){
+      this.animations.play('stop');
     }
   }
 
