@@ -40,7 +40,7 @@ module.exports = {
   },
 
   endScene() {
-    this.music.stop();
+    this.sound.destroy();
 
     this.state.start('level', true, false, this.sceneId);
   },
