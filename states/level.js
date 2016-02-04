@@ -234,48 +234,41 @@ module.exports = {
     }
   },
 
-  addTimer(callback) {
-    this.timer = this.time.create(false).loop(Phaser.Timer.SECOND * 1, function() {
-      callback(this.timer.count);
+  addTimer(updateFn) {
+    this.levelTimer = this.time.create(false);
 
-      this.timer.count++;
+    this.levelTimer.count = 0;
+
+    this.levelTimer.loop(Phaser.Timer.SECOND * 1, function incrementCounter() {
+      updateFn(this.levelTimer.count);
+
+      this.levelTimer.count++;
     }, this);
-
-    this.timer.count = 0;
   },
 
   startTimer() {
-    this.timer.timer.start();
+    this.levelTimer.start();
   },
 
   stopTimer() {
-    this.timer.timer.stop();
-  },
-
-  removeTimer() {
-    this.time.events.remove(this.timer);
+    this.levelTimer.stop();
   },
 
   addTimerText() {
-    this.timerText = textUtil.addFixedText(
+    this.levelTimerText = textUtil.addFixedText(
       this.game,
       this.camera.view.width / 2, 0,
       `Time left: ${this.levelData.timer}`,
       { fontSize: 24 }
     );
 
-    this.timerText.anchor.set(0.5, 0);
-  },
-
-  removeTimerText() {
-    this.timerText.destroy();
-    this.timerText = null;
+    this.levelTimerText.anchor.set(0.5, 0);
   },
 
   updateTimerText(time) {
     const remainingTime = this.levelData.timer - time;
 
-    this.timerText.setText(`Time left: ${remainingTime}`);
+    this.levelTimerText.setText(`Time left: ${remainingTime}`);
   },
 
   setupPlayer() {
