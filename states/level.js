@@ -191,7 +191,7 @@ module.exports = {
     }
 
     if (this.keys.cursors.up.isDown) {
-      if (hasMoved){
+      if (hasMoved) {
         this.player.body.velocity.y--;
       } else {
         this.player.walkUp();
@@ -200,7 +200,7 @@ module.exports = {
     }
 
     if (this.keys.cursors.down.isDown) {
-      if (hasMoved){
+      if (hasMoved) {
         this.player.body.velocity.y++;
       } else {
         this.player.walkDown();
@@ -239,7 +239,7 @@ module.exports = {
 
     this.levelTimer.count = 0;
 
-    this.levelTimer.loop(Phaser.Timer.SECOND * 1, function incrementCounter() {
+    this.levelTimer.loop(Phaser.Timer.SECOND, function incrementCounter() {
       updateFn(this.levelTimer.count);
 
       this.levelTimer.count++;
@@ -328,8 +328,10 @@ module.exports = {
 
     this.switchesLayer
       .getTiles(0, 0, this.world.width, this.world.height)
-      .filter((tile) => { return tile.index > 0; })
-      .forEach((tile) => {
+      .filter(function isValid(tile) {
+        return tile.index > 0;
+      })
+      .forEach(function createSwitch(tile) {
         const s = new Switch(
           this.game,
           (tile.x + 0.5) * tile.width, (tile.y + 0.5) * tile.height,
@@ -340,7 +342,7 @@ module.exports = {
         this.switchGroup.add(s);
 
         switchId++;
-      });
+      }, this);
   },
 
   setupObstacles() {
@@ -406,11 +408,11 @@ module.exports = {
 
         this.chain = this.game.add.rope(this.player.body.center.x, this.player.body.center.y, 'chain', null, points);
 
-        const state = this;
+        const self = this;
 
         this.chain.updateAnimation = function updateAnimation() {
-          const xx = state.player.body.center.x;
-          const yy = state.player.body.center.y;
+          const xx = self.player.body.center.x;
+          const yy = self.player.body.center.y;
 
           this.x = xx;
           this.y = yy;
@@ -419,8 +421,8 @@ module.exports = {
             const alpha = i / (this.points.length - 1);
             const beta = 1 - alpha;
 
-            this.points[i].x = (state.input.mousePointer.worldX - xx) * beta;
-            this.points[i].y = (state.input.mousePointer.worldY - yy) * beta;
+            this.points[i].x = (self.input.mousePointer.worldX - xx) * beta;
+            this.points[i].y = (self.input.mousePointer.worldY - yy) * beta;
           }
         };
       }
@@ -436,17 +438,25 @@ module.exports = {
 
     barrier.playIntro();
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.duration, function() {
-      barrier.playOutro();
+    this.game.time.events.add(
+      Phaser.Timer.SECOND * config.barriers.duration,
+      function destroyBarrier() {
+        barrier.playOutro();
 
-      this.game.time.events.add(300, barrier.destroy, barrier);
-    }, this);
+        this.game.time.events.add(300, barrier.destroy, barrier);
+      },
+      this
+    );
 
     this.canPlaceBarriers = false;
 
-    this.game.time.events.add(Phaser.Timer.SECOND * config.barriers.cooldown, function() {
-      this.canPlaceBarriers = true;
-    }, this);
+    this.game.time.events.add(
+      Phaser.Timer.SECOND * config.barriers.cooldown,
+      function reenableBarrierPlacement() {
+        this.canPlaceBarriers = true;
+      },
+      this
+    );
 
     this.barrierGroup.add(barrier);
   },
@@ -524,18 +534,20 @@ module.exports = {
       this.player.scaleTarget = Math.min(1 + scaleOrigin, 8 - scaleOrigin);
       this.player.scaleCount++;
 
-      const barriersToDestroy = this.barrierGroup.filter(function(barrier) {
-        const distance = this.math.distance(
-          this.player.body.center.x, this.player.body.center.y,
-          barrier.x, barrier.y
-        );
+      const barriersToDestroy = this.barrierGroup.filter(
+        function shouldDestroy(barrier) {
+          const distance = this.math.distance(
+            this.player.body.center.x, this.player.body.center.y,
+            barrier.x, barrier.y
+          );
 
-        if (distance < threshold) {
-          return true;
-        }
+          if (distance < threshold) {
+            return true;
+          }
 
-        return false;
-      }.bind(this));
+          return false;
+        }.bind(this)
+      );
 
       this.add.tween(this.player.scale).to(
         {
