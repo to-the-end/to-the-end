@@ -116,14 +116,14 @@ module.exports = {
         this.time.events.add(Phaser.Timer.SECOND / 2, function tweenToNext() {
           this.tweenCameraToSwitch(index + 1);
         }, this);
-      }.bind(this));
+      }, this);
   },
 
   tweenCameraToPlayer() {
     this.tweenCamera(this.player, 750).onComplete.add(function tweenToNext() {
       this.camera.follow(this.player);
       this.enableInput();
-    }.bind(this));
+    }, this);
   },
 
   tweenCamera(target, duration) {
@@ -390,14 +390,22 @@ module.exports = {
         this.isChainActive = true;
 
         this.chainAttachSound.play();
-        this.game.time.events.add(Phaser.Timer.SECOND * 0.8, function chainDrag() {
-          this.playChainDrag();
-        }, this);
+        this.game.time.events.add(
+          Phaser.Timer.SECOND * 0.8,
+          function chainDrag() {
+            this.playChainDrag();
+          },
+          this
+        );
 
-        this.game.time.events.add(Phaser.Timer.SECOND * 2, function deactivateRope() {
-          this.isChainActive = false;
-          this.chain.destroy();
-        }, this);
+        this.game.time.events.add(
+          Phaser.Timer.SECOND * 2,
+          function deactivateRope() {
+            this.isChainActive = false;
+            this.chain.destroy();
+          },
+          this
+        );
 
         const length = 918 / 20;
         const points = [];
@@ -528,6 +536,7 @@ module.exports = {
 
     this.player.animateCast();
 
+    // TODO: Refactor this mess!
     this.time.events.add(scaleDelay, function scale() {
       const scaleOrigin = this.player.scaleTarget || this.player.scale.x;
 
