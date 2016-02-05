@@ -633,7 +633,14 @@ module.exports = {
   },
 
   startIntro() {
-    const dialogue = new Dialogue(this.game, this.levelData.intro);
+    const targets = {
+      player: this.player,
+
+      // FIXME: Make this the girl's sprite.
+      girl: this.player,
+    };
+
+    const dialogue = new Dialogue(this.game, this.levelData.intro, targets);
 
     dialogue.onComplete.add(this.startLevel, this);
 

@@ -13,6 +13,9 @@ const defaultEntry = {
   // The asset key of an image to display filling the screen.
   image: null,
 
+  // The key from the targets object to attach the text to.
+  target: null,
+
   // The two character position key e.g. "tl" for top-left.
   position: 'cc',
 
@@ -24,7 +27,7 @@ class Dialogue {
   constructor(game, entries, targets) {
     this.game    = game;
     this.entries = entries;
-    this.targets = targets;
+    this.targets = targets || {};
 
     this.onComplete = new Phaser.Signal();
   }
@@ -60,6 +63,8 @@ class Dialogue {
     }
 
     const delayNext = function delayNext() {
+      // TODO: Allow leap frogging delays.
+      //       Delay to remove, rather than hold time?
       this.game.time.events.add(entry.holdMs, function playNext() {
         this.displayEntry(id + 1);
       }, this);
@@ -100,20 +105,44 @@ class Dialogue {
       boundsAlignH:  props.alignH,
       boundsAlignV:  props.alignV,
       wordWrap:      true,
-      wordWrapWidth: this.game.camera.view.width * 0.6,
+      wordWrapWidth: props.wordWrapWidth,
     };
 
-    const text = textUtil.addFixedText(this.game, props.x, props.y, '', style);
+    let text;
+
+    if (entry.target) {
+      text = textUtil.addText(this.game, props.x, props.y, '', style);
+    } else {
+      text = textUtil.addFixedText(this.game, props.x, props.y, '', style);
+    }
 
     text.anchor.set(props.anchorX, props.anchorY);
 
     this.textGroup.add(text);
 
+    // FIXME: Update the text position to follow the target.
+    //        Is there an event on the sprite that can be bound to?
     textUtil.typeOutText(this.game, text, entry.text, callback);
   }
 
   getPositionProperties(entry) {
     const props = {};
+
+    if (entry.target) {
+      const target = this.targets[entry.target];
+
+      // FIXME: Offset to avoid falling off the edge of the camera.
+      props.x = target.x + target.width;
+      props.y = target.y;
+
+      props.wordWrapWidth = this.game.camera.view.width * 0.4;
+
+      // TODO: Set the other properties.
+
+      return props;
+    }
+
+    props.wordWrapWidth = this.game.camera.view.width * 0.6;
 
     const margin = 60;
 

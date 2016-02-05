@@ -2,6 +2,14 @@
 
 module.exports = {
   addFixedText(game, x, y, message, extraStyles) {
+    const text = this.addText(game, x, y, message, extraStyles);
+
+    text.fixedToCamera = true;
+
+    return text;
+  },
+
+  addText(game, x, y, message, extraStyles) {
     const style = Object.assign(
       {
         font:     'Raleway',
@@ -16,8 +24,6 @@ module.exports = {
     );
 
     const text = game.add.text(x, y, message, style);
-
-    text.fixedToCamera = true;
 
     return text;
   },

@@ -3,7 +3,49 @@
   "timer": 360,
   "intro": [
     {
+      "target": "player",
       "text": "Hello – excuse me? Can you help me? I'm stuck down here – I want to get out..."
+    },
+    {
+      "clear": true,
+      "target": "girl",
+      "text": "..."
+    },
+    {
+      "clear": true,
+      "target": "player",
+      "text": "No, please, help me... I don't know why I'm here. I don't know how to get out. Don't go..."
+    },
+    {
+      "position": "t",
+      "text": "No, you can't."
+    },
+    {
+      "clear": true,
+      "target": "player",
+      "text": "What? Why?"
+    },
+    {
+      "position": "t",
+      "text": "You can't go near her. You have to stay away."
+    },
+    {
+      "clear": true,
+      "target": "player",
+      "text": "But I need to talk to her – why can't I?"
+    },
+    {
+      "position": "t",
+      "text": "I don't have to explain it to you – but you must."
+    },
+    {
+      "clear": true,
+      "target": "player",
+      "text": "I'm going..."
+    },
+    {
+      "position": "t",
+      "text": "No! Stop! You can't..."
     }
   ]
 }
