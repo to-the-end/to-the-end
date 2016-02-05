@@ -1,7 +1,7 @@
 'use strict';
 
 class Audio {
-  constructor(game){
+  constructor(game) {
     this.game = game;
   }
 
@@ -20,47 +20,44 @@ class Audio {
   }
 
   // Play sequence of non-looping sounds
-  playSequence(soundKeys){
-    var sounds = soundKeys.map((key) => {
-      return this.game.add.audio(key);
-    });
+  playSequence(soundKeys) {
+    const sounds = soundKeys.map(key => this.game.add.audio(key));
 
-    playSoundsInOrder(sounds);
+    this.playSoundsInOrder(sounds);
   }
 
-  playSoundsInOrder(sounds){
-    if (sounds.length > 0){
+  playSoundsInOrder(sounds) {
+    if (sounds.length > 0) {
       sounds[0].play();
       sounds[0].onStop.addOnce(() => {
-        playSoundsInOrder(sounds.slice(1));
+        this.playSoundsInOrder(sounds.slice(1));
       });
     }
   }
 
-  playSequenceWithCrossfades(soundKeys, dividingFactor){
-    if (!dividingFactor || dividingFactor < 1){
+  playSequenceWithCrossfades(soundKeys, dividingFactor) {
+    if (!dividingFactor || dividingFactor < 1) {
       dividingFactor = 10;
     }
 
-    var sounds = soundKeys.map((key) => {
-      return this.game.add.audio(key);
-    });
+    const sounds = soundKeys.map(key => this.game.add.audio(key));
 
     this.playSoundsInOrderWithCrossfades(sounds, dividingFactor);
   }
 
-  playSoundsInOrderWithCrossfades(sounds, dividingFactor){
-    if (sounds.length > 1){
-      var sound1 = sounds[0];
-      var sound2 = sounds[1];
+  playSoundsInOrderWithCrossfades(sounds, dividingFactor) {
+    if (sounds.length > 1) {
+      const sound1 = sounds[0];
+      const sound2 = sounds[1];
 
-      if (!sound1.isPlaying){
+      if (!sound1.isPlaying) {
         sound1.play();
       }
 
-      var duration = sound1.totalDuration * 1000;
-      var fadeBoundary = duration / dividingFactor;
-      var tween = this.game.add.tween(sound1);
+      const duration = sound1.totalDuration * 1000;
+      const fadeBoundary = duration / dividingFactor;
+      const tween = this.game.add.tween(sound1);
+
       tween.to({ volume: 0 }, fadeBoundary, Phaser.Easing.Linear.None, false);
 
       setTimeout(() => {
@@ -69,28 +66,29 @@ class Audio {
         this.playSoundsInOrderWithCrossfades(sounds.slice(1), dividingFactor);
       }, duration - fadeBoundary);
     } else if (sounds.length === 1) {
-      if (!sounds[0].isPlaying){
+      if (!sounds[0].isPlaying) {
         sounds[0].play();
       }
     }
   }
 
-  crossFade(sound1key, sound2key, dividingFactor){
-    var sound1 = this.game.add.audio(sound1key);
-    var sound2 = this.game.add.audio(sound2key);
+  crossFade(sound1key, sound2key, dividingFactor) {
+    const sound1 = this.game.add.audio(sound1key);
+    const sound2 = this.game.add.audio(sound2key);
 
-    if (!dividingFactor || dividingFactor < 1){
+    if (!dividingFactor || dividingFactor < 1) {
       dividingFactor = 10;
     }
 
     sound1.play();
 
-    // Need to get duration AFTER play - this is only set when audio has been decoded! 
+    // Need to get duration AFTER play - this is only set when audio has been decoded!
     // Preload does not wait for audio to be decoded (grr) so no guarantee until play hit.
     // Need milliseconds for setTimeout
-    var duration = sound1.totalDuration * 1000;
-    var fadeBoundary = duration / dividingFactor;
-    var tween = this.game.add.tween(sound1);
+    const duration = sound1.totalDuration * 1000;
+    const fadeBoundary = duration / dividingFactor;
+    const tween = this.game.add.tween(sound1);
+
     tween.to({ volume: 0 }, fadeBoundary, Phaser.Easing.Linear.None, false);
 
     setTimeout(() => {
