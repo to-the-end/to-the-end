@@ -1,7 +1,7 @@
 'use strict';
 
 const Audio =  {
-  setGame(game){
+  setGame(game) {
     this.game = game;
   },
 
@@ -37,10 +37,8 @@ const Audio =  {
   },
 
   playSequenceWithCrossfades(soundKeys, dividingFactor) {
-    dividingFactor = dividingFactor || 10
-    if (dividingFactor < 1) {
-      dividingFactor = 10;
-    }
+    dividingFactor = dividingFactor || 10;
+    dividingFactor = dividingFactor < 1 ? dividingFactor : 10;
 
     const sounds = soundKeys.map(key => this.game.add.audio(key));
 
@@ -79,9 +77,8 @@ const Audio =  {
     const sound1 = this.game.add.audio(sound1key);
     const sound2 = this.game.add.audio(sound2key);
 
-    if (!dividingFactor || dividingFactor < 1) {
-      dividingFactor = 10;
-    }
+    dividingFactor = dividingFactor || 10;
+    dividingFactor = dividingFactor < 1 ? dividingFactor : 10;
 
     sound1.play();
 
@@ -99,7 +96,7 @@ const Audio =  {
       tween.start();
       sound2.fadeIn(fadeBoundary);
     }, duration - fadeBoundary);
-  }
-}
+  },
+};
 
 module.exports = Audio;
