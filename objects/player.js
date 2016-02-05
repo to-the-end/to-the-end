@@ -72,9 +72,9 @@ class Player extends PhysicsSprite {
           if (this.isWalking) {
             this.startWalkingSound();
           }
-        });
+        }, this);
       }
-    });
+    }, this);
   }
 
   resetVelocity() {
