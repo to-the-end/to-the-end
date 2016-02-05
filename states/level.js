@@ -44,14 +44,14 @@ module.exports = {
     this.puzzleComplete = false;
     this.puzzleCompleteSound = this.add.audio('puzzle-complete-sfx');
 
-    this.switchSounds = audioUtil.buildSfxCollection(this.game, 'switch', 7);
+    this.switchSounds = audioUtil.buildSfxCollection('switch', 7);
     this.wrongSound = this.add.audio('wrong-sfx');
 
-    this.barrierDestroySounds = audioUtil.buildSfxCollection(this.game, 'barrier-destroy', 1);
+    this.barrierDestroySounds = audioUtil.buildSfxCollection('barrier-destroy', 1);
     this.barrierDestroySoundIndex = 0;
 
     this.chainAttachSound = this.add.audio('chain-attach-sfx');
-    this.chainDragSounds = audioUtil.buildSfxCollection(this.game, 'chain-drag', 2);
+    this.chainDragSounds = audioUtil.buildSfxCollection('chain-drag', 2);
     this.chainDragSoundIndex = 0;
   },
 

@@ -1,11 +1,12 @@
 'use strict';
 
-class Audio {
-  constructor(game) {
+const Audio =  {
+  setGame(game){
     this.game = game;
-  }
+  },
 
   buildSfxCollection(componentName, clipCount) {
+    // FIXME: Make this a class.
     const sounds = [];
 
     for (let i = 0; i < clipCount; i++) {
@@ -13,18 +14,18 @@ class Audio {
     }
 
     return sounds;
-  }
+  },
 
   addSfx(componentName, clipId) {
     return this.game.add.audio(`${componentName}-${clipId}-sfx`);
-  }
+  },
 
   // Play sequence of non-looping sounds
   playSequence(soundKeys) {
     const sounds = soundKeys.map(key => this.game.add.audio(key));
 
     this.playSoundsInOrder(sounds);
-  }
+  },
 
   playSoundsInOrder(sounds) {
     if (sounds.length > 0) {
@@ -33,17 +34,18 @@ class Audio {
         this.playSoundsInOrder(sounds.slice(1));
       });
     }
-  }
+  },
 
   playSequenceWithCrossfades(soundKeys, dividingFactor) {
-    if (!dividingFactor || dividingFactor < 1) {
+    dividingFactor = dividingFactor || 10
+    if (dividingFactor < 1) {
       dividingFactor = 10;
     }
 
     const sounds = soundKeys.map(key => this.game.add.audio(key));
 
     this.playSoundsInOrderWithCrossfades(sounds, dividingFactor);
-  }
+  },
 
   playSoundsInOrderWithCrossfades(sounds, dividingFactor) {
     if (sounds.length > 1) {
@@ -60,6 +62,7 @@ class Audio {
 
       tween.to({ volume: 0 }, fadeBoundary, Phaser.Easing.Linear.None, false);
 
+      // FIXME: switch setTimeout with phaser events, as this may have issues when pausing the game.
       setTimeout(() => {
         tween.start();
         sound2.fadeIn(fadeBoundary);
@@ -70,7 +73,7 @@ class Audio {
         sounds[0].play();
       }
     }
-  }
+  },
 
   crossFade(sound1key, sound2key, dividingFactor) {
     const sound1 = this.game.add.audio(sound1key);
@@ -91,6 +94,7 @@ class Audio {
 
     tween.to({ volume: 0 }, fadeBoundary, Phaser.Easing.Linear.None, false);
 
+    // FIXME: switch setTimeout with phaser events, as this may have issues when pausing the game.
     setTimeout(() => {
       tween.start();
       sound2.fadeIn(fadeBoundary);
