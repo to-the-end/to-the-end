@@ -1,7 +1,6 @@
 'use strict';
 
 const Dialogue = require('../utils/dialogue');
-const textUtil = require('../utils/text');
 
 module.exports = {
   init(sceneId) {

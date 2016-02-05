@@ -134,15 +134,12 @@ class Dialogue {
         break;
       }
 
-      case 'c': {
+      case 'c':
+      default: {
         props.y       = this.game.camera.view.height / 2;
         props.anchorY = 0.5;
         props.alignV  = 'center';
 
-        break;
-      }
-
-      default: {
         break;
       }
     }
@@ -164,15 +161,12 @@ class Dialogue {
         break;
       }
 
-      case 'c': {
+      case 'c':
+      default: {
         props.x       = this.game.camera.view.width / 2;
         props.anchorX = 0.5;
         props.alignH  = 'center';
 
-        break;
-      }
-
-      default: {
         break;
       }
     }
