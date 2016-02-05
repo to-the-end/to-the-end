@@ -1,5 +1,7 @@
 'use strict';
 
+const AudioLoop  = require('../utils/audioLoop');
+
 module.exports = {
   init(sceneId) {
     this.sceneId = sceneId;
@@ -8,6 +10,8 @@ module.exports = {
   create() {
     this.addUIElements();
     this.enableInteraction();
+    this.audioLoop = new AudioLoop(this.game, 'test0');
+    this.audioLoop.start();
   },
 
   addUIElements() {
@@ -59,12 +63,14 @@ module.exports = {
   enableInteraction() {
     this.playText.inputEnabled = true;
     this.playText.events.onInputUp.add(() => {
-      this.state.start('scene', true, false, this.sceneId);
+      //this.state.start('scene', true, false, this.sceneId);
+      this.audioLoop.addLayer('test1');
     });
 
     this.instructionsText.inputEnabled = true;
     this.instructionsText.events.onInputUp.add(() => {
-      this.showInstructions();
+      //this.showInstructions();
+      this.audioLoop.addLayer('test2');
     });
 
     this.creditsText.inputEnabled = true;

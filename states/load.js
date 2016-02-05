@@ -83,6 +83,13 @@ module.exports = {
       );
     }
 
+    for (let x = 0; x < 3; x++) {
+      this.load.audio(
+        `test${x}`,
+        `./assets/audio/test/test${x + 1}.wav`
+      );
+    }
+
     this.load.audio(
       'chain-attach-sfx', `${sfxRoot}/antagonist-actions/chains/chainattach.wav`
     );
