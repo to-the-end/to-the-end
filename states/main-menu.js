@@ -1,5 +1,7 @@
 'use strict';
 
+const Audio = require('../utils/audio');
+
 module.exports = {
   init(sceneId) {
     this.sceneId = sceneId;
@@ -8,6 +10,9 @@ module.exports = {
   create() {
     this.addUIElements();
     this.enableInteraction();
+    
+    var audioUtil = new Audio(this.game);
+    audioUtil.playSequenceWithCrossfades(['test0', 'test1', 'test0', 'test2'], 10);
   },
 
   addUIElements() {
