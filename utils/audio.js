@@ -68,10 +68,10 @@ class Audio {
         sound2.fadeIn(fadeBoundary);
         this.playSoundsInOrderWithCrossfades(sounds.slice(1), dividingFactor);
       }, duration - fadeBoundary);
-    } else if (sounds.length === 1){
-      // do nothing?
-    } else {
-      // do nothing
+    } else if (sounds.length === 1) {
+      if (!sounds[0].isPlaying){
+        sounds[0].play();
+      }
     }
   }
 
