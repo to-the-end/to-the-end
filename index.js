@@ -10,6 +10,7 @@ const levelFailMenuState = require('./states/level-fail-menu');
 const loadState          = require('./states/load');
 const mainMenuState      = require('./states/main-menu');
 const sceneState         = require('./states/scene');
+const audioUtil          = require('./utils/audio');
 
 document.addEventListener('DOMContentLoaded', function startGame() {
   const game = new Phaser.Game(
@@ -17,6 +18,8 @@ document.addEventListener('DOMContentLoaded', function startGame() {
     config.game.height,
     Phaser.AUTO
   );
+
+  audioUtil.setGame(game);
 
   game.state.add('load', loadState);
 
