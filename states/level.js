@@ -7,6 +7,7 @@ const Player     = require('../objects/player');
 const Switch     = require('../objects/switch');
 const audioUtil  = require('../utils/audio');
 const cameraUtil = require('../utils/camera');
+const Dialogue   = require('../utils/dialogue');
 const textUtil   = require('../utils/text');
 
 module.exports = {
@@ -632,52 +633,11 @@ module.exports = {
   },
 
   startIntro() {
-    this.dialogueGroup = this.add.group();
+    const dialogue = new Dialogue(this.game, this.levelData.intro);
 
-    this.playDialogue(0);
-  },
+    dialogue.onComplete.add(this.startLevel, this);
 
-  playDialogue(index) {
-    const dialogue = this.levelData.intro[index];
-
-    if (!dialogue) {
-      this.dialogueGroup.destroy();
-      this.dialogueGroup = null;
-
-      this.startLevel();
-
-      return;
-    }
-
-    const style = {
-      fontSize:      24,
-      boundsAlignH:  'center',
-      boundsAlignV:  'center',
-      wordWrap:      true,
-      wordWrapWidth: this.camera.view.width * 0.6,
-    };
-
-    const text = textUtil.addFixedText(
-      this.game,
-      this.camera.view.width / 2, this.camera.view.height / 2,
-      '',
-      style
-    );
-
-    text.anchor.set(0.5);
-
-    this.dialogueGroup.add(text);
-
-    textUtil.typeOutText(
-      this.game,
-      text,
-      dialogue.text,
-      function delayNext() {
-        this.time.events.add(Phaser.Timer.SECOND * 3, function playNext() {
-          this.playDialogue(index + 1);
-        }, this);
-      }.bind(this)
-    );
+    dialogue.start();
   },
 
   startLevel() {
