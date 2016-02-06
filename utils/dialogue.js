@@ -1,10 +1,11 @@
 'use strict';
 
-const textUtil = require('./text');
+const cameraUtil = require('./camera');
+const textUtil   = require('./text');
 
 const defaultEntry = {
-  // A boolean flag to indicate whether to clear previous
-  // dialogues before displaying this one.
+  // A flag to indicate whether to clear previous dialogues before
+  // displaying this one.
   clear: false,
 
   // The text to display.
@@ -21,6 +22,10 @@ const defaultEntry = {
 
   // The time in ms to wait at the end of the entry.
   holdMs: 3000,
+
+  // TODO: Make this more general for "special effects".
+  // A flag to indicate whether to shake the screen.
+  shake: false,
 };
 
 class Dialogue {
@@ -62,10 +67,16 @@ class Dialogue {
       this.addImage(entry);
     }
 
+    let shouldShake = entry.shake;
+
     const delayNext = function delayNext() {
       // TODO: Allow leap frogging delays.
       //       Delay to remove, rather than hold time?
       this.game.time.events.add(entry.holdMs, function playNext() {
+        // TODO: Stop shaking on end of text input instead?
+        //       (i.e. the delayNext call)
+        shouldShake = false;
+
         this.displayEntry(id + 1);
       }, this);
     }.bind(this);
@@ -74,6 +85,18 @@ class Dialogue {
       this.addText(entry, delayNext);
     } else {
       delayNext();
+    }
+
+    if (shouldShake) {
+      const shakeCamera = function shakeCamera() {
+        if (!shouldShake) {
+          return;
+        }
+
+        cameraUtil.shake(this.game, this.game.camera, shakeCamera.bind(this));
+      }.bind(this);
+
+      shakeCamera();
     }
   }
 

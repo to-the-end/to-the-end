@@ -19,7 +19,8 @@
     {
       "clear": true,
       "position": "t",
-      "text": "No, you can't."
+      "text": "No, you can't.",
+      "shake": true
     },
     {
       "clear": true,
@@ -29,7 +30,8 @@
     {
       "clear": true,
       "position": "t",
-      "text": "You can't go near her. You have to stay away."
+      "text": "You can't go near her. You have to stay away.",
+      "shake": true
     },
     {
       "clear": true,
@@ -39,7 +41,8 @@
     {
       "clear": true,
       "position": "t",
-      "text": "I don't have to explain it to you – but you must."
+      "text": "I don't have to explain it to you – but you must.",
+      "shake": true
     },
     {
       "clear": true,
@@ -49,7 +52,8 @@
     {
       "clear": true,
       "position": "t",
-      "text": "No! Stop! You can't..."
+      "text": "No! Stop! You can't...",
+      "shake": true
     }
   ]
 }
