@@ -11,9 +11,7 @@ class Barrier extends PhysicsSprite {
     this.animations.add('up', [ 2, 1, 0 ], 10, false);
     this.animations.add('down', [ 0, 1, 2 ], 10, false);
 
-    this.introSfx = audioUtil.addSfx(
-      game, 'barrier', game.rnd.integerInRange(0, 2)
-    );
+    this.introSfx = audioUtil.addSfx('barrier', game.rnd.integerInRange(0, 2));
   }
 
   playIntro() {
