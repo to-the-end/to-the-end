@@ -2,7 +2,7 @@
 
 const PhysicsSprite = require('./physics-sprite');
 
-class Player extends PhysicsSprite {
+class Character extends PhysicsSprite {
   constructor(game, x, y) {
     super(game, x, y, 'character', 130);
 
@@ -117,4 +117,4 @@ class Player extends PhysicsSprite {
   }
 }
 
-module.exports = Player;
+module.exports = Character;

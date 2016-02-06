@@ -3,7 +3,7 @@
 const config = require('../config');
 
 const Barrier    = require('../objects/barrier');
-const Player     = require('../objects/player');
+const Character  = require('../objects/character');
 const Switch     = require('../objects/switch');
 const audioUtil  = require('../utils/audio');
 const cameraUtil = require('../utils/camera');
@@ -265,7 +265,7 @@ module.exports = {
 
     const tile = this.rnd.pick(tiles);
 
-    this.player = new Player(
+    this.player = new Character(
       this.game, (tile.x + 0.5) * tile.width,  (tile.y + 0.5) * tile.height
     );
 
