@@ -17,6 +17,7 @@
       "text": "No, please, help me... I don't know why I'm here. I don't know how to get out. Don't go..."
     },
     {
+      "clear": true,
       "position": "t",
       "text": "No, you can't."
     },
@@ -26,6 +27,7 @@
       "text": "What? Why?"
     },
     {
+      "clear": true,
       "position": "t",
       "text": "You can't go near her. You have to stay away."
     },
@@ -35,6 +37,7 @@
       "text": "But I need to talk to her – why can't I?"
     },
     {
+      "clear": true,
       "position": "t",
       "text": "I don't have to explain it to you – but you must."
     },
@@ -44,6 +47,7 @@
       "text": "I'm going..."
     },
     {
+      "clear": true,
       "position": "t",
       "text": "No! Stop! You can't..."
     }
