@@ -22,6 +22,7 @@ module.exports = {
     this.keys = {
       cursors:  this.input.keyboard.createCursorKeys(),
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
+      enter:    this.input.keyboard.addKey(Phaser.Keyboard.ENTER),
     };
 
     this.score = 0;
@@ -628,7 +629,11 @@ module.exports = {
 
     const dialogue = new Dialogue(this.game, this.levelData.intro, targets);
 
+    this.keys.enter.onDown.add(dialogue.stop, dialogue);
+
     dialogue.onComplete.add(function startLevel() {
+      this.keys.enter.onDown.remove(dialogue.stop, dialogue);
+
       girl.destroy();
 
       this.startLevel();

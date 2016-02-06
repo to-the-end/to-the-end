@@ -12,7 +12,6 @@ module.exports = {
       enter: this.input.keyboard.addKey(Phaser.Keyboard.ENTER),
     };
 
-    this.setupDialogue();
     this.setupAudio();
 
     this.startScene();
@@ -21,10 +20,6 @@ module.exports = {
   loadScene(id) {
     this.sceneId   = id;
     this.sceneData = this.cache.getJSON(`scene-${id}`);
-  },
-
-  setupDialogue() {
-    this.dialogueGroup = this.add.group();
   },
 
   setupAudio() {

@@ -34,6 +34,10 @@ class Character extends PhysicsSprite {
   }
 
   playWalkingSound(index) {
+    if (!this.alive) {
+      return;
+    }
+
     this.isWalking = true;
 
     if (!this.walkingSoundIsPlaying) {

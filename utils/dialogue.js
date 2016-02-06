@@ -52,17 +52,29 @@ class Dialogue {
     this.imageGroup = this.game.add.group();
     this.textGroup  = this.game.add.group();
 
+    this.active = true;
+
     this.displayEntry(0);
   }
 
+  stop() {
+    this.active = false;
+
+    this.textGroup.destroy();
+    this.imageGroup.destroy();
+
+    this.onComplete.dispatch();
+  }
+
   displayEntry(id) {
+    if (!this.active) {
+      return;
+    }
+
     let entry = this.entries[id];
 
     if (!entry) {
-      this.textGroup.destroy();
-      this.imageGroup.destroy();
-
-      this.onComplete.dispatch();
+      this.stop();
 
       return;
     }
@@ -100,7 +112,7 @@ class Dialogue {
 
     if (shouldShake) {
       const shakeCamera = function shakeCamera() {
-        if (!shouldShake) {
+        if (!shouldShake || !this.active) {
           return;
         }
 
@@ -269,6 +281,11 @@ class Dialogue {
 
       // FIXME: Queue movements if the previous one isn't finished?
       this.game.time.events.add(move.delayMs, function setUpdate() {
+        if (!this.active) {
+          return;
+        }
+
+        const self = this;
         const _update = target.update;
 
         target.update = function update() {
@@ -293,6 +310,12 @@ class Dialogue {
           this.move(direction);
 
           if (direction.isZero()) {
+            this.update = _update;
+          }
+
+          if (!self.active) {
+            this.stop();
+
             this.update = _update;
           }
 
