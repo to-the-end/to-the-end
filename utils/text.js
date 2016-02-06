@@ -29,13 +29,35 @@ module.exports = {
   },
 
   typeOutText(game, textObj, textString, callback) {
-    let i = 0;
+    const fullStopCount = (textString.match(/\./g) || []).length;
+    const fullStopDuration = 20;
 
-    // TODO: Pause on punctuation.
+    const commaCount = (textString.match(/,/g) || []).length;
+    const commaDuration = 5;
+
+    const repetitions = textString.length +
+      fullStopCount * fullStopDuration +
+      commaCount * commaDuration;
+
+    let i = 0;
+    let skipCount = 0;
+
     game.time.events.repeat(
       60,
-      textString.length,
+      repetitions,
       function updateText() {
+        if (textString[i - 1] === '.') {
+          skipCount++;
+          skipCount %= fullStopDuration + 1;
+        } else if (textString[i - 1] === ',') {
+          skipCount++;
+          skipCount %= commaDuration + 1;
+        }
+
+        if (skipCount) {
+          return;
+        }
+
         i++;
 
         textObj.setText(textString.substring(0, i));
