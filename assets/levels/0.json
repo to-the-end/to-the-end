@@ -4,17 +4,38 @@
   "intro": [
     {
       "target": "player",
-      "text": "Hello – excuse me? Can you help me? I'm stuck down here – I want to get out..."
+      "text": "Hello – excuse me? Can you help me? I'm stuck down here – I want to get out...",
+      "move": {
+        "player": {
+          "x": -100,
+          "delayMs": 1000
+        },
+        "girl": {
+          "x": -400
+        }
+      }
     },
     {
       "clear": true,
       "target": "girl",
-      "text": "..."
+      "text": "...",
+      "holdMs": 1000,
+      "move": {
+        "girl": {
+          "x": -10000,
+          "delayMs": 500
+        }
+      }
     },
     {
       "clear": true,
       "target": "player",
-      "text": "No, please, help me... I don't know why I'm here. I don't know how to get out. Don't go..."
+      "text": "No, please, help me... I don't know why I'm here. I don't know how to get out. Don't go...",
+      "move": {
+        "player": {
+          "x": -1000
+        }
+      }
     },
     {
       "clear": true,
@@ -47,7 +68,13 @@
     {
       "clear": true,
       "target": "player",
-      "text": "I'm going..."
+      "text": "I'm going...",
+      "move": {
+        "player": {
+          "x": -1000,
+          "y": -300
+        }
+      }
     },
     {
       "clear": true,

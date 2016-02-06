@@ -26,6 +26,17 @@ const defaultEntry = {
   // TODO: Make this more general for "special effects".
   // A flag to indicate whether to shake the screen.
   shake: false,
+
+  // An object with keys matching targets and values specifying a point delta
+  // to move the target to.
+  move: {},
+};
+
+const defaultMove = {
+  x: 0,
+  y: 0,
+
+  delayMs: 0,
 };
 
 class Dialogue {
@@ -93,11 +104,15 @@ class Dialogue {
           return;
         }
 
+        // FIXME: This breaks the solition camera movement if the shake
+        //        overruns the hold time.
         cameraUtil.shake(this.game, this.game.camera, shakeCamera.bind(this));
       }.bind(this);
 
       shakeCamera();
     }
+
+    this.moveTargets(entry);
   }
 
   addImage(entry) {
@@ -226,6 +241,54 @@ class Dialogue {
     }
 
     return props;
+  }
+
+  moveTargets(entry) {
+    Object.keys(entry.move).forEach(function moveTarget(key) {
+      // TODO: Allow chained movements, by using an array of
+      //       move groups (like entry.move currently).
+      const move = Object.assign({}, defaultMove, entry.move[key]);
+
+      const delta  = new Phaser.Point(move.x, move.y);
+      const target = this.targets[key];
+
+      const finalPosition = new Phaser.Point();
+
+      Phaser.Point.add(target.position, delta, finalPosition);
+
+      // FIXME: Queue movements if the previous one isn't finished?
+      this.game.time.events.add(move.delayMs, function setUpdate() {
+        const oldUpdate = target.update;
+
+        target.update = function update() {
+          const direction = new Phaser.Point();
+
+          if (!Phaser.Math.within(finalPosition.x, target.x, 1)) {
+            if (finalPosition.x < target.x) {
+              direction.x--;
+            } else {
+              direction.x++;
+            }
+          }
+
+          if (!Phaser.Math.within(finalPosition.y, target.y, 1)) {
+            if (finalPosition.y < target.y) {
+              direction.y--;
+            } else {
+              direction.y++;
+            }
+          }
+
+          this.move(direction);
+
+          if (direction.isZero()) {
+            this.update = oldUpdate;
+          }
+
+          oldUpdate(this);
+        };
+      }, this);
+    }, this);
   }
 }
 

@@ -158,8 +158,6 @@ module.exports = {
 
     if (this.inputEnabled) {
       this.movePlayer();
-    } else {
-      this.player.stop();
     }
 
     if (this.score === this.order.length) {

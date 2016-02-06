@@ -35,6 +35,7 @@ class Character extends PhysicsSprite {
     this.isWalking = true;
 
     if (!this.walkingSoundIsPlaying) {
+      // TODO: Set the volume based on distance from the camera.
       this.leftFootstepSound.play();
       this.walkingSoundIsPlaying = true;
 
