@@ -123,6 +123,8 @@ class Dialogue {
     // FIXME: Update the text position to follow the target.
     //        Is there an event on the sprite that can be bound to?
     textUtil.typeOutText(this.game, text, entry.text, callback);
+
+    return text;
   }
 
   getPositionProperties(entry) {
