@@ -152,8 +152,6 @@ module.exports = {
   },
 
   update() {
-    this.player.resetVelocity();
-
     this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.barrierGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
@@ -179,41 +177,25 @@ module.exports = {
   },
 
   movePlayer() {
-    let hasMoved = false;
+    const direction = new Phaser.Point();
 
     if (this.keys.cursors.left.isDown) {
-      this.player.walkLeft();
-      hasMoved = true;
+      direction.x--;
     }
 
     if (this.keys.cursors.right.isDown) {
-      this.player.walkRight();
-      hasMoved = true;
+      direction.x++;
     }
 
     if (this.keys.cursors.up.isDown) {
-      if (hasMoved) {
-        this.player.body.velocity.y--;
-      } else {
-        this.player.walkUp();
-      }
-      hasMoved = true;
+      direction.y--;
     }
 
     if (this.keys.cursors.down.isDown) {
-      if (hasMoved) {
-        this.player.body.velocity.y++;
-      } else {
-        this.player.walkDown();
-      }
-      hasMoved = true;
+      direction.y++;
     }
 
-    if (hasMoved) {
-      this.player.normalizeVelocity();
-    } else {
-      this.player.stop();
-    }
+    this.player.move(direction);
 
     if (this.isChainActive) {
       const vx = this.player.body.velocity.x;
@@ -706,8 +688,6 @@ module.exports = {
     // FIXME: Fix this conflict!
     this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
     this.keys.spacebar.onDown.add(this.destroyBarriers, this);
-
-    this.player.enableInput(this.keys.cursors);
   },
 
   disableInput() {
@@ -715,6 +695,5 @@ module.exports = {
 
     this.input.onDown.removeAll();
     this.keys.spacebar.onDown.removeAll();
-    this.player.disableInput(this.keys.cursors);
   },
 };

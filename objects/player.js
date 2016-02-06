@@ -10,7 +10,7 @@ class Player extends PhysicsSprite {
 
     this.body.collideWorldBounds = true;
 
-    this.animations.add('stop', [ 130 ], 1, true);
+    this.animations.add('stop', [ 130 ], 10, false);
     this.animations.add('cast', [ 0, 1, 2, 3, 4, 5, 6 ], 5, false);
     this.animations.add(
       'up', [ 105, 106, 107, 108, 109, 110, 111, 112 ], 10, true
@@ -27,54 +27,41 @@ class Player extends PhysicsSprite {
 
     this.leftFootstepSound  = game.add.audio('left-footstep-sfx');
     this.rightFootstepSound = game.add.audio('right-footstep-sfx');
+
+    this.walkingSoundIsPlaying = false;
   }
 
-  enableInput(cursors) {
-    // To determine whether to restart the sound or not.
-    this.walkingSoundIsPlaying = false;
+  playWalkingSound() {
+    this.isWalking = true;
 
-    Object.keys(cursors).forEach(function bindKey(key) {
-      cursors[key].onDown.add(() => {
-        this.isWalking = true;
-        this.startWalkingSound();
-      });
-    }, this);
+    if (!this.walkingSoundIsPlaying) {
+      this.leftFootstepSound.play();
+      this.walkingSoundIsPlaying = true;
+
+      this.leftFootstepSound.onStop.addOnce(function playRight() {
+        this.walkingSoundIsPlaying = false;
+
+        if (this.isWalking) {
+          this.rightFootstepSound.play();
+          this.walkingSoundIsPlaying = true;
+
+          this.rightFootstepSound.onStop.addOnce(function restart() {
+            this.walkingSoundIsPlaying = false;
+
+            if (this.isWalking) {
+              this.playWalkingSound();
+            }
+          }, this);
+        }
+      }, this);
+    }
   }
 
   stopSound() {
     this.isWalking = false;
+
     this.leftFootstepSound.stop();
     this.rightFootstepSound.stop();
-  }
-
-  disableInput(cursors) {
-    Object.keys(cursors).forEach(function unbindKey(key) {
-      cursors[key].onDown.removeAll();
-    }, this);
-  }
-
-  startWalkingSound() {
-    if (!this.walkingSoundIsPlaying) {
-      this.leftFootstepSound.play();
-      this.walkingSoundIsPlaying = true;
-    }
-
-    this.leftFootstepSound.onStop.addOnce(function playRight() {
-      this.walkingSoundIsPlaying = false;
-
-      if (this.isWalking) {
-        this.rightFootstepSound.play();
-        this.walkingSoundIsPlaying = true;
-
-        this.rightFootstepSound.onStop.addOnce(function restart() {
-          this.walkingSoundIsPlaying = false;
-
-          if (this.isWalking) {
-            this.startWalkingSound();
-          }
-        }, this);
-      }
-    }, this);
   }
 
   resetVelocity() {
@@ -82,58 +69,50 @@ class Player extends PhysicsSprite {
     this.body.velocity.y = 0;
   }
 
-  walkLeft() {
-    this.body.velocity.x = -1;
+  move(direction) {
+    if (direction.isZero()) {
+      this.stop();
 
-    if (!this.isAnimating) {
+      return;
+    }
+
+    this.body.velocity.x = direction.x;
+    this.body.velocity.y = direction.y;
+
+    this.body.velocity.normalize().multiply(250, 250);
+
+    if (this.isCasting) {
+      return;
+    }
+
+    if (direction.x < 0) {
       this.animations.play('left');
-    }
-  }
-
-  walkRight() {
-    this.body.velocity.x = 1;
-
-    if (!this.isAnimating) {
+    } else if (direction.x > 0) {
       this.animations.play('right');
-    }
-  }
-
-  walkUp() {
-    this.body.velocity.y = -1;
-
-    if (!this.isAnimating) {
+    } else if (direction.y < 0) {
       this.animations.play('up');
-    }
-  }
-
-  walkDown() {
-    this.body.velocity.y = 1;
-
-    if (!this.isAnimating) {
+    } else if (direction.y > 0) {
       this.animations.play('down');
     }
-  }
 
-  normalizeVelocity() {
-    this.body.velocity.normalize().multiply(250, 250);
+    this.playWalkingSound();
   }
 
   stop() {
     this.resetVelocity();
     this.stopSound();
 
-    if (!this.isAnimating) {
+    if (!this.isCasting) {
       this.animations.play('stop');
     }
   }
 
   animateCast() {
-    this.isAnimating = true;
+    this.isCasting = true;
 
-    // TODO: Stop other animations overriding it.
     this.animations.play('cast')
       .onComplete.add(function reenableAnimations() {
-        this.isAnimating = false;
+        this.isCasting = false;
       }, this);
   }
 }
