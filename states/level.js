@@ -255,6 +255,8 @@ module.exports = {
   },
 
   setupPlayer() {
+    this.characterGroup = this.add.group();
+
     let tiles = this.playerLayer.getTiles(
       0, 0, this.world.width, this.world.height
     );
@@ -269,7 +271,7 @@ module.exports = {
       this.game, (tile.x + 0.5) * tile.width,  (tile.y + 0.5) * tile.height
     );
 
-    this.add.existing(this.player);
+    this.characterGroup.add(this.player);
 
     this.player.canDestroyBarriers = true;
     this.player.scaleCount = 0;
@@ -615,16 +617,24 @@ module.exports = {
   },
 
   startIntro() {
+    // FIXME: Use a different sprite.
+    // FIXME: Set the start position in the tilemap.
+    const girl = new Character(this.game, this.player.x - 400, this.player.y);
+
+    this.characterGroup.add(girl);
+
     const targets = {
       player: this.player,
-
-      // FIXME: Make this the girl's sprite.
-      girl: this.player,
+      girl:   girl,
     };
 
     const dialogue = new Dialogue(this.game, this.levelData.intro, targets);
 
-    dialogue.onComplete.add(this.startLevel, this);
+    dialogue.onComplete.add(function startLevel() {
+      girl.destroy();
+
+      this.startLevel();
+    }, this);
 
     dialogue.start();
   },
