@@ -150,6 +150,19 @@ class Dialogue {
 
     if (entry.target) {
       text = textUtil.addText(this.game, props.x, props.y, '', style);
+
+      const self = this;
+      const _update = text.update;
+
+      // TODO: It might be better to just add the text as a child of the target.
+      text.update = function update() {
+        const updatedProps = self.getPositionProperties(entry);
+
+        this.x = updatedProps.x;
+        this.y = updatedProps.y;
+
+        _update();
+      };
     } else {
       text = textUtil.addFixedText(this.game, props.x, props.y, '', style);
     }
@@ -158,8 +171,6 @@ class Dialogue {
 
     this.textGroup.add(text);
 
-    // FIXME: Update the text position to follow the target.
-    //        Is there an event on the sprite that can be bound to?
     textUtil.typeOutText(this.game, text, entry.text, callback);
 
     return text;
@@ -258,7 +269,7 @@ class Dialogue {
 
       // FIXME: Queue movements if the previous one isn't finished?
       this.game.time.events.add(move.delayMs, function setUpdate() {
-        const oldUpdate = target.update;
+        const _update = target.update;
 
         target.update = function update() {
           const direction = new Phaser.Point();
@@ -282,10 +293,10 @@ class Dialogue {
           this.move(direction);
 
           if (direction.isZero()) {
-            this.update = oldUpdate;
+            this.update = _update;
           }
 
-          oldUpdate(this);
+          _update(this);
         };
       }, this);
     }, this);
