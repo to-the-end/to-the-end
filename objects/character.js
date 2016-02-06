@@ -25,34 +25,35 @@ class Character extends PhysicsSprite {
       'right', [ 144, 145, 146, 147, 148, 149, 150, 151 ], 10, true
     );
 
-    this.leftFootstepSound  = game.add.audio('left-footstep-sfx');
-    this.rightFootstepSound = game.add.audio('right-footstep-sfx');
+    this.walkingSounds = [
+      game.add.audio('left-footstep-sfx'),
+      game.add.audio('right-footstep-sfx'),
+    ];
 
     this.walkingSoundIsPlaying = false;
   }
 
-  playWalkingSound() {
+  playWalkingSound(index) {
     this.isWalking = true;
 
     if (!this.walkingSoundIsPlaying) {
-      // TODO: Set the volume based on distance from the camera.
-      this.leftFootstepSound.play();
+      const sound = this.walkingSounds[index];
+
+      const fade = Math.min(
+        this.position.distance(this.game.camera.position) / 1200, 1
+      );
+
+      sound.volume = this.game.math.linear(1, 0, fade);
+
+      sound.play();
+
       this.walkingSoundIsPlaying = true;
 
-      this.leftFootstepSound.onStop.addOnce(function playRight() {
+      sound.onStop.addOnce(function playNext() {
         this.walkingSoundIsPlaying = false;
 
         if (this.isWalking) {
-          this.rightFootstepSound.play();
-          this.walkingSoundIsPlaying = true;
-
-          this.rightFootstepSound.onStop.addOnce(function restart() {
-            this.walkingSoundIsPlaying = false;
-
-            if (this.isWalking) {
-              this.playWalkingSound();
-            }
-          }, this);
+          this.playWalkingSound((index + 1) % this.walkingSounds.length);
         }
       }, this);
     }
@@ -61,8 +62,9 @@ class Character extends PhysicsSprite {
   stopSound() {
     this.isWalking = false;
 
-    this.leftFootstepSound.stop();
-    this.rightFootstepSound.stop();
+    this.walkingSounds.forEach(function stop(sound) {
+      sound.stop();
+    });
   }
 
   resetVelocity() {
@@ -96,7 +98,7 @@ class Character extends PhysicsSprite {
       this.animations.play('down');
     }
 
-    this.playWalkingSound();
+    this.playWalkingSound(0);
   }
 
   stop() {
