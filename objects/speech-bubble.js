@@ -8,7 +8,7 @@ class SpeechBubble extends Phaser.Sprite {
 
     this.onDisplayComplete = new Phaser.Signal();
 
-    const tileWidth = 32;
+    const tileWidth = 16;
 
     const extraStyles = {
       fontSize: 18,
