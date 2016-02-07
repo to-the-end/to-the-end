@@ -26,8 +26,8 @@ class SpeechBubble extends Phaser.Sprite {
     );
 
     const bounds = this.text.getLocalBounds();
-    const width  = Math.max(64, bounds.width + 2 * tileWidth);
-    const height = Math.max(64, bounds.height + 2 * tileWidth);
+    const width  = bounds.width + 2 * tileWidth;
+    const height = bounds.height + 2 * tileWidth;
 
     const bubbleBorder = [
       game.make.image(0, 0, 'speech-bubble', 0),
