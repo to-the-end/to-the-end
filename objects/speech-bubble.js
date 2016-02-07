@@ -4,7 +4,7 @@ const textUtil = require('../utils/text');
 
 class SpeechBubble extends Phaser.Sprite {
   constructor(game, x, y, message) {
-    super(game, x, y);
+    super(game, x, y, 'blank');
 
     this.onDisplayComplete = new Phaser.Signal();
 

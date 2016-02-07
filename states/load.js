@@ -8,6 +8,8 @@ module.exports = {
   create() {
     this.setupProgress();
 
+    this.load.image('blank', 'assets/blank.png');
+
     this.loadCharacters();
     this.loadObjects();
     this.loadAudio();
