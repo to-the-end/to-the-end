@@ -176,8 +176,8 @@ class Dialogue {
       text.update = function update() {
         const updatedProps = self.getPositionProperties(entry);
 
-        this.x = updatedProps.x;
-        this.y = updatedProps.y;
+        this.x = Math.round(updatedProps.x);
+        this.y = Math.round(updatedProps.y);
 
         _update();
       };
