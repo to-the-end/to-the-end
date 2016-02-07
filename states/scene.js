@@ -12,8 +12,6 @@ module.exports = {
       enter: this.input.keyboard.addKey(Phaser.Keyboard.ENTER),
     };
 
-    this.setupAudio();
-
     this.startScene();
   },
 
@@ -22,21 +20,13 @@ module.exports = {
     this.sceneData = this.cache.getJSON(`scene-${id}`);
   },
 
-  setupAudio() {
-    this.music = this.add.audio('scene-soundtrack');
-  },
-
   startScene() {
-    this.music.play();
-
     this.enableInput();
-
     this.startDialogue();
   },
 
   endScene() {
     this.sound.destroy();
-
     this.state.start('level', true, false, this.sceneId);
   },
 
@@ -53,7 +43,6 @@ module.exports = {
     const dialogue = new Dialogue(this.game, this.sceneData.dialogue);
 
     dialogue.onComplete.add(this.endScene, this);
-
     dialogue.start();
   },
 };
