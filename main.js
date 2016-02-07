@@ -9,7 +9,7 @@ const createWindow = function createWindow() {
     title:      'To The End',
     width:      1600,
     height:     900,
-    fullscreen: true,
+    fullscreen: false,
     frame:      false,
   });
 

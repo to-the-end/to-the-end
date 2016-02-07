@@ -118,7 +118,7 @@ class Dialogue {
 
         // FIXME: This breaks the solition camera movement if the shake
         //        overruns the hold time.
-        cameraUtil.shake(this.game, this.game.camera, shakeCamera.bind(this));
+        cameraUtil.shake(this.game, this.game.camera, {}, shakeCamera.bind(this));
       }.bind(this);
 
       shakeCamera();
