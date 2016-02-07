@@ -33,7 +33,7 @@ const defaultEntry = {
   move: {},
 
   // The music to play when the dialogue is being presented.
-  music: null
+  music: null,
 };
 
 const defaultMove = {

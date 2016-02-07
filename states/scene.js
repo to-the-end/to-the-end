@@ -41,6 +41,7 @@ module.exports = {
 
   startDialogue() {
     const dialogue = new Dialogue(this.game, this.sceneData.dialogue);
+
     dialogue.onComplete.add(this.endScene, this);
     dialogue.start();
   },
