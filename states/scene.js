@@ -1,8 +1,6 @@
 'use strict';
 
 const Dialogue = require('../utils/dialogue');
-const textUtil = require('../utils/text');
-const SceneAudioHelper = require('../utils/scene-audio-helper');
 
 module.exports = {
   init(sceneId) {
@@ -14,9 +12,6 @@ module.exports = {
       enter: this.input.keyboard.addKey(Phaser.Keyboard.ENTER),
     };
 
-    this.setupAudio();
-    this.setupDialogue();
-    this.sceneAudioHelper = new SceneAudioHelper(this.game);
     this.startScene();
   },
 
@@ -25,20 +20,13 @@ module.exports = {
     this.sceneData = this.cache.getJSON(`scene-${id}`);
   },
 
-  setupAudio() {
-    this.music = this.add.audio('scene-soundtrack');
-  }
-
-  setupDialogue() {
-    this.dialogueGroup = this.add.group();
-  },
-
   startScene() {
     this.enableInput();
     this.startDialogue();
   },
 
   endScene() {
+    this.sound.destroy();
     this.state.start('level', true, false, this.sceneId);
   },
 

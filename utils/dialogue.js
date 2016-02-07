@@ -2,6 +2,7 @@
 
 const cameraUtil = require('./camera');
 const textUtil   = require('./text');
+const SceneAudioHelper = require('../utils/scene-audio-helper');
 
 const defaultEntry = {
   // A flag to indicate whether to clear previous dialogues before
@@ -30,6 +31,9 @@ const defaultEntry = {
   // An object with keys matching targets and values specifying a point delta
   // to move the target to.
   move: {},
+
+  // The music to play when the dialogue is being presented.
+  music: null
 };
 
 const defaultMove = {
@@ -46,6 +50,11 @@ class Dialogue {
     this.targets = targets || {};
 
     this.onComplete = new Phaser.Signal();
+    this.setupAudio();
+  }
+
+  setupAudio() {
+    this.sceneAudioHelper = new SceneAudioHelper(this.game);
   }
 
   start() {
@@ -84,6 +93,10 @@ class Dialogue {
     if (entry.clear) {
       this.textGroup.removeAll(true);
       this.imageGroup.removeAll(true);
+    }
+
+    if (entry.music) {
+      this.sceneAudioHelper.play(entry.music);
     }
 
     if (entry.image) {

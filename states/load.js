@@ -52,10 +52,10 @@ module.exports = {
 
     this.load.audio('main-soundtrack',  `${soundtrackRoot}/title-or-intro.wav`);
 
-    // String snippets used in the cutscenes
+    // Strings snippets used in the cutscenes
     for (let x = 0; x < 9; x++) {
       this.load.audio(
-        `string-snippet-${x}`,
+        `scene-soundtrack-strings-snippet-${x}`,
         `${soundtrackRoot}/cutscene/stringsnippet${x + 1}.wav`
       );
     }
