@@ -1,20 +1,17 @@
 'use strict';
 
-const objectAssign = require('object-assign');
-
 module.exports = {
   shake(game, camera, userOptions, callback) {
-
     const defaultOptions = {
-      shakeAxis: 'x',
-      shakeRange: 20,
-      shakeInterval: 60,
-      shakeCount: 10,
-      randomShake: false,
-      randomizeInterval: false
+      shakeAxis:          'x', // valid options are 'x', 'y' and 'xy'
+      shakeRange:         20,
+      shakeInterval:      60,
+      shakeCount:         10,
+      randomShake:        false,
+      randomizeInterval : false,
     };
 
-    const options = objectAssign({}, defaultOptions, userOptions);
+    const options = Object.assign({}, defaultOptions, userOptions);
     const target = camera.target;
 
     if (target) {
@@ -22,11 +19,11 @@ module.exports = {
     }
 
     const shakeTimer = game.time.create(false);
-    const shakeInterval = options.randomizeInterval? 
-      Math.random() * options.shakeInterval + options.shakeInterval : 
+    const shakeInterval = options.randomizeInterval ?
+      Math.random() * options.shakeInterval + options.shakeInterval :
       options.shakeInterval;
 
-    shakeTimer.loop(options.shakeInterval, () => {
+    shakeTimer.loop(shakeInterval, () => {
       if (options.shakeCount === 0) {
         // if end shake reset camera, stop shake timer and call callback
         if (target) {
@@ -42,30 +39,27 @@ module.exports = {
       }
 
       // Calculate camera shift
-      let shift1, shift2;
+      let shift1;
+      let shift2;
       const shakeRangeHalved = options.shakeRange / 2;
 
       if (options.randomShake) {
         shift1 = game.rnd.integerInRange(-shakeRangeHalved, shakeRangeHalved);
         shift2 = game.rnd.integerInRange(-shakeRangeHalved, shakeRangeHalved);
       } else {
-        if (options.shakeCount % 2){
-          shift1 = shift2 = -shakeRangeHalved;
-        } else{
-          shift1 = shift2 = shakeRangeHalved;
-        }
+        shift1 = shift2 = options.shakeCount % 2 ? -shakeRangeHalved : shakeRangeHalved;
       }
 
       // Shake camera
-      if (options.shakeAxis === "y") {
+      if (options.shakeAxis === 'y') {
         game.camera.y += shift2;
       }
 
-      if (options.shakeAxis === "x") {
+      if (options.shakeAxis === 'x') {
         game.camera.x += shift1;
       }
 
-      if (options.shakeAxis === "xy") {
+      if (options.shakeAxis === 'xy') {
         game.camera.x += shift1;
         game.camera.y += shift2;
       }
@@ -74,5 +68,5 @@ module.exports = {
     });
 
     shakeTimer.start();
-  }
+  },
 };
