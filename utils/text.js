@@ -10,6 +10,14 @@ module.exports = {
   },
 
   addText(game, x, y, message, extraStyles) {
+    const text = this.makeText(game, x, y, message, extraStyles);
+
+    game.add.existing(text);
+
+    return text;
+  },
+
+  makeText(game, x, y, message, extraStyles) {
     const style = Object.assign(
       {
         font:     'Raleway',
@@ -23,7 +31,7 @@ module.exports = {
       extraStyles
     );
 
-    const text = game.add.text(x, y, message, style);
+    const text = game.make.text(x, y, message, style);
 
     return text;
   },
