@@ -77,6 +77,9 @@ class SpeechBubble extends Phaser.Sprite {
     textUtil.typeOutText(game, this.text, message, function dispatchEvent() {
       this.onDisplayComplete.dispatch();
     }.bind(this));
+
+    // FIXME: Don't hardcode this!
+    this.pivot.set(tileWidth * 2, height);
   }
 }
 
