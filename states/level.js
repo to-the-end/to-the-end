@@ -3,10 +3,11 @@
 const config = require('../config');
 
 const Barrier    = require('../objects/barrier');
-const Player     = require('../objects/player');
+const Character  = require('../objects/character');
 const Switch     = require('../objects/switch');
 const audioUtil  = require('../utils/audio');
 const cameraUtil = require('../utils/camera');
+const Dialogue   = require('../utils/dialogue');
 const textUtil   = require('../utils/text');
 
 module.exports = {
@@ -21,6 +22,7 @@ module.exports = {
     this.keys = {
       cursors:  this.input.keyboard.createCursorKeys(),
       spacebar: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
+      enter:    this.input.keyboard.addKey(Phaser.Keyboard.ENTER),
     };
 
     this.score = 0;
@@ -151,16 +153,12 @@ module.exports = {
   },
 
   update() {
-    this.player.resetVelocity();
-
     this.physics.arcade.collide(this.player, this.collisionLayer);
     this.physics.arcade.collide(this.player, this.barrierGroup);
     this.physics.arcade.collide(this.player, this.switchGroup);
 
     if (this.inputEnabled) {
       this.movePlayer();
-    } else {
-      this.player.stop();
     }
 
     if (this.score === this.order.length) {
@@ -178,41 +176,25 @@ module.exports = {
   },
 
   movePlayer() {
-    let hasMoved = false;
+    const direction = new Phaser.Point();
 
     if (this.keys.cursors.left.isDown) {
-      this.player.walkLeft();
-      hasMoved = true;
+      direction.x--;
     }
 
     if (this.keys.cursors.right.isDown) {
-      this.player.walkRight();
-      hasMoved = true;
+      direction.x++;
     }
 
     if (this.keys.cursors.up.isDown) {
-      if (hasMoved) {
-        this.player.body.velocity.y--;
-      } else {
-        this.player.walkUp();
-      }
-      hasMoved = true;
+      direction.y--;
     }
 
     if (this.keys.cursors.down.isDown) {
-      if (hasMoved) {
-        this.player.body.velocity.y++;
-      } else {
-        this.player.walkDown();
-      }
-      hasMoved = true;
+      direction.y++;
     }
 
-    if (hasMoved) {
-      this.player.normalizeVelocity();
-    } else {
-      this.player.stop();
-    }
+    this.player.move(direction);
 
     if (this.isChainActive) {
       const vx = this.player.body.velocity.x;
@@ -272,6 +254,8 @@ module.exports = {
   },
 
   setupPlayer() {
+    this.characterGroup = this.add.group();
+
     let tiles = this.playerLayer.getTiles(
       0, 0, this.world.width, this.world.height
     );
@@ -282,11 +266,11 @@ module.exports = {
 
     const tile = this.rnd.pick(tiles);
 
-    this.player = new Player(
+    this.player = new Character(
       this.game, (tile.x + 0.5) * tile.width,  (tile.y + 0.5) * tile.height
     );
 
-    this.add.existing(this.player);
+    this.characterGroup.add(this.player);
 
     this.player.canDestroyBarriers = true;
     this.player.scaleCount = 0;
@@ -632,8 +616,30 @@ module.exports = {
   },
 
   startIntro() {
-    // TODO: Play an intro cut scene, then do this.
-    this.startLevel();
+    // FIXME: Use a different sprite.
+    // FIXME: Set the start position in the tilemap.
+    const girl = new Character(this.game, this.player.x - 400, this.player.y);
+
+    this.characterGroup.add(girl);
+
+    const targets = {
+      player: this.player,
+      girl:   girl,
+    };
+
+    const dialogue = new Dialogue(this.game, this.levelData.intro, targets);
+
+    this.keys.enter.onDown.add(dialogue.stop, dialogue);
+
+    dialogue.onComplete.add(function startLevel() {
+      this.keys.enter.onDown.remove(dialogue.stop, dialogue);
+
+      girl.destroy();
+
+      this.startLevel();
+    }, this);
+
+    dialogue.start();
   },
 
   startLevel() {
@@ -695,8 +701,6 @@ module.exports = {
     // FIXME: Fix this conflict!
     this.keys.spacebar.onDown.add(this.turnOnNearbySwitches, this);
     this.keys.spacebar.onDown.add(this.destroyBarriers, this);
-
-    this.player.enableInput(this.keys.cursors);
   },
 
   disableInput() {
@@ -704,6 +708,5 @@ module.exports = {
 
     this.input.onDown.removeAll();
     this.keys.spacebar.onDown.removeAll();
-    this.player.disableInput(this.keys.cursors);
   },
 };

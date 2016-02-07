@@ -1,4 +1,86 @@
 {
   "order": [3, 1, 2],
-  "timer": 360
+  "timer": 360,
+  "intro": [
+    {
+      "target": "player",
+      "text": "Hello – excuse me? Can you help me? I'm stuck down here – I want to get out...",
+      "move": {
+        "player": {
+          "x": -100,
+          "delayMs": 1000
+        },
+        "girl": {
+          "x": -400
+        }
+      }
+    },
+    {
+      "clear": true,
+      "target": "girl",
+      "text": "...",
+      "holdMs": 1000,
+      "move": {
+        "girl": {
+          "x": -10000,
+          "delayMs": 500
+        }
+      }
+    },
+    {
+      "clear": true,
+      "target": "player",
+      "text": "No, please, help me... I don't know why I'm here. I don't know how to get out. Don't go...",
+      "move": {
+        "player": {
+          "x": -1000
+        }
+      }
+    },
+    {
+      "clear": true,
+      "position": "t",
+      "text": "No, you can't.",
+      "shake": true
+    },
+    {
+      "clear": true,
+      "target": "player",
+      "text": "What? Why?"
+    },
+    {
+      "clear": true,
+      "position": "t",
+      "text": "You can't go near her. You have to stay away.",
+      "shake": true
+    },
+    {
+      "clear": true,
+      "target": "player",
+      "text": "But I need to talk to her – why can't I?"
+    },
+    {
+      "clear": true,
+      "position": "t",
+      "text": "I don't have to explain it to you – but you must.",
+      "shake": true
+    },
+    {
+      "clear": true,
+      "target": "player",
+      "text": "I'm going...",
+      "move": {
+        "player": {
+          "x": -1000,
+          "y": -300
+        }
+      }
+    },
+    {
+      "clear": true,
+      "position": "t",
+      "text": "No! Stop! You can't...",
+      "shake": true
+    }
+  ]
 }
