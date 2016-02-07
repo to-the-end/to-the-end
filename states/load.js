@@ -51,7 +51,14 @@ module.exports = {
     const sfxRoot        = `${audioRoot}/sfx`;
 
     this.load.audio('main-soundtrack',  `${soundtrackRoot}/title-or-intro.wav`);
-    this.load.audio('scene-soundtrack', `${soundtrackRoot}/intro-strings.wav`);
+
+    // String snippets used in the cutscenes
+    for (let x = 0; x < 9; x++) {
+      this.load.audio(
+        `string-snippet-${x}`,
+        `${soundtrackRoot}/cutscene/stringsnippet${x + 1}.wav`
+      );
+    }
 
     this.load.audio('left-footstep-sfx',  `${sfxRoot}/footsteps/left.wav`);
     this.load.audio('right-footstep-sfx', `${sfxRoot}/footsteps/right.wav`);
