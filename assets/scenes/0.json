@@ -2,27 +2,32 @@
   "dialogue": [
     {
       "position": "tl",
-      "text": "Each day the world got greyer, falling away – life and colour, words and people. Faces turned blank until everyone looked the same, people I knew and those I didn't."
+      "text": "Each day the world got greyer, falling away – life and colour, words and people. Faces turned blank until everyone looked the same, people I knew and those I didn't.",
+      "music": "scene-soundtrack-strings-snippet-0"
     },
     {
       "position": "bl",
-      "text": "Each day got shorter and each night got longer, until a sleep settled on me that fell like ash, and was too heavy to lift."
+      "text": "Each day got shorter and each night got longer, until a sleep settled on me that fell like ash, and was too heavy to lift.",
+      "music": "scene-soundtrack-strings-snippet-1"
     },
     {
       "clear": true,
       "position": "tl",
       "text": "In my nightmares, I fought to wake, but everything I did made it darker. I couldn't escape on my own. I didn't know where to go. All I knew was I had to follow it through to the end.",
-      "image": "scene-0-back-0"
+      "image": "scene-0-back-0",
+      "music": "scene-soundtrack-strings-snippet-2"
     },
     {
       "clear": true,
       "position": "tl",
-      "text": "Out of the darkness, shapes formed – massive walls came out of the blackness and grew up way above me."
+      "text": "Out of the darkness, shapes formed – massive walls came out of the blackness and grew up way above me.",
+      "music": "scene-soundtrack-strings-snippet-3"
     },
     {
       "clear": true,
       "position": "tl",
-      "text": "I stood - slowly, under the weight of the shadows – and looked around at the walls extending into the distance in every direction."
+      "text": "I stood - slowly, under the weight of the shadows – and looked around at the walls extending into the distance in every direction.",
+      "music": "scene-soundtrack-strings-snippet-3"
     },
     {
       "text": "No end in sight, no clue of where to go."
@@ -30,11 +35,13 @@
     {
       "clear": true,
       "position": "tl",
-      "text": "I looked around at each of the paths – then, in front of me, I saw a girl..."
+      "text": "I looked around at each of the paths – then, in front of me, I saw a girl...",
+      "music": "scene-soundtrack-strings-snippet-7"
     },
     {
       "clear": true,
-      "image": "scene-0-anim-0"
+      "image": "scene-0-anim-0",
+      "music": "scene-soundtrack-strings-snippet-8"
     },
     {
       "clear": true,
