@@ -20,7 +20,7 @@ module.exports = {
 
     const shakeTimer = game.time.create(false);
     const shakeInterval = options.randomizeInterval ?
-      Math.random() * options.shakeInterval + options.shakeInterval :
+      game.rnd.integerInRange(options.shakeInterval, options.shakeInterval * 2) :
       options.shakeInterval;
 
     shakeTimer.loop(shakeInterval, () => {
@@ -39,29 +39,29 @@ module.exports = {
       }
 
       // Calculate camera shift
-      let shift1;
-      let shift2;
+      let shiftX;
+      let shiftY;
       const shakeRangeHalved = options.shakeRange / 2;
 
       if (options.randomShake) {
-        shift1 = game.rnd.integerInRange(-shakeRangeHalved, shakeRangeHalved);
-        shift2 = game.rnd.integerInRange(-shakeRangeHalved, shakeRangeHalved);
+        shiftX = game.rnd.integerInRange(-shakeRangeHalved, shakeRangeHalved);
+        shiftY = game.rnd.integerInRange(-shakeRangeHalved, shakeRangeHalved);
       } else {
-        shift1 = shift2 = options.shakeCount % 2 ? -shakeRangeHalved : shakeRangeHalved;
+        shiftX = shiftY = options.shakeCount % 2 ? -shakeRangeHalved : shakeRangeHalved;
       }
 
       // Shake camera
       if (options.shakeAxis === 'y') {
-        game.camera.y += shift2;
+        game.camera.y += shiftY;
       }
 
       if (options.shakeAxis === 'x') {
-        game.camera.x += shift1;
+        game.camera.x += shiftX;
       }
 
       if (options.shakeAxis === 'xy') {
-        game.camera.x += shift1;
-        game.camera.y += shift2;
+        game.camera.x += shiftX;
+        game.camera.y += shiftY;
       }
 
       options.shakeCount--;
