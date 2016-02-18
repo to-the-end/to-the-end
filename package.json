@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "main": "main.js",
   "scripts": {
-    "start": "NODE_ENV=development electron main.js",
+    "start": "cross-env NODE_ENV=development electron main.js",
     "test": "npm run lint",
     "lint": "eslint .",
     "clean": "rm -rf ./build",
@@ -21,6 +21,7 @@
     "dist:win32": "npm run build:win32 && mkdir -p \"dist/win32-$npm_package_version\" && pushd build/win32 && zip -q -r \"../../dist/win32-$npm_package_version/$npm_package_productName-win32-x64-$npm_package_version.zip\" \"$npm_package_productName-win32-x64\" && popd"
   },
   "devDependencies": {
+    "cross-env": "^1.0.7",
     "electron-packager": "^5.2.1",
     "electron-prebuilt": "^0.36.6",
     "eslint": "^1.10.3"
