@@ -8,6 +8,8 @@ module.exports = {
   create() {
     this.setupProgress();
 
+    this.load.image('blank', 'assets/blank.png');
+
     this.loadCharacters();
     this.loadObjects();
     this.loadAudio();
@@ -121,6 +123,8 @@ module.exports = {
     this.load.image('scene-0-anim-0', 'assets/scenes/animations/0-0.jpg');
     this.load.image('scene-0-anim-1', 'assets/scenes/animations/0-1.jpg');
     this.load.image('scene-0-anim-2', 'assets/scenes/animations/0-2.jpg');
+
+    this.load.spritesheet('speech-bubble', 'assets/speech-bubble.png', 16, 16);
   },
 
   loadLevels() {

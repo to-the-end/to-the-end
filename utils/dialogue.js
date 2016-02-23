@@ -1,8 +1,9 @@
 'use strict';
 
-const cameraUtil = require('./camera');
-const textUtil   = require('./text');
-const SceneAudioHelper = require('../utils/scene-audio-helper');
+const cameraUtil       = require('./camera');
+const SceneAudioHelper = require('./scene-audio-helper');
+const textUtil         = require('./text');
+const SpeechBubble     = require('../objects/speech-bubble');
 
 const defaultEntry = {
   // A flag to indicate whether to clear previous dialogues before
@@ -163,18 +164,10 @@ class Dialogue {
   addText(entry, callback) {
     const props = this.getPositionProperties(entry);
 
-    const style = {
-      fontSize:      24,
-      boundsAlignH:  props.alignH,
-      boundsAlignV:  props.alignV,
-      wordWrap:      true,
-      wordWrapWidth: props.wordWrapWidth,
-    };
-
     let text;
 
     if (entry.target) {
-      text = textUtil.addText(this.game, props.x, props.y, '', style);
+      text = new SpeechBubble(this.game, props.x, props.y, entry.text);
 
       const self = this;
       const _update = text.update;
@@ -183,20 +176,30 @@ class Dialogue {
       text.update = function update() {
         const updatedProps = self.getPositionProperties(entry);
 
-        this.x = updatedProps.x;
-        this.y = updatedProps.y;
+        this.x = Math.round(updatedProps.x);
+        this.y = Math.round(updatedProps.y);
 
         _update();
       };
+
+      text.onDisplayComplete.add(callback);
     } else {
+      const style = {
+        fontSize:      24,
+        boundsAlignH:  props.alignH,
+        boundsAlignV:  props.alignV,
+        wordWrap:      true,
+        wordWrapWidth: props.wordWrapWidth,
+      };
+
       text = textUtil.addFixedText(this.game, props.x, props.y, '', style);
+
+      text.anchor.set(props.anchorX, props.anchorY);
+
+      textUtil.typeOutText(this.game, text, entry.text, callback);
     }
 
-    text.anchor.set(props.anchorX, props.anchorY);
-
     this.textGroup.add(text);
-
-    textUtil.typeOutText(this.game, text, entry.text, callback);
 
     return text;
   }
