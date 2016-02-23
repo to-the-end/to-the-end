@@ -88,7 +88,7 @@ module.exports = {
     this.player.stop();
 
     if (shake) {
-      cameraUtil.shake(this.game, this.camera, this.showSolution.bind(this));
+      cameraUtil.shake(this.game, this.camera, {}, this.showSolution.bind(this));
     } else {
       this.tweenCameraToSwitch(0);
     }
