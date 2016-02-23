@@ -2,6 +2,8 @@
 
 const electron = require('electron');
 
+const DEV_MODE = process.env.NODE_ENV === 'development';  // eslint-disable-line no-process-env
+
 let mainWindow;
 
 const createWindow = function createWindow() {
@@ -9,11 +11,15 @@ const createWindow = function createWindow() {
     title:      'To The End',
     width:      1600,
     height:     900,
-    fullscreen: true,
-    frame:      false,
+    fullscreen: !DEV_MODE,
+    frame:      DEV_MODE,
   });
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);
+
+  if (DEV_MODE) {
+    mainWindow.openDevTools();
+  }
 
   mainWindow.on('closed', function onClosed() {
     mainWindow = null;
