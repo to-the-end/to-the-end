@@ -2,7 +2,7 @@
 
 const electron = require('electron');
 
-const DEV_MODE = process.env.NODE_ENV === 'development';  // eslint-disable-line no-process-env
+const DEV_MODE = process.env.NODE_ENV === 'development';
 
 let mainWindow;
 
