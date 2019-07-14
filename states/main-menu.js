@@ -179,15 +179,15 @@ module.exports = {
 
     endrit.anchor.set(0.5, 0);
 
-    const felix = this.add.text(
+    const erbridge = this.add.text(
       this.camera.view.centerX, endrit.y + 38,
-      'Felix Laurie von Massenbach - Code', style
+      'erbridge - Code', style
     );
 
-    felix.anchor.set(0.5, 0);
+    erbridge.anchor.set(0.5, 0);
 
     const michael = this.add.text(
-      this.camera.view.centerX, felix.y + 38,
+      this.camera.view.centerX, erbridge.y + 38,
       'Michael Le - Code', style
     );
 
@@ -233,7 +233,7 @@ module.exports = {
       ggj.destroy();
       antonio.destroy();
       endrit.destroy();
-      felix.destroy();
+      erbridge.destroy();
       michael.destroy();
       archil.destroy();
       sam.destroy();
